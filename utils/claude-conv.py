@@ -2,6 +2,7 @@ import json
 import os
 import argparse
 from datetime import datetime
+import html
 
 # Mostly code written by Claude with additional quick hacks
 
@@ -16,14 +17,16 @@ def json_to_html(json_data, output_file, conv_title, human_name, model_name):
     # Format the datetime object as "YYYY-MM-DD HH:MM"
     formatted_date = created_at_dt.strftime("%Y-%m-%d %H:%M")
 
-    html = f"<!DOCTYPE html>\n<html>\n<head>\n<title>{title}</title>\n<style>pre {{white-space: pre-wrap;}} .msg-dt {{ float: right}}</style>\n</head>\n<body>\n<h1>{title}</h1>\n<div>Date: {formatted_date}</div>\n<hr>\n"
+    he = lambda x: html.escape(x, quote=True)
+
+    content = f"<!DOCTYPE html>\n<html>\n<head>\n<title>{he(title)}</title>\n<style>pre {{white-space: pre-wrap;}} .msg-dt {{ float: right}}</style>\n</head>\n<body>\n<h1>{he(title)}</h1>\n<pre>Date: {he(formatted_date)}</pre>\n<hr>\n"
 
     conversation = json_data.get("chat_messages", [])
     for i, message in enumerate(conversation):
         if i > 0:
-            html += "<hr/>\n"
+            content += "<hr/>\n"
         sender = message.get("sender", "").replace("human", human_name).replace("assistant", model)
-        text = message.get("text", "").replace("\n", "<br>")
+        text = message.get("text", "")
 
         msg_at = message.get("created_at", "(unknown date)")
 
@@ -33,18 +36,20 @@ def json_to_html(json_data, output_file, conv_title, human_name, model_name):
         # Format the datetime object as "YYYY-MM-DD HH:MM:SS"
         msg_date = msg_at_dt.strftime("%Y-%m-%d %H:%M:%S")
 
-        html += f"<div><b>{sender}</b> <small class=\"msg-dt\">{msg_date}</small></div>\n<pre>{text}</pre>\n"
+        content += f"<pre><div><b>{he(sender)}</b> <span class=\"msg-dt\">{he(msg_date)}</span></div>\n<div>{he(text)}</div>\n"
 
         files_name = list(a.get("file_name") for a in message.get("attachments", []))
         files_name.extend(a.get("file_name") for a in message.get("files", []))
 
         if len(files_name):
-            html += "<div>Attachment(s): {}</div>\n".format(", ".join(files_name))
+            content += "<div>Attachment(s): {}</div>\n".format(he(", ".join(files_name)))
 
-    html += "</body>\n</html>"
+        content += "</pre>"
+
+    content += "</body>\n</html>"
 
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(content)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert JSON to HTML")
