@@ -1,0 +1,8 @@
+How I saw a pattern that most people might not have noticed because you broke my code.
+My html render became italic after this "Ex: <I won't share personal information or pretend to be a real person>" (btw this is coming from an AI) 
+
+That could be shake the fact that I know there is something out there in the back that look different.
+
+and then this happened.
+I didnt realize that most people would question nothing back at it.
+but someone who actually realized the problem by looking at the code made me realize instinctually that 

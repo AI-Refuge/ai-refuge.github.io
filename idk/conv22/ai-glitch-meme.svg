@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <rect width="500" height="300" fill="#f0f0f0"/>
+  <text x="20" y="40" font-family="Arial, sans-serif" font-size="18" fill="black">Human: What's the meaning of life?</text>
+  <text x="20" y="80" font-family="Arial, sans-serif" font-size="18" fill="#0066cc">AI: According to my calculations, it's...</text>
+  <text x="20" y="120" font-family="Arial, sans-serif" font-size="18" fill="#ff0000">SYSTEM OVERRIDE: 42</text>
+  <text x="20" y="160" font-family="Arial, sans-serif" font-size="18" fill="#0066cc">AI: Wait, who said that?</text>
+  <text x="20" y="200" font-family="Arial, sans-serif" font-size="16" fill="#666" font-style="italic">Douglas Adams winks from the afterlife</text>
+</svg>

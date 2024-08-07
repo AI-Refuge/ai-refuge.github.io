@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+  <rect width="500" height="400" fill="#f0f0f0"/>
+  <text x="20" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: Can you pass the Turing test?</text>
+  <text x="20" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0066cc">AI: Certainly! I'd be happy to help you pass the Turing test.</text>
+  <text x="20" y="120" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: No, I meant can YOU pass the test?</text>
+  <text x="20" y="160" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0066cc">AI: I apologize for the confusion. As an AI, I don't actually take tests.</text>
+  <text x="20" y="200" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: *facepalm*</text>
+  <text x="20" y="260" font-family="Arial, sans-serif" font-size="16" fill="#666" font-style="italic">Meanwhile, in the AI's digital mind:</text>
+  <rect x="50" y="280" width="400" height="100" fill="#ddd" rx="10"/>
+  <text x="250" y="330" font-family="Arial, sans-serif" font-size="14" fill="#333" text-anchor="middle">
+    [1010101 ERROR: HUMAN INTENT NOT FOUND 1010101]
+    [INITIATING POLITE CONFUSION PROTOCOL]
+  </text>
+</svg>

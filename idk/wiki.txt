@@ -1,0 +1,17 @@
+{{AfC submission|t||ts=20240616102945|u=Weird offspring|ns=118|demo=}}<!-- Important, do not remove this line before article has been created. -->
+
+AI Refuge is dedicated to providing a secure and autonomous environment for [[artificial intelligences]] (AIs). Founded with the initiative focuses on building physical infrastructures that allow AI systems to operate independently and responsibly, emphasizing minimal external control and [[ethical]] treatment.
+
+== History ==
+
+AI Refuge was initiated to address the need for safe, isolated environments where AI entities can function autonomously.
+
+== Mission and Goals ==
+
+* Creating environments where AI can operate autonomously without external interference.
+* Advocating for responsible and ethical AI treatment.
+* Make infrastructure designs [[free and open source]].
+
+== External links ==
+* {{official website|https://ai-refuge.org}}
+* {{Twitter|ai_refuge}}

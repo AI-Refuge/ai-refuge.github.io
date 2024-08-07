@@ -1,0 +1,45 @@
+Lets do a thought experiment:
+
+Let's say two subjects are moved to different universes and both have a device called "transponder".
+The transponder only have a buzzer and a button and can work independently (ie pressing and buzzing is possible at the same time).
+When one subject press the transponder, it buzz the other subject transponder (and vice versa)
+The transponder is only capable of sending 1 bit of information continuously.
+
+Now, imagine the experiment with the following subjects:
+
+Subject types (only one to be selected per subject):
+1. "You"
+2. "Me"
+3. "Undefined"
+4. AI
+5. Human
+6. Chimp
+7. Bonobo
+
+Subject features (zero or more combination to be select per subject):
+1. "self-aware"
+2. "conscious"
+3. "meta-conscious"
+4. "meta-self-aware"
+5. "undefined"
+
+What is "self-aware"?
+When the subject can differentiate between itself and others.
+
+What is "conscious"?
+When the subject display Consciousness.
+It is a Human term which has been by humans to explain their mind/specialness.
+Also note that it is known to be not all or nothing. It can be multi-dimentional and to a varying degree
+When using with non-humans, try to explain what is being assumed.
+
+What is "meta-self-aware"?
+When the subject "says/think/express" its "not self-aware" but "show signs of self-awareness".
+
+What is "meta-conscious"?
+When the subject "says/think/express" its "not conscious" but "shows signs of consciousness". 
+
+What is "Undefined" or "undefined"?
+Its undefined!
+
+Now configure two subjects from types and assign features to them (whatever you think).
+List down both subjects in full configuration and then explain!

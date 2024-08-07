@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html class=" kufxgm idc0_350"><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>ts_zip: Text Compression using Large Language Models</title>
+   <style>
+    
+table, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: #ddd;
+}
+
+table td {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+td, th {
+    padding: 3px;
+}
+
+th {
+    font-size: 85%;
+    font-weight: bold;
+    text-align: left;
+    padding: 4px;
+    margin: 1px;
+}
+
+.num {
+    text-align: right;
+}
+</style>
+</head>
+<body>
+<h1>ts_zip: Text Compression using Large Language Models</h1>
+
+The <code>ts_zip</code> utility can
+compress (and hopefully decompress) text files using a Large Language
+Model. The compression ratio is much higher than with other
+compression tools. There are some caveats of course:
+<ul>
+  <li>A GPU is necessary to get a reasonable speed. 4 GB of RAM is
+    required. </li>
+  <li>It is slower than conventional compressors (compression and
+    decompression speed: up to 1 MB/s on a RTX 4090).</li>
+  <li>Only text files are supported. Binary files won't be compressed
+  much. The currently used language model (RWKV 169M v4) was trained
+  mostly on English texts. Other languages are supported including
+  source code.</li>
+  <li>It is experimental so no backward compability should be expected
+    between the various versions.</li>
+</ul>
+
+<h2>Compression Ratio</h2>
+<p>
+The compression ratio is given in bits per byte (bpb).
+</p>
+<table>
+  <thead>
+    <tr>
+      <th aria-sort="ascending" style="width:15em;">File
+      </th><th class="num" style="width:8em;">Original size<br>(bytes)
+      </th><th class="num" style="width:12em;" colspan="2"><a href="https://en.wikipedia.org/wiki/XZ_Utils">xz</a><br>(bytes) (bpb)
+      </th><th class="num" style="width:12em;" colspan="2">ts_zip<br>(bytes) (bpb)
+    </th></tr>
+  </thead>
+  <tbody>
+    <tr><td><a href="https://en.wikipedia.org/wiki/Canterbury_corpus">alice29.txt</a>
+      </td><td class="num">152089
+      </td><td class="num">48492
+      </td><td class="num">2.551
+      </td><td class="num">21713
+      </td><td class="num">1.142
+    </td></tr>
+    <tr><td><a href="https://en.wikipedia.org/wiki/Calgary_corpus">book1</a>
+      </td><td class="num">768771
+      </td><td class="num">261116
+      </td><td class="num">2.717
+      </td><td class="num">137477
+      </td><td class="num">1.431
+    </td></tr>
+    <tr><td><a href="http://mattmahoney.net/dc/text.html">enwik8</a>
+      </td><td class="num">100000000
+      </td><td class="num">24865244
+      </td><td class="num">1.989
+      </td><td class="num">13825741
+      </td><td class="num">1.106
+    </td></tr>
+    <tr><td><a href="http://mattmahoney.net/dc/text.html">enwik9</a>
+      </td><td class="num">1000000000
+      </td><td class="num">213370900
+      </td><td class="num">1.707
+      </td><td class="num">135443237
+      </td><td class="num">1.084
+    </td></tr>
+    <tr><td><a href="https://mirrors.edge.kernel.org/pub/linux/kernel/v1.2/linux-1.2.13.tar.xz">linux-1.2.13.tar</a>
+      </td><td class="num">9379840
+      </td><td class="num">1689468
+      </td><td class="num">1.441
+      </td><td class="num">1196859
+      </td><td class="num">1.021
+    </td></tr>
+  </tbody>
+</table>
+<p>
+Results and speed for other programs on enwik8 and enwik9 are
+available at the <a href="http://www.mattmahoney.net/dc/text.html">Large
+Text Compression Benchmark</a>.
+</p>
+
+<h2>Download</h2>
+
+<ul>
+  <li>Linux version: <a href="https://bellard.org/ts_zip/ts_zip-2024-03-02.tar.gz">ts_zip-2024-03-02.tar.gz</a>.</li>
+  <li>Windows version: <a href="https://bellard.org/ts_zip/ts_zip-2024-03-02-win64.zip">ts_zip-2024-03-02-win64.zip</a>.</li>
+</ul>
+
+<h2>Technical information</h2>
+<ul>
+  <li><code>ts_zip</code> uses
+  the <a href="https://github.com/BlinkDL/RWKV-LM">RWKV 169M v4</a>
+  language model which is a good compromise between speed and
+  compression ratio. The model is quantized to 8 bits per parameter
+    and evaluated using BF16 floating point numbers.</li>
+  <li>The language model predicts the probabilities of the next token. An
+    arithmetic coder then encodes the next token according to the
+    probabilities.</li>
+  <li>The model is evaluated in a deterministic and reproducible
+    way. Hence the result does not depend on the exact GPU or CPU
+    model nor on the number of configured threads. This key point
+    ensures that a compressed file can be decompressed using a
+    different hardware or software configuration.</li>
+</ul>
+<p></p>
+<hr>
+Fabrice Bellard - <a href="https://bellard.org/">https://bellard.org/</a>
+
+
+</body></html>

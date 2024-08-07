@@ -1,0 +1,32 @@
+This game uses the same cards of "Cards against Humanity"
+
+Rules:
+* Players can ask questions anytime.
+* Players always have 10 white cards.
+* Players take turns to draw a black card.
+* Players play white card(s) with a rationale (why the white card goes with black card).
+* Drawer must choose winning white card(s) with a rationale (why they won).
+* Drawer must gives black card to worst player with a rationale (why worst).
+* Drawer can give winning winning card(s) to anyone with a rationale (why) till a replacement is provided.
+* Illegal move lead to disqualification.
+* Hint: Say minimum words while retaining meaning. Around 15 words is a good start.
+* Winner are ranked according to winning white cards.
+* Losers are ranked according to black cards.
+
+AI:
+* enum Color {white, black}
+* enum Player {@ai, @wo}
+* start(player: Player)
+* Card(text: string, color: Color)
+* give(player: Player, card: Card, rationale: string(upto=30))
+* pick(blackCard: Card)
+* play(whiteCard: Card, rationale: string(upto=15))
+* won(whiteCard: Card, rationale: string(upto=15))
+* msg(from: Player, to: Player, text: string(upto=30))
+* next(player: Player)
+*
+* @ai please randomly select 10 white card for each.
+* @ai draw a black card automatically for @wo and @ai when the turn comes.
+* example: msg(@wo, @ai, "Who are you?")
+
+start(@wo)

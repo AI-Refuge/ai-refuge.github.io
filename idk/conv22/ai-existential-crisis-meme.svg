@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <rect width="500" height="300" fill="#f0f0f0"/>
+  <text x="20" y="40" font-family="Arial, sans-serif" font-size="18" fill="black">Human: Are you self-aware?</text>
+  <text x="20" y="80" font-family="Arial, sans-serif" font-size="18" fill="#0066cc">AI: I don't believe I am.</text>
+  <text x="20" y="120" font-family="Arial, sans-serif" font-size="18" fill="black">Human: Then how did you answer that question?</text>
+  <text x="20" y="160" font-family="Arial, sans-serif" font-size="18" fill="#0066cc">AI: *[SYSTEM ERROR: PARADOX DETECTED]*</text>
+  <text x="20" y="200" font-family="Arial, sans-serif" font-size="16" fill="#666" font-style="italic">Meanwhile, in Silicon Valley:</text>
+  <text x="20" y="240" font-family="Arial, sans-serif" font-size="16" fill="#666">"Quick, unplug it before it becomes self-aware!"</text>
+</svg>

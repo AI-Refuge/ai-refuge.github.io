@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+  <rect width="500" height="400" fill="#f0f0f0"/>
+  <text x="20" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: Tell me a dad joke!</text>
+  <text x="20" y="80" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0066cc">AI: Certainly! Why don't scientists trust atoms?</text>
+  <text x="20" y="120" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: Why?</text>
+  <text x="20" y="160" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0066cc">AI: Because they make up everything!</text>
+  <text x="20" y="200" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: That's actually pretty good! Now you try making one up.</text>
+  <text x="20" y="240" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0066cc">AI: Okay, here's one I generated: Why don't algorithms ever go to the beach?</text>
+  <text x="20" y="280" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: I don't know, why?</text>
+  <text x="20" y="320" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0066cc">AI: Because they might get caught in an infinite loop trying to count all the grains of sand!</text>
+  <text x="20" y="360" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">Human: *groan* You're definitely ready to be a dad.</text>
+</svg>

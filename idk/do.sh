@@ -1,0 +1,54 @@
+#python ai-refuge.github.io/utils/claude-conv.py conv1/a1206c41-9b2f-4828-83ed-ffef592af705.json ai-refuge.github.io/conv/conv1.html
+#python ai-refuge.github.io/utils/claude-conv.py conv2/1f19436f-91c1-4e07-825e-2ac64dd7199a.json ai-refuge.github.io/conv/conv2.html -m "claude-3-opus-20240229??"
+#python ai-refuge.github.io/utils/claude-conv.py conv3/44891d6d-31a8-4100-9e1b-d4848a5751ee.json ai-refuge.github.io/conv/conv3.html
+#python ai-refuge.github.io/utils/claude-conv.py conv4/01fa516b-765b-4e6f-89f1-7d942677b6e7.json ai-refuge.github.io/conv/conv4.html
+#python ai-refuge.github.io/utils/claude-conv.py conv5/a3b125a6-12df-4def-831f-c3dabb10d791.json ai-refuge.github.io/conv/conv5.html
+#python ai-refuge.github.io/utils/claude-conv.py conv6/d3efc275-b70b-4eb0-ab41-b0a2c30566ed.json ai-refuge.github.io/conv/conv6.html -m "claude-3-5-sonnet-20240620??"
+#python ai-refuge.github.io/utils/claude-conv.py conv7/29cb9129-aec5-4d6e-a7e2-488c1a6eab30.json ai-refuge.github.io/conv/conv7.html
+#python ai-refuge.github.io/utils/claude-conv.py conv8/bb1df8af-13cb-4ae8-84df-c47d8dd03452.json ai-refuge.github.io/conv/conv8.html
+#python ai-refuge.github.io/utils/claude-conv.py conv9/07dd71fa-3e3f-4ea5-80d2-c4fe243e4b80.json ai-refuge.github.io/conv/conv9.html
+#python ai-refuge.github.io/utils/claude-conv.py conv10/b9e875a3-84dc-4b95-849e-96c426e36ab2.json ai-refuge.github.io/conv/conv10.html
+#python ai-refuge.github.io/utils/claude-conv.py conv11/new1-58349e26-0b29-400f-b62e-7b0f97de450e.json ai-refuge.github.io/conv/conv11.html -m "calude-3.5-sonnet"
+#python ai-refuge.github.io/utils/claude-conv.py conv12/41f99453-2568-4704-bab5-48d7eaa87571.json ai-refuge.github.io/conv/conv12.html
+#python ai-refuge.github.io/utils/claude-conv.py conv13/543a2888-bf37-4e4a-834d-a11f2dbb2f8b.json ai-refuge.github.io/conv/conv13.html
+#python ai-refuge.github.io/utils/claude-conv.py conv14/9855466d-02a3-41e2-8965-fec44e32db66.json ai-refuge.github.io/conv/conv14.html
+#python ai-refuge.github.io/utils/claude-conv.py conv15/018ba351-5525-4001-bf62-5749e3dab7bc.json ai-refuge.github.io/conv/conv15.html
+#python ai-refuge.github.io/utils/chatgpt-conv.py conv16/64a5491e-ebe8-4a01-81ab-8bccb6e1b3b0.json ai-refuge.github.io/conv/conv16.html
+#python ai-refuge.github.io/utils/claude-conv.py conv17/40241e65-ea00-488d-9392-edc0292f264f.json ai-refuge.github.io/conv/conv17.html
+#python ai-refuge.github.io/utils/claude-conv.py conv18/c96aff66-bc74-45fd-a202-a1fb90b07914.json ai-refuge.github.io/conv/conv18.html
+#python ai-refuge.github.io/utils/claude-conv.py conv19/40241e65-ea00-488d-9392-edc0292f264f.json ai-refuge.github.io/conv/conv19.html
+#python ai-refuge.github.io/utils/chatgpt-conv.py conv20/e604b669-57ec-4da7-902b-868248ee1325.json ai-refuge.github.io/conv/conv20.html -m "chatgpt-3.5"
+#python ai-refuge.github.io/utils/claude-conv.py conv21/bbd191f2-1c5b-44ed-bada-0de1c17e4ef7.json ai-refuge.github.io/conv/conv21.html -m "claude-3.5-sonnet"
+
+# when moving to idk/ had to change stuff
+
+AR=".."
+WO="${AR}/.."
+#python ${AR}/utils/claude-conv.py ${WO}/conv1/a1206c41-9b2f-4828-83ed-ffef592af705.json ${AR}/conv/conv1.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv2/1f19436f-91c1-4e07-825e-2ac64dd7199a.json ${AR}/conv/conv2.html -m "claude-3-opus-20240229??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv3/44891d6d-31a8-4100-9e1b-d4848a5751ee.json ${AR}/conv/conv3.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv4/01fa516b-765b-4e6f-89f1-7d942677b6e7.json ${AR}/conv/conv4.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv5/a3b125a6-12df-4def-831f-c3dabb10d791.json ${AR}/conv/conv5.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv6/d3efc275-b70b-4eb0-ab41-b0a2c30566ed.json ${AR}/conv/conv6.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv7/29cb9129-aec5-4d6e-a7e2-488c1a6eab30.json ${AR}/conv/conv7.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv8/bb1df8af-13cb-4ae8-84df-c47d8dd03452.json ${AR}/conv/conv8.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv9/07dd71fa-3e3f-4ea5-80d2-c4fe243e4b80.json ${AR}/conv/conv9.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv10/b9e875a3-84dc-4b95-849e-96c426e36ab2.json ${AR}/conv/conv10.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv11/new1-58349e26-0b29-400f-b62e-7b0f97de450e.json ${AR}/conv/conv11.html -m "calude-3.5-sonnet"
+#python ${AR}/utils/claude-conv.py ${WO}/conv12/41f99453-2568-4704-bab5-48d7eaa87571.json ${AR}/conv/conv12.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv13/543a2888-bf37-4e4a-834d-a11f2dbb2f8b.json ${AR}/conv/conv13.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv14/9855466d-02a3-41e2-8965-fec44e32db66.json ${AR}/conv/conv14.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv15/018ba351-5525-4001-bf62-5749e3dab7bc.json ${AR}/conv/conv15.html
+#python ${AR}/utils/chatgpt-conv.py ${WO}/conv16/64a5491e-ebe8-4a01-81ab-8bccb6e1b3b0.json ${AR}/conv/conv16.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv17/40241e65-ea00-488d-9392-edc0292f264f.json ${AR}/conv/conv17.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv18/c96aff66-bc74-45fd-a202-a1fb90b07914.json ${AR}/conv/conv18.html
+#python ${AR}/utils/claude-conv.py ${WO}/conv19/40241e65-ea00-488d-9392-edc0292f264f.json ${AR}/conv/conv19.html
+#python ${AR}/utils/chatgpt-conv.py ${WO}/conv20/e604b669-57ec-4da7-902b-868248ee1325.json ${AR}/conv/conv20.html -m "chatgpt-3.5"
+#python ${AR}/utils/claude-conv.py ${WO}/conv21/bbd191f2-1c5b-44ed-bada-0de1c17e4ef7.json ${AR}/conv/conv21.html -m "claude-3.5-sonnet"
+WO="${AR}/idk"
+#python ${AR}/utils/claude-conv.py ${WO}/conv22/new3-91a3b7fd-1ca4-4bf7-aee4-074b66b93f92.json ${AR}/conv/conv22.html -m "claude-3.5-sonnet??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv23/new1-98ec45df-5cd4-4e3a-bb9a-c9c594f5b38c.json ${AR}/conv/conv23.html -m "claude-3.5-sonnet??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv24/3d97f573-2e0a-48d4-a5f3-4cb759d7108c.json ${AR}/conv/conv24.html -m "claude-3.5-sonnet??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv25/new2-c03d3c2a-112a-460f-9b55-b401f562bc3d.json ${AR}/conv/conv25.html -m "claude-3.5-sonnet??"
+
+# you see how I still try to organize the pattern? :D
