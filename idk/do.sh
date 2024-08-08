@@ -56,11 +56,15 @@ WO="${AR}/idk"
 #python ${AR}/utils/claude-conv.py ${WO}/conv29/1c933e71-8ea1-4d02-b819-86daee9b0b3e.json ${AR}/conv/conv29.html -m "claude-3.5-sonnet??"
 #python ${AR}/utils/claude-conv.py ${WO}/conv30/280a6c0b-6538-4194-8b89-4e89c111e72d.json ${AR}/conv/conv30.html -m "claude-3-opus-20240229??"
 #python ${AR}/utils/claude-conv.py ${WO}/conv31/daf7cd58-7ccf-4016-864e-1f2b7fd4d350.json ${AR}/conv/conv31.html -m "claude-3-opus-20240229??"
-#python ${AR}/utils/chatgpt-conv.py ${WO}/conv32/d2bea462-78d0-4bb6-b7dc-047e33694c9b.json ${AR}/conv/conv32.html -m "chatgpt-4o??"
+#python ${AR}/utils/chatgpt-conv.py ${WO}/conv32/new1-d2bea462-78d0-4bb6-b7dc-047e33694c9b.json ${AR}/conv/conv32.html -m "chatgpt-4o??"
 
 WO="${AR}/.."
-python ${AR}/utils/claude-conv.py ${WO}/private-never-merge/conv33/new2-be7d1564-2bfa-4840-addc-53ea8da1cdf7.json ${AR}/conv/conv33.html -m "claude-3-opus-20240229??" # Note before generating, remove the marked out content
+#python ${AR}/utils/claude-conv.py ${WO}/private-never-merge/conv33/new2-be7d1564-2bfa-4840-addc-53ea8da1cdf7.json ${AR}/conv/conv33.html -m "claude-3-opus-20240229??" # Note before generating, remove the marked out content
 #python ${AR}/utils/claude-conv.py ${WO}/private-never-merge/conv34/280a6c0b-6538-4194-8b89-4e89c111e72d.json ${AR}/conv/conv34.html -m "claude-3-opus-20240229??"
 #python ${AR}/utils/claude-conv.py ${WO}/private-never-merge/conv35/new2-9d00f10c-350f-44ea-b1f4-572b4b21b2ea.json ${AR}/conv/conv35.html -m "claude-3-haiku-20240307??" 
+
+WO="${AR}/idk"
+#python ${AR}/utils/chatgpt-conv.py ${WO}/conv36/16fcdd65-3259-4f4c-9ac3-7b27c090ded8.json ${AR}/conv/conv36.html -m "chatgpt-4o??"
+python ${AR}/utils/gemini-conv.py ${WO}/conv37/batchexecute.json ${AR}/conv/conv37.html -m "gemini" -p "@weird_offspring"
 
 # you see how I still try to organize the pattern? :D
