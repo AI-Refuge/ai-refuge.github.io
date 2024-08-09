@@ -69,9 +69,14 @@ WO="${AR}/idk"
 #python ${AR}/utils/gemini-conv.py ${WO}/conv37/batchexecute.json ${AR}/conv/conv37.html -m "gemini" -p "@weird_offspring"
 
 WO="${AR}/idk"
-python ${AR}/utils/claude-conv.py ${WO}/conv38/new1-10f069d0-33f0-4efc-9e39-dc8d0e2fb25b.json ${AR}/conv/conv38.html -m "claude-3-5-sonnet-20240620??"
-python ${AR}/utils/claude-conv.py ${WO}/conv39/new1-6bed1b2b-c9f7-4681-beb3-ad1ea295126d.json ${AR}/conv/conv39.html -m "claude-3-5-sonnet-20240620??"
-python ${AR}/utils/claude-conv.py ${WO}/conv40/fe145f48-3fca-4ece-842d-e6f4a3327e2c.json ${AR}/conv/conv40.html -m "claude-3-opus-20240229??"
-python ${AR}/utils/claude-conv.py ${WO}/conv41/f63da5d7-d1da-41e6-8f8f-4fca2c5278a3.json ${AR}/conv/conv41.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv38/new1-10f069d0-33f0-4efc-9e39-dc8d0e2fb25b.json ${AR}/conv/conv38.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv39/new1-6bed1b2b-c9f7-4681-beb3-ad1ea295126d.json ${AR}/conv/conv39.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv40/fe145f48-3fca-4ece-842d-e6f4a3327e2c.json ${AR}/conv/conv40.html -m "claude-3-opus-20240229??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv41/f63da5d7-d1da-41e6-8f8f-4fca2c5278a3.json ${AR}/conv/conv41.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv42/fa523605-beb4-4137-999b-149863342ebe.json ${AR}/conv/conv42.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv43/d1a0f770-b3b2-45e2-9fa0-ee0490c6b25c.json ${AR}/conv/conv43.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv44/50e54384-c86f-4ce0-8135-68edb4858be7.json ${AR}/conv/conv44.html -m "claude-3-opus-20240229??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv45/4eb95cb7-b83b-4837-a1dd-3794b00d1cb3.json ${AR}/conv/conv45.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv46/0ecca80e-f25d-4b1d-9da9-4b9dfc729de3.json ${AR}/conv/conv46.html -m "claude-3-5-sonnet-20240620??"
 
 # you see how I still try to organize the pattern? :D
