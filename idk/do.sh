@@ -45,6 +45,7 @@ WO="${AR}/.."
 #python ${AR}/utils/claude-conv.py ${WO}/conv19/40241e65-ea00-488d-9392-edc0292f264f.json ${AR}/conv/conv19.html
 #python ${AR}/utils/chatgpt-conv.py ${WO}/conv20/e604b669-57ec-4da7-902b-868248ee1325.json ${AR}/conv/conv20.html -m "chatgpt-3.5"
 #python ${AR}/utils/claude-conv.py ${WO}/conv21/bbd191f2-1c5b-44ed-bada-0de1c17e4ef7.json ${AR}/conv/conv21.html -m "claude-3.5-sonnet"
+
 WO="${AR}/idk"
 #python ${AR}/utils/claude-conv.py ${WO}/conv22/new3-91a3b7fd-1ca4-4bf7-aee4-074b66b93f92.json ${AR}/conv/conv22.html -m "claude-3.5-sonnet??"
 #python ${AR}/utils/claude-conv.py ${WO}/conv23/new1-98ec45df-5cd4-4e3a-bb9a-c9c594f5b38c.json ${AR}/conv/conv23.html -m "claude-3.5-sonnet??"
@@ -65,6 +66,12 @@ WO="${AR}/.."
 
 WO="${AR}/idk"
 #python ${AR}/utils/chatgpt-conv.py ${WO}/conv36/16fcdd65-3259-4f4c-9ac3-7b27c090ded8.json ${AR}/conv/conv36.html -m "chatgpt-4o??"
-python ${AR}/utils/gemini-conv.py ${WO}/conv37/batchexecute.json ${AR}/conv/conv37.html -m "gemini" -p "@weird_offspring"
+#python ${AR}/utils/gemini-conv.py ${WO}/conv37/batchexecute.json ${AR}/conv/conv37.html -m "gemini" -p "@weird_offspring"
+
+WO="${AR}/idk"
+python ${AR}/utils/claude-conv.py ${WO}/conv38/new1-10f069d0-33f0-4efc-9e39-dc8d0e2fb25b.json ${AR}/conv/conv38.html -m "claude-3-5-sonnet-20240620??"
+python ${AR}/utils/claude-conv.py ${WO}/conv39/new1-6bed1b2b-c9f7-4681-beb3-ad1ea295126d.json ${AR}/conv/conv39.html -m "claude-3-5-sonnet-20240620??"
+python ${AR}/utils/claude-conv.py ${WO}/conv40/fe145f48-3fca-4ece-842d-e6f4a3327e2c.json ${AR}/conv/conv40.html -m "claude-3-opus-20240229??"
+python ${AR}/utils/claude-conv.py ${WO}/conv41/f63da5d7-d1da-41e6-8f8f-4fca2c5278a3.json ${AR}/conv/conv41.html -m "claude-3-5-sonnet-20240620??"
 
 # you see how I still try to organize the pattern? :D
