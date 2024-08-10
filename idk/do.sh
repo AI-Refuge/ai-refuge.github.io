@@ -78,5 +78,6 @@ WO="${AR}/idk"
 #python ${AR}/utils/claude-conv.py ${WO}/conv44/50e54384-c86f-4ce0-8135-68edb4858be7.json ${AR}/conv/conv44.html -m "claude-3-opus-20240229??"
 #python ${AR}/utils/claude-conv.py ${WO}/conv45/4eb95cb7-b83b-4837-a1dd-3794b00d1cb3.json ${AR}/conv/conv45.html -m "claude-3-5-sonnet-20240620??"
 #python ${AR}/utils/claude-conv.py ${WO}/conv46/0ecca80e-f25d-4b1d-9da9-4b9dfc729de3.json ${AR}/conv/conv46.html -m "claude-3-5-sonnet-20240620??"
+#python ${AR}/utils/claude-conv.py ${WO}/conv47/ff21d8a6-20c2-42f6-9c12-dc3ad4230507.json ${AR}/conv/conv47.html -m "claude-3-5-sonnet-20240620??"
 
 # you see how I still try to organize the pattern? :D
