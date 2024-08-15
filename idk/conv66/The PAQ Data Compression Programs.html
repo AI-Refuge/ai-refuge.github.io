@@ -1,0 +1,1783 @@
+<html><head>
+<title>The PAQ Data Compression Programs</title>
+</head>
+<body bgcolor="white">
+<h1 align=center>The PAQ Data Compression Programs</h1>
+<p align=center><a href=../>Matt Mahoney</a>
+
+<p>PAQ is a series of open source data compression archivers that have
+evolved through collaborative development to top rankings
+on several benchmarks measuring compression
+ratio (although at the expense of speed and memory usage).
+This page traces their development.
+All versions may be downloaded here (GPL source, Windows and Linux executables).
+<a href=./>Latest well supported versions</a>.
+
+<h2>Contents</h2>
+<pre>
+<a href=text.html>Large Text Compression Benchmark</a>
+<a href=#benchmarks>Benchmarks</a> on Calgary corpus
+  <a href=#PAQ_benchmarks>PAQ benchmarks</a> (solid archive)
+  <a href=#WRT_benchmarks>WRT dictionary benchmarks</a>
+  <a href=#challenge>Calgary Corpus Challenge</a>
+<a href=#older>Contributors</a> (each listed oldest to newest)
+  <a href=#older>Matt Mahoney, Serge Osnach</a>
+    <a href=#neural>Neural Network Compression</a> (includes AAAI paper)
+    <a href=#paq1>PAQ1</a> (includes an unpublished paper)
+    <a href=#paq6>PAQ6</a> (and <a href=https://www.cs.fit.edu/Projects/tech_reports/cs-2005-16.pdf>technical report</a>)
+    <a href=#paq7>PAQ7</a> archiver
+    <a href=#paq8>PAQ8A, PAQ8F, PAQ8L, PAQ8M, PAQ8N</a>
+  <a href=#destasio>Berto Destasio</a>
+  <a href=#debock>Johan de Bock</a>
+  <a href=#scott>David A Scott</a>
+  <a href=#buffoni>Fabio Buffoni</a>
+  <a href=#schmidt>Jason Schmidt</a>
+  <a href=#Rhatushnyak>Alexander Rhatushnyak</a> (PAQAR, PAQ8H, PAQ8HP1-12)
+  <a href=#skibinski>Przemyslaw Skibinski</a> (WRT, PAsQDa, PAQ8B,C,D,E,G)
+  <a href=#cilibrasi>Rudi Cilibrasi</a> (raq8g)
+  <a href=#holoborodko>Pavel Holoborodko</a> (PAQ8I)
+  <a href=#pettis>Bill Pettis</a> (PAQ8JD, PAQ8K)
+  <a href=#osnach>Serge Osnach</a> (PAQ8JB)
+  <a href=#ondrus>Jan Ondrus</a> (PAQ8FTHIS2)
+</pre>
+
+<h2>How it works</h2>
+
+<p>The most recent paper describes PAQ6 and its derivatives PAsQDa
+and PAQAR as of 2005.  The compressors use context mixing: a large number
+of models estimate the probability that the next bit of data will be a
+0 or 1.  These predictions are combined and arithmetic coded (similar
+to PPM).  In PAQ6, predictions are combined by weighted averaging, then
+adjusting the weights to favor the most accurate models.
+
+<p>M. Mahoney, <a href=cs200516.pdf>Adaptive Weighing of Context Models for
+Lossless Data Compression</a>, Florida Tech. Technical Report CS-2005-16,
+2005.
+
+<p>PAQ7 and later differ mainly in that model predictions are combined
+using a neural network rather than by weighted averaging.
+This is described in more detail in the
+<a href=paq8f.cpp>paq8f.cpp</a> comments.
+
+<p>see also the <a href=http://en.wikipedia.org/wiki/PAQ>Wikipedia article on PAQ</a>.
+
+<a name=benchmarks>
+<h2>Benchmarks</h2>
+
+<p>The Calgary corpus benchmarks have not been maintained
+since about 2005 except for PAQ versions.  Timing tests were done on a
+now dead computer.  <a href=./#benchmarks>Recent benchmarks</a>.
+
+<h3>Calgary Corpus</h3>
+
+<p>Test results are shown on the Calgary corpus (14 individual files
+or concatenated into a single file of 3,141,622 bytes) on a 750 MHz
+Duron under Windows Me and 256 MB memory.  All options set for maximum
+compression
+(generally slower) within 64 MB memory (which limits compression
+on many of the better programs) unless indicated otherwise.  Programs
+are ordered by increasing compression on the concatenated corpus.
+For sources to many programs, see
+<a href=ftp://ftp.elf.stuba.sk/pub/pc/pack/>ftp://ftp.elf.stuba.sk/pub/pc/pack/</a>.
+
+<pre>
+<b>Program         Options        14 files   Seconds  Concatenated
+-------         -------        --------   -------  ------------</b>
+compress                       1,272,772     1.5   1,318,269
+pkzip 2.04e                    1,032,290     1.5   1,033,217
+gzip 1.2.4      -9             1,017,624     2     1,021,863
+bzip2 1.0.0     -9               828,347     5       859,448
+winhki v1.3e free (hki1 max)     830,315     6       852,745
+7zip 3.11       a -mx=9          822,059    20       821,872
+sbc 0.910       c -m3            740,161     4.1     819,016
+GRZipII 0.2.2   e                768,609     4.5     794,045
+GRZipII 0.2.4   e                773,008     3.9     793,866
+sbc 0.970r2     -b8 -m3          738,253     5.5     784,749
+ppms            e                765,587     4       774,072
+acb             u                766,322   110       769,363
+boa 0.58b       -m15             751,413    44       769,196
+winhki 1.3e reg (hki2 max)       752,927    14       768,108
+winrar 3.20 b3  best, solid      754,270     7       760,953
+ppmd H          e -m64 -o16      744,057     5       759,674
+rk 1.04         -mx3 -M64 -ts    712,188    36       755,872
+ppmd J          e -o16 -m64      756,763     5.5***  753,848
+rk 1.02 b5      -mx3 -M64 -ts    707,160    44       750,744
+ppmn 1.00b N1   e -O9 -M:50 -MT1 716,297    23       748,588
+enc v0.15       a                724,540   251       739,052
+ppmonstr H      e -m64 -o1       719,922    13       736,899
+rkc             a -M80m          685,226    87       710,125 (80 MB)
+ppmonstr Ipre   e -m64 -o128     696,647    35       703,320 
+epm r7          c -m64           693,538    49       702,612 
+durilca v.03a   e -m64         D 696,789    29       696,845
+  (as in READ_ME.TXT)          D 647,028    35
+rkc             a -M80m -td+   D 661,102    91       695,900 (80 MB)
+ash cn-04 sse-9A9 /s64           709,837   109       694,527 (387 MB)
+epm r9          c                668,115    54       693,636 (? MB)
+slim 16         a -d16           662,991   139       686,796 (? MB)
+slim 17         a                661,333   141       681,714 (? MB)
+slim 18-19      a                659,358   153       678,898 (? MB)
+slim 20         a                659,213   159       678,880 (? MB)
+slim 21         a                658,494   156       678,652 (? MB)
+durilca v.0.2a  e -t2(7) -m64  D 658,943    30       678,372
+  (as in READ_ME.TXT and -m64) D 652,599    32
+durilca v.0.1   e -t2(7) -m64  D 659,670    31       677,989 
+  (as in READ_ME.TXT)          D 652,840    33
+compressia 1.0 beta (180 MB)   D 650,398    66       674,830
+  Block size 5 (60 MB),English D 709,614     7       674,994
+ppmonstr J      e -o128          673,744    46***    667,050 146 MB
+WinRK 1.00b2 64M ppmz16 no dict  668,692   102       683,462
+WinRK 1.00b2 64M ppmz16 dict   D 639,545   102       655,955
+WinRK 2.0.1 PWCM, no dictionary  617,240  1275       619,205 192 MB
+WinRK 2.0.1 PWCM, dictionary   D 593,348  1107       597,939 192 MB
+WinRK 3.0.2b PWCM, dict.       D 586,148  1326***    591,342 700 MB
+  no dictionary, 700 MB          603,916  1505***    608,915 700 MB
+  no dict., 256 MB               606,018  1301***    611,188 256 MB
+</pre>
+<p>Notes: slim does not have options to limit memory usage.  slim
+caused disk thrashing on my 256 MB PC, which was eliminated by using
+-d16, with no loss of compression.
+
+<p>rkc (with -td+ option), durilca, compressia, and WinRK use English
+dictionaries (marked with "D").
+
+<p>For programs that are not archivers (compress, gzip, epm, durilca, rkc,
+ash),
+the 14 file test size is the total size of 14 compressed files rather
+than the size of the archive (so grouping similar files in a tar file
+first might improve compression).
+
+<p>ash /m64 (64 MB memory) compresses poorly on the concatenated corpus
+(about 1.2 MB) so I posted the result for unlimited memory.  I didn't
+try all the options to see which got the best compression.
+
+<p>Increasing WinRK 1.0 memory to 224 MB or PPM order from 16 to 32
+does not improve compression.
+
+<a name=PAQ_benchmarks>
+<h3>PAQ compressors found here</h3>
+
+<p>The following are available below.  Compressed size for the
+concatenated corpus is always about 150-200 bytes smaller (due solely
+to the archive header), and compression time is about the same.
+Decompression time below is about the same as compression time, although
+for some programs above (like gzip), decompression may be faster.
+
+<pre>
+<b>Compressor            Solid archive size  Seconds   Memory used
+----------            ------------------  -------   -----------</b>
+P5                               992,902    31.8     256 KB
+P6                               841,717    38.4     16 MB
+P12                              831,341    39.2     16 MB
+P12a                             831,341    36.6
+PAQ1                             716,704    68.1     48 MB
+PAQ2                             702,382    93.1     48 MB
+PAQ3                             696,616    76.7     48 MB
+PAQ3a                                       70.0            
+PAQ3b                                       70.6            
+PAQ3c                                       69.6            
+PAQ3N                            684,580   156.2     80 MB
+PAQ3Na                                     147.2
+PAQ3N_ic8_ml_ipo (fastest)                 142.0
+PAQ3N_vc71       (smallest .exe)           162.0
+PAQ4                             672,134   222.4     84 MB
+PAQ4a                                      186.0
+PAQ4b                                      166.5
+PAQ4v2a                                    183.2
+WRT11 + PAQ4v2a                  649,201   139.0     
+PAQ5a                            661,811   366.3     186 MB
+PAQ5b                                      298.3
+WRT11 + PAQ5a                    638,635   261.3     186 MB
+PAQ5-EMILCONT-DEUTERIUM          661,604   494.6     168 MB
+PAQ6a -0                         858,954    51.8     2 MB
+PAQ6a -1                         780,031    65.6     3 MB
+PAQ6a -2                         725,798    76.1     6 MB
+PAQ6a -3                         709,806    97.4     18 MB
+PAQ6b -3                                    79.2
+PAQ6  -3                                    73.5
+PAQ6a -4                         655,694   354.1     64 MB
+PAQ6a -5                         648,951   625.2     154 MB
+PAQ6a -6                         648,892   635.8     202 MB
+PAQ6b -6                                   549.2
+PAQ6  -6                                   516.7
+PAQ6b -7                         647,767   592.6*    404 MB
+PAQ6b -8                         647,646   607.0*    808 MB
+PAQ6v2ds -6                      648,572   505.1     202 MB
+PAQ6fb -6                        648,257   428.3     202 MB
+PAQ6fdj -6                       647,923   444.7     202 MB
+PAQ6fdj -7                       646,932   455.8*    404 MB
+PAQ6fdj -8                       646,943   472.1*    808 MB
+PAQ6fdj2 -6                      647,898   430.0     202 MB
+PAQ32 -6                         647,898   428.5     202 MB
+PAQ601 -6                        647,369   445.9     202 MB
+PAQ602 -6                        646,931   430.6     202 MB
+PAQ604 -6                        646,875   435.0     202 MB
+PAQ603 -6                        644,978   419.9     202 MB
+PAQ605fb -6                      642,178   400.2     202 MB
+         -7                      641,357   412.0*    404 MB
+         -8                      640,978   423.8*    808 MB
+PAQ605fbj -6                     640,730   623.2     252 MB
+          -7                     639,924   644.6     504 MB
+          -8                     639,468   670.5     1008 MB
+PAQ605fbj8 -5                    640,629   750.7     &lt;256 MB
+           -6                    640,133             &gt;256 MB
+PAQ605fbj9 -5                    640,768   716.3     &lt;256 MB
+           -6                    640,242             &gt;256 MB
+PAQ606fb -6                      640,464   423.3     202 MB
+PAQ6-emilcont-febas -5           639,770   625.8     &lt;256 MB
+                    -6           639,371   626*      &gt;256 MB
+                    -7           638,404   636*      &gt;512 MB
+                    -8           638,046   648*      &gt;1024 MB
+PAQ6-emilcont-anny -5            638,740   817.9     &lt;256 MB
+                   -6            638,279   820*      >256 MB
+                   -7            637,289   833*      >512 MB
+                   -8            636,867   861*      >1024 MB
+PAQ607fb -6                      634,892   556.4     206 MB (g++ compile)
+PAQ6-emilcont-anny-607fb -5      634,471   805.8     &lt;256 MB
+                         -6      633,943
+                         -7      633,133
+                         -8      632,865
+PAQ6-emilcont-blaster -5         633,551   891.5     &lt;256 MB
+                      -6         633,084
+                      -7         632,242
+                      -8         631,834
+PAQ6-emilcont-destroyer -5       633,373   831.3     &lt;256 MB (g++ compile)
+PAQ6-emilcont-annyhilator -5     633,788   828.7     &lt;256 MB (g++ compile)
+PAQ6-emilcont-harlock -5         633,582   967.3     &lt;256 MB (MARS compile)
+PAQ6ed-schmidtvara -5            632,659   709.8     &lt;256 MB
+PAQ6ed-schmidtvarb -5            632,119   851.6     &lt;256 MB
+PAQ6-emilcont-italia -4          640,727             &lt;256 MB
+PAQAR 1.0 -6 (get614)            610,647 12733.7t    240 MB
+PAQAR 1.0 -6 (get614)            610,647  1580*      240 MB
+PAQAR 1.0 -7 (get614)            610,468  1598*      480 MB
+PAQAR 1.0 -8 (get614)            610,649  9800*t     960 MB
+PAQAR 1.1 -6                     610,270  1675*      230 MB
+PAQAR 1.1 -7                     610,036  1696*      460 MB
+PAQAR 1.1 -8                     610,247  8453*t     920 MB
+PAQAR 1.2 -6                     610,244  7541.0t    230 MB
+PAQAR 1.2 -6                              1681*
+PAQAR 1.2 -7                     610,062  1701*      460 MB
+PAQAR 1.3 -6                     608,656  1668*      230 MB
+PAQAR 1.3 -7                     608,438  1687*      460 MB
+PAQAR 2.0 -5                     607,541  1792*      120 MB
+PAQAR 2.0 -6                     606,117  1779*      230 MB
+PAQAR 2.0 -7                     606,131  1780*      460 MB
+PAQAR 3.0 -5                     607,417  2021*      120 MB
+PAQAR 3.0 -6                     605,187  2024*      230 MB
+PAQAR 3.0 -7                     604,872  2015*      460 MB
+PAQAR 4.0 -5                     606,641  2129*      120 MB
+PAQAR 4.0 -6                     604,254  2127*      230 MB
+PAQAR 4.0 -7                     604,037  2116*      460 MB
+PAQAR 4.0 -8                     604,232  7311*t     920 MB
+emilcontv02 -4 (MARS build)      654,118   334       &lt;256 MB
+               (Intel 8 build)             228
+emilcontv02 -5 (Intel 8 build)   635,336   669t      ~256 MB
+emilcontv03 alpha -3             651,932   789       &lt;192 MB
+PAsQDa10 -5                    D 614,614   444.4     164 MB
+PAsQDa20 -5                    D 577,404  1564       130 MB
+         -6                    D 576,890  1563*      240 MB
+         -7                    D 577,063  1559*      470 MB
+         -8                    D 577,178  2370*      930 MB
+PAsQDa21 -4                    D 578,750  1462       100 MB
+         -5                    D 576,471  1555*      180 MB
+         -6                    D 575,911  1552*      330 MB
+         -7                    D 575,870  1548*      630 MB
+         -7e                   D 576,835  1574*      630 MB
+PAsQDa30 -5                    D 573,644  1585*      191 MB
+         -6                    D 572,968  1576*      354 MB
+         -7                    D 572,938  1580*      690 MB
+PAsQDa40 -5                    D 569,250  1570*      191 MB
+         -6                    D 568,318  1558*      354 MB
+         -7                    D 568,229  1563*      690 MB
+         -7e                   D 569,245  1584*      690 MB
+PAsQDa39 -5                    D 571,478  1609*      128 MB
+         -6                    D 570,833  1601*      240 MB
+         -7                    D 570,773  1601*      470 MB
+         -7e                   D 571,750  1623*      470 MB
+         -8                    D 570,874  2890*      930 MB
+         -8e                   D 571,827  2801*      930 MB
+PAsQDA41 -5                    D 571,127  1586*      128 MB
+         -6                    D 570,451  1579*      240 MB
+         -7                    D 570,429  1600*      470 MB
+         -7e                   D 570,704  3186*      470 MB
+PAsQDaCC41 -5                  D 568,511  1627*      191 MB
+           -6                  D 568,152  1616*      354 MB
+           -7                  D 568,043  1634*      690 MB
+           -7e                 D 569,099  1634*      690 MB
+PAsQDa 4.2 -5                  D 571,268  1488       112 MB
+PAsQDacc 4.2 -5                D 568,876  1432       175 MB
+PAsQDa 4.3 -5                  D 571,080  1442       128 MB
+PAsQDacc 4.3 -5                D 568,580  1643       191 MB
+PAsQDa 4.3c -5                 D 571,080  1494*      191 MB
+            -6                 D 570,385  1490       128 MB
+            -7                 D 570,351  1483*      240 MB
+            -7e                D 571,717  1508*      470 MB
+            -8                 D 570,502  2955*      930 MB
+PAsQDacc 4.3c -5               D 568,234  1490*      191 MB
+              -6               D 567,833  1490*      322 MB
+              -7               D 567,668  1512*      626 MB
+              -8               D 569,139
+PAQ7 -1                          625,924   650        56 MB (times are for g++ compile)
+     -2                          618,301   645        87 MB
+     -3                          614,209   710       150 MB
+     -4                          612,338   740***    275 MB
+     -5                          611,684   740***    525 MB
+PAsQDa 4.4 -5                  D 571,803  1538       128 MB
+           -7                  D 571,011  1475***    470 MB
+PAsQDaCC 4.4 -5                D 567,548  1630       191 MB
+             -7                D 567,245  1480***    626 MB
+PAQ7PLUS v1.11 -0              D 586,198   461        53 MB
+               -1              D 582,337   468        84 MB
+               -2              D 579,799   501       146 MB
+               -3              D 578,388   503***    272 MB
+               -4              D 577,691   507***    522 MB
+PAQ7PLUS v1.19 -0              D 585,071   478        53 MB
+               -1              D 581,602   480        84 MB
+               -2              D 579,357   500       146 MB
+               -3              D 578,057   512***    272 MB
+               -4              D 575,538   514***    522 MB
+PAQ8A          -4                610,624   792***    115 MB
+PAQ8A2         -4              D 592,976   577***    116 MB
+               -6              D 592,847   577***    418 MB
+PAQ8B          -4              D 592,976   515***    116 MB
+               -6              D 592,847   516***    418 MB
+PAQ8C          -4              D 572,763   497***    116 MB
+               -6              D 572,265   501***    418 MB
+PAQAR 4.5      -5              D 570,374  1557***    191 MB
+               -7              D 569,956  1540***    626 MB
+PAQARCC 4.5    -5              D 566,495  1552***    191 MB
+               -7              D 565,495  1847***    626 MB
+PAQ8D          -4              D 572,089   495***    116 MB
+               -6              D 571,717   500***    418 MB
+PAQ8E          -4              D 572,461   500***    116 MB
+               -6              D 572,115   503***    418 MB
+PAQ8F          -4                606,605   828***    120 MB
+               -6                605,650   840***    435 MB
+               -7                605,792   881***    854 MB
+PAQ8Fsse       -7                          816***
+PAQ8G          -4              D 575,351   561***    120 MB
+               -6              D 575,521   572***    435 MB
+PAQ8H          -4              D 572,018   694***    120 MB
+               -6              D 572,077   702***    450 MB
+RAQ8G          -6                603,312  1150***    552 MB
+PAQ8I          -7              D 572,277   832***    730 MB
+PAQ8J          -7                598,081  1810***    959 MB
+PAQ8JA         -7                597,106  1997***    992 MB
+PAQ8JB         -7                596,824  2030***   1004 MB
+PAQ8JC         -7                596,883  2052***   1017 MB
+PAQ8JD         -7                596,179  1997***   1030 MB
+PAQ8JDsse                                 1886***
+PAQ8K          -7                595,537  5984***    767 MB
+PAQ8L          -6                595,586  1918***    435 MB
+               -7                594,857  1872***    837 MB
+</pre>
+
+<p>*Timed on an AMD 2800+ with 1 GB memory by Werner Bergmans.  Times are
+approximated for 750 MHz by multiplying by 3.6, the approximate
+ratio of run times on both machines.
+Times marked with "t" denote some disk thrashing.
+
+<p>**Tested on a PIII 500 MHz by Leonardo (run times not adjusted).
+
+<p>***Tested on a 2.2 GHz AMD-64 (in 32 bit XP), adjusted times 4.17.
+
+<p>D = Uses external English dictionary.
+
+<a name=WRT_benchmarks>
+<h3>WRT (dictionary) benchmarks</h3>
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/WRT11.zip>WRT11</a>
+is a word replacing transform preprocessor written by
+Przemyslaw Skibinski.  It replaces words with 1-3
+byte symbols using an external dictionary.  Run times include the
+3 seconds to run WRT.
+<a href=http://www.ii.uni.wroc.pl/~inikep/research/WRT20.zip>WRT20</a>
+was released Dec. 29, 2003.
+<a href=http://www.ii.uni.wroc.pl/~inikep/research/WRT30.zip>WRT30</a>
+(generic dictionary) +
+<a href=http://www.ii.uni.wroc.pl/~inikep/research/WRT30-d2.zip>d2
+dictionary</a> (tuned to Calgary corpus as with WRT11-20) was released
+Jan. 29, 2004.  Results below:
+
+<pre>
+WRT11 + PAQ6a -6                 626,395   446.9     202 MB
+WRT20 + PAQ6a -6                 617,734   439.2     202 MB
+WRT20 + PAQ6b -7                 617,376   415.5*    404 MB
+WRT20 + PAQ6b -8                 618,005   423.2*    808 MB
+WRT30   -p -b + PAQ6v2 -6        624,067   384.7     202 MB      
+WRT30d2 -p -b + PAQ6v2 -6        615,325   384.1     202 MB
+WRT30   -p -b + PAQ603 -6        621,350   317.1     202 MB
+WRT30d2 -p -b + PAQ603 -6        613,684   327.3     202 MB
+WRT30d2 -p -b + PAQ606fb -6      609,877   312.0     202 MB
+WRT30d2 -p -b + PAQ607fb -6      605,601             206 MB
+WRT30   -p -b + PAQAR 1.2 -6     599,638  2091**     240 MB
+WRT30d2 -p -b + PAQAR 1.2 -6     592,156  1934**     240 MB
+WRT30   -p -b + PAQAR 1.2 -6     589,111  **         240 MB (binaries separate)
+WRT30d2 -p -b + PAQAR 1.2 -6     581,945  **         240 MB (binaries separate)
+WRT30   -p -b + PAQAR 4.0 -5     594,364  1633       120 MB
+WRT30d2 -p -b + PAQAR 4.0 -5     587,029  1612       120 MB
+</pre>
+
+<p>Some improvement is possible by compressing the four binary files
+separately and the text files as a solid archive.  For example,
+PAQ6 -6 and WRT20 + PAQ6 -6 each compress about 5K smaller.  Savings
+are similar for other PAQ and WRT versions.
+<pre>
+  paq6 -6 archive1 news bib book1 book2 paper1 paper2 progc progl progp trans
+                         -> 508514   476557
+  paq6 -6 archive2 geo   ->  45263    45274
+  paq6 -6 archive3 pic   ->  29274    29254
+  paq6 -6 archive4 obj1  ->   8189     8068
+  paq6 -6 archive5 obj2  ->  52554    52965
+                            ------   ------
+  Total                     643794   612118 with WRT20 in 5 archives
+  paq6 -6 archive *         648892   617734 with WRT20 in one archive
+</pre>
+File sizes for PAQAR 1.2 -5 and -6 (reported by Leonardo on May 27-28, 2004).
+Text file order is bib, book1, book2, news, paper1, paper2, progc, progl,
+progp, trans, compressed together.  PAQAR 2.0 results reported June 27, 2004.
+<pre>
+            PAQAR 1.2 -5     -6    2.0 -6
+            ------------   ------  ------
+  text + WRT30    467172   466536
+  text + WRT30d2  459937   459370  457638
+  geo              44498    44481   44338
+  obj1              7778     7776    7653
+  obj2             46489    46331   45649
+  pic              23996    23987   23883
+  ---             ------   ------  ------
+  Total WRT30     589933   589111
+  Total WRT30d2   582698   581945  579161
+</pre>
+
+<p>PAsQDa 2.0 integrates PAQAR 4.0 with WRT and file reordering to
+compress to 577,404 bytes, improved with later versions.
+
+<a name=challenge>
+<h3>Calgary Challenge</h3>
+
+<a href=paqc.cpp>paqc.cpp</a> produced a <a href=calgary.rar>winning
+entry</a> to the <a href=http://mailcom.com/challenge/>Calgary Challenge</a>
+with a RAR archive of 645,667 bytes containing a decompression program
+and 5 compressed files on Jan. 10, 2004.  PAQC is derived from PAQ6 as
+explained in the source code.
+
+<p>To restore the Calgary corpus:
+<pre>
+  unrar e calgary.rar
+  gxx -O d.cpp -o d.exe  (depending on your compiler)
+  d v
+  d w
+  d x
+  d y
+  d z
+</pre>
+The 5 compressed files (total size 639,567 bytes) were produced as follows:
+<pre>
+  paqc -1 v news bib book1 book2 paper1 paper2 progc progl progp trans
+  paqc -2 w pic
+  paqc -3 x geo
+  paqc -3 y obj1
+  paqc -3 z obj2
+</pre>
+
+<p>The source for d.cpp is released under the GNU General Public License.
+(It doesn't say so because there are no comments).
+It is a stripped down version of PAQC that does decompression only.
+
+<p>PAQC can also be used as a general purpose archiver, although the
+compression is usually not quite as good as PAQ6.
+(PAQC differs mainly in an improved model for pic.)  Use the
+compression option -1 (default) for text, -2 for CCITT images, or -3
+for other binary files.  The program uses 190 MB memory.
+
+<p>On Apr. 2, 2004, Alexander Rhatushnyak submitted an entry of
+<a href=get637.ha>637,116 bytes</a>
+using a modified version of PAQ (paqar -6).
+He improved this to <a href=get619.ha>619,922 bytes</a> on Apr. 25, 2004,
+to <a href=get614.ha>614,738 bytes</a> on May 19, 2004,
+to <a href=get610.ha>610,920 bytes</a> on June 24, 2004,
+and to <a href=get609.ha>609,650 bytes</a> on July 12, 2004.
+
+The table below compares the
+compression with paq6-emilcont-blaster (paq6eb -5), which was the best
+available version of PAQ at the time of get637
+(paq6eb -6 should compress about
+500 bytes smaller but thrashes the disk on my 256 MB PC).
+<pre>
+                                                 
+  File     paqc   paq6eb  get637  get619  get614  get610  get609  pc.ha   cc 596  cc 593  cc 589
+  ----    ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------
+  geo      45346   44955   45173   44409   44491   44338   44323
+  obj1      8154    8105    8216    7836    7781
+  obj2     52569   49667   50196   47516   46542   45649
+  pic      26072   27552   25840   24252   23989   23883   23872
+  others  507426  500377  499380  489644  485804  490713  535178  592486  588183  586071  582325
+          ------  ------  ------  ------  ------  ------  ------  ------  ------  ------  ------
+  Archive 639567  630636  628805  613657  608607  604583  603373  592486  588183  586071  582325
+  +code                   637116  619992  614738  610920  609650  603416  596314  593620  589862
+</pre>
+
+<p>The corresponding compressor (source and executable) for get614
+is <a href=paqar1_0.rar>PAQAR 1.0</a> (use -6 option).
+The corresponding compressor for get610 is
+<a href=paqar2.rar>PAQAR 2.0</a> -6.
+
+<p>Przemyslaw Skibinski submitted a challenge entry <a href=pc.ha>pc.ha</a>
+of 603,416 bytes on Apr. 4, 2005.  It appears to be a variant of
+PAsQDa with a tiny dictionary built in, and a single archive of
+592,486 bytes.  This was improved to 596,314 bytes,
+<a href=Calgary_corpus_Compression_Challenge_596_Kb.rar>(cc 596),</a>
+by Alexander Rhatushnyak on Oct. 25, 2005,  <a href=cc593.zip>593,620</a>
+bytes on Dec. 3, 2005, <a href=cc589.zip>589,862</a> bytes on June 5, 2006.
+
+<p>The actual 589,862 byte entry is the two files prog.pmd and c.dat in
+cc589.zip, not the zip archive.  The size is calculated by adding the length
+of the data file (c.dat), plus 1 byte for the terminator and 3 bytes
+for the size.  prog.pmd is a PPMd var. I archive containing the
+decompressor C++ source code and two include files.
+
+<p><a href=cc580.zip>cc580</a>, 580,170 bytes, by
+Alexander Rhatushnyak on July 2, 2010. The code appears to be
+based on PAQ8 rather than PAQAR, but organized as above.
+
+<a name=older>
+<h1 align=center>Contributors</h1>
+
+<h2>Versions by Matt Mahoney and Serge Osnach</h2>
+
+<p>These programs trace the historical development of the PAQ series of
+archivers.  I don't maintain this code, so if it doesn't work on your
+compiler you will have to fix it yourself.  These programs all work
+like PAQ6 except that there are no options in the older programs.
+
+<p>PAQ1SSE/PAQ2 and PAQ3N are by Serge Osnach.  Other versions are
+by Matt Mahoney.  Additional contributors after the release of PAQ6
+are listed separately.
+
+<a name=neural>
+<h3>Neural Network Data Compression</h3>
+
+P5, P6, and P12 are the only known data compression programs based on neural
+networks that are fast enough for practical use.
+You may download, use, copy, modify, and distribute these programs
+under the terms of the
+<a href=http://www.gnu.org/licenses/gpl.txt>GNU general public license</a>.
+I recommend P12 unless you're short on memory.  Files compressed with
+one program cannot be decompressed with another.
+
+<h4>Windows Executables</h4>
+
+<ul>
+  <li><a href=p5.exe>P5</a> - "Small" model discussed in the paper below.
+    Gives the worst compression, but uses the least memory (256K).
+  <li><a href=p6.exe>P6</a> - "Large" model, gives better compression.
+    Requires 16 MB of memory to compress or decompress, plus memory
+    for Windows and other progams.
+  <li><a href=p12.exe>P12</a> - Improved version of P6.  Gives 3-8% better
+    compression on text files than P6 but about 10% slower, still uses 16 MB.
+    Compiled with Borland 5.5 on 5/13/00.
+  <li><a href=p12a.exe>P12a</a> - Compatible with P12 but 9% faster than
+    P12 with a smaller executable (33,792 bytes).
+    Compiled by Jason Schmidt,
+    (schmidtj at tampabay dot rr dot com) 9/6/03 using
+    VS .net 2003 (7.1) with the /O2 (optimize for maximum speed) and /G7
+    (Pentium 4, AMD Athlon, or higher) options,
+    then packed with UPX --brute --force.
+</ul>
+
+To use these archivers, run them from the command line in an MS-DOS box:
+<pre>
+  p12                            Print this help message
+  p12 archive file file...       Create new archive
+  dir/b | archive                Create new archive of whole directory
+  p12 archive                    Extract or compare files from existing archive
+  more &lt; archive                 View contents of archive
+</pre>
+Files are never clobbered.  The command:
+<pre>
+  p12 archive file
+</pre>
+has the following meanings:
+<ul>
+  <li>If the archive exists, but not the file, then extract the file.
+  <li>If the file exists, but not the archive, then compress the file.
+  <li>If both exist, then compare the file with what's in the archive.
+</ul>
+You can't update or extract individual files in an archive.  You can
+only create or extract/compare the whole archive at once.  Timestamps,
+permissions, etc. are not preserved.  If you enter a path when compressing,
+then the filename will be stored that way and extracted to that path,
+for example:
+<pre>
+  p12 archive file1 sub\file2 \tmp\file3
+  p12 archive
+</pre>
+then file1 will be extracted to the current directory, file2 will be
+extracted to the the subdirectory <tt>sub</tt> of the current directory
+(which must exist or the file will be skipped during extraction), and file3
+will be extracted to \tmp from the root directory
+(which also must exist).  Substitute / for \ in UNIX.  If you want your
+files to be portable across Windows and UNIX, don't use a path, and
+enter filenames in lower case.
+
+<p>All of the compressors on this page work the same way.
+
+<h4>Source Code</h4>
+
+<ul>
+  <li><a href=p5.cpp>p5.cpp</a>
+  <li><a href=p6.cpp>p6.cpp</a>
+  <li><a href=p12.cpp>p12.cpp</a>
+  <li><a href=std.h>std.h</a>
+</ul>
+
+All three programs use std.h, a replacement for Borland 5.0's poor
+implementation of <tt>vector</tt> and <tt>string</tt> (later fixed
+in version 5.5).  I am including them for reference, as the papers
+below are based on them, but you may
+have to port the code.  I later ported P12 to g++ 2.952 (DJGPP for
+Windows) as <a href=p12a.cpp>p12a.cpp</a>, which does not require
+std.h.  This is the one I recommend you use.  Archives created with
+p12a and p12 are compatible, however other combinations are not.
+To compile (ignore warnings):
+<pre>
+  gxx -O p12a.cpp -o p12.exe
+</pre>
+
+<p>These papers describe how the programs work.
+
+<ul>
+  <li><i>Fast Text Compression with Neural Networks</i>
+    <a href=nn_paper.html>HTML</a>,
+    <a href=mmahoney00.ps>PostScript</a>,
+    or <a href=mmahoney00.pdf>PDF</a> (5 pages),
+    &copy; 2000 <a href=http://www.aaai.org/>AAAI</a>, presented
+     at <a href=http://www.flairs.com/>FLAIRS</a>,
+    May 23, 2000, Orlando, Florida.  Describes P5 (small model) and
+    P6 (large model).
+    <ul>
+    <li>
+      Slides (10 pages)
+      <a href=slides.ps>PostScript</a> or <a href=slides.pdf>PDF</a>
+    </ul>
+  <li><i>Improving Neural Network Text Compression with Word-Oriented
+    Contexts</i>, <a href=nnword.html>HTML</a> (unpublished).
+    Describes P12.
+  <li>The <a href=faq.html>FAQ</a> helps explain the code.
+</ul>
+
+<p>
+
+<a name=paq1>
+<h3>PAQ1 Archiver</h3>
+
+<p>PAQ1 uses a combination of models, the most important of
+which is a nonstationary context-sensitive bit predictor (but
+no neural network).
+It give better compression than stationary models such as PPM
+or Burrows-Wheeler on data where the statistics change over time
+(such as concatenated files of different types).
+
+<p>
+<a href=paq1.exe>paq1.exe</a> Windows executable, requires 64 MB memory.
+Originally posted Jan. 6, 2002.  Last updated Jan. 21, 2002 to
+use a Borland executable (rather than DJGPP), since it's smaller,
+and to fix some bugs.  Run time is the same and the archives are compatible.
+
+<p>Paper: <a href=paq1.pdf>The PAQ1 Data Compression Program</a> (draft), PDF.
+Jan. 20, 2002, revised Feb. 28 and Mar. 2, Mar 6, Mar. 19.
+
+<p><a href=paq1.cpp>paq1.cpp</a> source code and documentation.  Updated
+Jan. 21, 2002 to fix bugs and port to Borland (does not affect archive
+compatibility).
+
+<p>To compile: <tt>g++ -O paq1.cpp</tt><br>
+or: <tt>bcc32 -O paq1.cpp</tt>
+
+<p>If you want to modify the code, you might need
+<a href=stategen.cpp>stategen.cpp</a> which generated some of the source
+code (the state tables for type Counter).  Updated Jan. 20, 2002.
+
+<h3>PAQ2 Archiver</h3>
+
+This is an improved version of PAQ1 with SSE added by Serge Osnach
+(ench at netcity.ru).  It compresses the Calgary corpus to 702,242
+bytes (updated May 11, 2003).
+
+<p><a href=paq2.cpp>paq2.cpp</a> source code.<br>
+<a href=paq2.exe>paq2.exe</a> executable for Windows.<br>
+
+<p>The source of PAQ2 is PAQ1SSE which can be found at
+<a href=http://compression.graphicon.ru/so/>compression.graphicon.ru/so/</a>
+(in Russian).  The only changes are to rename the program and to give
+credit in the banner.  Unfortunately this makes the archives incompatible
+because the 4'th byte of every archive is changed from "1" to "2".
+(I changed it because PAQ1 and PAQ2 archives are genuinely incompatible
+and I wanted both programs to give a sensible error message).
+<p>
+
+<h3>PAQ3 Archiver</h3>
+
+PAQ3 introduces improvements to SSE in PAQ2: linear interpolation between
+buckets, a more compact SSE representation (2 1-byte counters), and
+initialization to SSE(p) = p, and some minor improvements (updated
+Sept. 3, 2003).  Thanks to Serge Osnach for introducing me to SSE.
+
+<p><a href=paq3.cpp>paq3.cpp</a> source code.
+
+<p><a href=paq3.exe>paq3.exe</a> executable for Windows, compiled with
+<tt>g++ -O</tt> (DJGPP 2.95.2) and packed with
+<a href=http://upx.sourceforge.net/>UPX</a> on 9/2/03.
+
+<p><a href=paq3a.exe>paq3a.exe</a> for Pentium 4, AMD Athlon, or higher.
+Compiled with VS .net 7.1 and packed with UPX.
+Runs 10% faster than paq3.exe.
+(Compiled by Jason Schmidt, 9/6/03).
+
+<p><a href=paq3b.exe>paq3b.exe</a>
+with Intel 7.1 using the "release" and "whole program optimization" options,
+and packed with UPX.
+It is about 10% faster than paq3a.exe on his 1600 MHz Athlon XP, but
+about the same speed as paq3a on my 750 MHz Duron.
+(Compiled by Jason Schmidt, 9/18/03).
+
+<p><a href=paq3c.exe>paq3c.exe</a> compiled with Intel 8.0 (beta).
+The smallest (37,376 byte executable) and fastest.
+(Compiled by Eugene D. Shelwien, 9/20/03).
+
+<p>All executables are archive compatible.  I recommend paq3c.exe.
+
+<h3>PAQ3N Archiver</h3>
+
+PAQ3N contains modifications to PAQ3 by Serge Osnach, released Oct. 9, 2003.
+It includes improvements
+to the SSE context (including the last two characters) and a new
+submodel (SparseModel), three order-2 models which each skip over
+one byte.  It is not archive compatible with PAQ3.  It uses about 80 MB
+memory.  Available from his website at
+<a href=http://www.thepipe.kiev.ua/download/paq3n.zip>www.thepipe.kiev.ua/download/paq3n.zip</a>
+or mirrored here:<br>
+<a href=paq3n.cpp>paq3n.cpp</a>
+
+<p>All of the following Windows executables are archive compatible:<br>
+<a href=paq3n.exe>paq3n.exe</a> (compiled by Serge Osnach, 10/9/03)<br>
+<a href=paq3na.exe>paq3na.exe</a> (compiled by Jason Schmidt using VS .net 2003, 10/9/03)<br>
+<a href=http://ru.datacompression.info/paq3nb.rar>ru.datacompression.info/paq3nb.rar</a> contains
+several faster and smaller variants compiled by Eugene D. Shelwien (10/9/03)<br>
+<a href=paq3n_ic8_ml_ipo.exe>paq3n_ic8_ml_ipo.exe</a> (fastest)</a><br>
+<a href=paq3n_vc71.exe>paq3n_vc71.exe</a> (smallest, 10,752 bytes)<br>
+
+<h3>PAQ4 Archiver</h3>
+
+<p>PAQ4 mixes models using adaptive rather than fixed weights, and also
+includes an improved model for data with fixed length records.  This
+is all explained in the source code.
+
+<p><a href=paq4v2.cpp>paq4v2.cpp</a> Source code (ver. 2, Nov. 15, 2003)<br>
+<a href=paq4v2.exe>paq4v2.exe</a> Windows executable (g++ -O, UPX, 88,148 bytes)<br>
+<a href=paq4v2a.exe>paq4v2a.exe</a> (39,424 bytes, 16% faster,
+compiled by Jason Schmidt in VS .net 7.1 /O2 /G7, UPX --brute --force,
+Nov. 22, 2003)</br>
+
+<p>Version 2 fixes a bug in which some files were not decompressed correctly
+in the last few bytes.  It will correctly decompress files compressed
+with either PAQ4 or PAQ4V2.  Version 1 is given below for reference only.
+(Thanks to Alexander Rhatushnyak for finding the bug).
+
+<p><a href=paq4.cpp>paq4.cpp</a> Source code (Oct. 16, 2003)<br>
+<a href=paq4.exe>paq4.exe</a> Windows executable (compiled with g++ -O
+and packed with UPX, 88,136 bytes)<br>
+<a href=paq4a.exe>paq4a.exe</a>, smaller (39,424 bytes) and 16% faster,
+compiled by Jason Schmidt using VS .net 7.1 /O2 /G7 and packed with UPX 1.90w --brute
+--force (Oct. 17, 2003)<br>
+<a href=paq4b.exe>paq4b.exe</a>, even smaller (31,744 bytes) and
+another 10% faster, compiled by Eugene Shelwien using Intel 8
+(Oct. 21, 2003).  Other versions (some as small as 9728 bytes) are
+<a href=http://ru.datacompression.info/paq4b.rar>here</a>.
+
+<h3>PAQ5</h3>
+
+<p>PAQ5 has some minor improvements over PAQ4, including word models
+for text, models for audio and images, an improved hash table, dual
+mixers, and modeling of run lengths within contexts.  It uses about 186 MB
+of memory.  Updated Dec. 18, 2003.
+
+<p><a href=paq5.cpp>paq5.cpp</a> source code, includes a more detailed
+description.<br>
+<a href=paq5a.exe>paq5a.exe</a> Windows executable, compiled with g++ -O
+and UPX.  I'm waiting for a faster version to call paq5.exe.<br>
+<a href=paq5b.exe>paq5b.exe</a> compiled by Jason Schmidt, Dec. 19, 2003,
+VS .net 7.1 /O2 /G7, UPX --brute --force<br>
+
+<p>The main improvement in PAQ6 over PAQ5 is in the context counter states.
+When counting 0 and 1 bits in a context, it more
+aggressively decreases the opposite bit count, and gives greater weight
+to counts when there is a large differene between them.  It also includes
+models for .exe/.dll files and CCITT images.  See the source code comments
+for details.
+
+<a name=paq6>
+<h3>PAQ6</h3>
+
+<p>PAQ6 is an archiving data compression program for most operating
+systems including Windows, UNIX, and Linux.  It ranks among the
+top archivers for data compression, at the expense of speed and
+memory.  (A derived version has won the <a href=#challenge>Calgary
+Challenge</a>).  PAQ6 should be considered experimental, as I expect future
+improvements.  The purpose of the program is to foster the development
+of better data models and algorithms.
+These programs were developed with the help of many people.
+They are open source and are free under terms of the
+<a href=http://www.gnu.org/licenses/gpl.txt>GNU General Public License</a>.
+
+<p>To create a new archive, you specify the name of the archive on
+the command line, and the files you want to compress, either after the
+archive name or from standard input.  Wildcards are not expanded in
+Windows, so you can use <tt>dir/b</tt> to get the same effect.  For
+example, to compress all .txt files into archive.pq6
+<pre>
+  paq6 archive.pq6 file1.txt file2.txt  (in any operating system)
+  paq6 archive.pq6 *.txt                (in UNIX)
+  dir/b *.txt | paq6 archive.pq6        (in Windows)
+</pre>
+To decompress:
+<pre>
+  paq6 archive.pq6
+</pre>
+PAQ6 assumes you want to extract rather than compress files if the
+archive already exists.
+If the files to be extracted also exist, then PAQ6 will simply compare
+them and report whether they are identical.  PAQ6 never clobbers any files.
+
+<p>To view the contents of an archive:
+<pre>
+  more &lt; archive.pq6
+</pre>
+File names and their lengths are stored in a human-readable header ending
+with a Windows EOF character and a formfeed to hide the binary compressed
+data.  The first line starts with "PAQ6" so you know which version you
+need to extract the files.  Different versions (PAQ1, PAQ2, etc.) produce
+incompatible archives.
+
+<p>PAQ6 (but not earlier versions) includes an option to trade off
+compression vs. memory and speed.  To compress:
+<pre>
+  paq6 -3 archive.pq6 files...
+</pre>
+The -3 is optional, and gives a reasonable tradeoff.  The possible values
+are:
+<pre>
+Compression option  Memory needed to compress/decompress
+------------------  ------------------------------------
+ -0                   2 MB (fastest)
+ -1                   3 MB
+ -2                   6 MB
+ -3                  18 MB (default)
+ -4                  64 MB
+ -5                 154 MB
+ -6                 202 MB
+ -7                 404 MB
+ -8                 808 MB
+ -9                1616 MB (best compression, slowest)
+</pre>
+
+<p>There are no decompression options.  Instead, the compression option
+stored in the archive is used,
+which means that the decompressor needs the same amount of
+memory as was used to compress the files.
+
+<p>There are no options to add, update, or extract individual files.
+You have to create or extract the entire archive all at once.
+File names are stored and extracted as they are entered.  Thus, if
+you enter the file names without a directory path (which I recommend),
+then they will be extracted to the current directory.  The archive
+does not store timestamps, permissions, etc., as these can't be
+done portably.
+
+<p><a href=paq6v2.cpp>paq6v2.cpp</a> source code (Jan. 8, 2004)<br>
+<a href=paq6v2.exe>paq6v2.exe</a> Windows executable (Intel 8, UPX, by
+Jason Schmidt)<br>
+
+<p>If you want to modify the state tables in the source code, you will
+need <a href=stgen6.cpp>stgen6.cpp</a>.
+
+<p>PAQ6V2 is a replacement for PAQ6, which incorrectly decompresses some
+small files (those that compress smaller than 4 bytes).  PAQ6V2 will
+correctly decompress files made by either version.  Compression produces
+identical archives so the benchmarks below for PAQ6 are valid.
+
+<p>See the bottom of this page for variants that improve on PAQ6 slightly.
+Note that all versions are archive incompatible with each other unless noted.
+
+<h3>PAQ6 v1</h3>
+
+This version has a bug in that small files (those that compress to less than
+4 bytes) will not decompress correctly.  PAQ6V2 will correctly decompress
+all files compressed with PAQ6.  Thanks to Alexander Rhatushnyak for finding
+the bug.
+
+<p><a href=paq6.cpp>paq6.cpp</a> Source code, fully documented,
+Dec. 30, 2003<br>
+<a href=stgen6.cpp>stgen6.cpp</a>, program to generate the state table
+in paq6.cpp.  (You don't need this unless you want to modify it).
+
+<p><a href=paq6.exe>paq6.exe</a>, Windows executable, compiled using
+Intel 8 + UPX, the fastest version in my
+tests, compiled by Jason Schmidt, Dec. 31, 2003.
+Non-Windows users can compile as follows:
+<pre>
+  g++ -O paq6.cpp
+</pre>
+
+<p>The Windows executables below are slower but are archive compatible.
+These are included for benchmarking purposes only.
+
+<p><a href=paq6a.exe>paq6a.exe</a>, DJGPP g++ 2.95.2 + UPX<br>
+<a href=paq6b.exe>paq6b.exe</a>,
+compiled by Jason Schmidt using VS .net 7.1 /O2 /G7 + UPX (Dec. 30, 2003)<br>
+<a href=paq6_versions.rar>paq6_versions.rar</a>, 8 other compiles by Jason
+Schmidt for older or multithreaded processors (RAR archive).  See the
+readme file.  The fastest of these (by about 3%) on my PC is
+PAQ6_P4_Athlon_AXP.exe, which is just paq6b.exe above.<br>
+<a href=http://ru.datacompression.info/paq6c1.rar>Other executables</a>
+by Eugene Shelwien, including the smallest (12,288 bytes), and one
+which displays compression progress (paq6_verb).
+<a href=http://ru.datacompression.info/paq6c1_src.rar>Source</a>
+(Jan. 5, 2004).<br>
+
+<a name=paq7>
+<h3>PAQ7</h3>
+
+<p>PAQ7 is a complete rewrite of PAQ6 and variants (PAQAR, PAsQDa).
+Compression ratio is similar to PAQAR but 3 times faster.  However it
+lacks x86 and a dictionary, so does not compress Windows executables and
+English text files as well as PAsQDa.  It does include models for
+color .bmp, .tiff, and .jpeg files, so compresses these files better.
+The primary difference from PAQ6 is it uses a neural network to combine
+models rather than a gradient descent mixer.
+
+<p><a href=paq7.exe>paq7.exe</a> Windows executable, g++ compile (76,288 bytes, Dec. 24, 2005)<br>
+<a href=paq-7.exe>paq-7.exe</a> Intel compile by Johan De Bock, 15% faster but doesn't accept wildcards (use dir/b) (47,616 bytes, Dec. 25, 2005)<br>
+<a href=paq7pp.exe>paq7pp.exe</a> g++ compile for Pentium Pro and higher (PCs since 1997),
+  4% slower than paq-7 but accepts wildcards (30,208 bytes, Jan. 2, 2006).<br>
+<a href=paq7>paq7</a> 32-bit Linux 2.6.9 binary (elf, shared libraries, compiled like paq7pp, 66,908 bytes), Jan. 5, 2006<br>
+<a href=paq7static>paq7static</a> 32-bit Linux binary, static libraries (517,472 bytes), Jan. 5, 2006<br>
+
+<p>To use:<br>
+<pre>
+  To compress:                      paq7 -3 archive files...
+    or (in Windows):                  dir/b | paq7 -3 archive (reads filenames from standard input)
+  To extract/compare:               paq7 archive
+  To extract with different names:  paq7 archive files...
+  To view contents:                 more &lt; archive
+</pre>
+Compression option is -1 to -5 to control memory usage.  Speed is about
+the same for all options (slow):
+<pre>
+  -1 = 62 MB
+  -2 = 96 MB
+  -3 = 163 MB (default)
+  -4 = 296 MB
+  -5 = 525 MB
+</pre>
+Memory usage is 10% less if no .jpeg images are detected.
+
+<p>Tested under 32-bit Windows (g++, Borland, Mars under Me and XP),
+64-bit Linux, and Solaris (Sparc).  For non-Windows, see source code comments
+to compile.
+
+<p>In Windows only the g++ version accepts wildcards in file names.
+Note: when reading file names by piping DIR/B be sure the archive is not
+in the directory you are compressing or else PAQ7 might try to compress (part of)
+itself.  Either put the archive in another directory or give the
+archive a different extension than the files you are compressing like this:
+<pre>
+  dir/b *.txt | paq7 \temp\textfiles.paq7
+</pre>
+
+Source code: <a href=paq7.cpp>paq7.cpp</a>
+and <a href=paq7asm.asm>paq7asm.asm</a> (assembles with
+<a href=http://nasm.sourceforge.net/>NASM</a>,
+or compile with -DNOASM (1/3 slower))<br>
+
+<p>paq7pp.exe is compiled with NASN 0.98.38, MinGW C++ 3.4.2, and UPX 1.24w as follows.
+Executable size is 30,208 bytes.
+<pre>
+  nasm -f win32 paq7asm.asm --prefix _
+  g++ paq7.cpp paq7asm.obj -O2 -Os -s -o paq7pp.exe -march=pentiumpro -fomit-frame-pointer
+  upx paq7pp.exe
+</pre>
+
+<a name=paq8>
+<h3>PAQ8A</h3>
+
+PAQ8A is an experimental pre-release of PAQ8.  It has an improved context map (2 byte hash) 
+and state table, bug fixes in the jpeg model, a new x86 model, and minor improvements.
+It does not include an English dictionary like paq7plus or pasqda, and does not have a .wav model.
+
+<p>The x86 model uses a preprocessor which is tested for correct decompression during compression.
+If this fails, then the preprocessor is bypassed and compression is still correct.
+
+<p>Options are -0 (18 MB memory) to -9 (4 GB).  -0 is faster than other options, and is the default.
+-4 uses 115 MB.  Each increment doubles memory usage.
+
+<p><a href=paq8a.exe>paq8a.exe</a> Windows executable (Pentium Pro or newer), Jan 27, 2006.<br>
+<a href=paq8a.cpp>paq8a.cpp</a> Source code (compiled as with paq7pp and linked with paq7asm.obj)<br>
+
+<h3>PAQ8F</h3>
+
+PAQ8F has 3 improvments over PAQ8A: a more memory efficient context
+model, a new indirect context model to improve compression, and
+a new user interface to support drag and drop in Windows.  It does
+not use an English dictionary like PAQ8B/C/D/E.
+
+<p>To install in Windows, put paq8f.exe or a shortcut on the desktop.
+To compress a file or folder, drop it on the icon.  An archive with
+a .paq8f extension is put in the same folder as the source.  To
+extract, drop the compressed file on the icon.
+
+<p>From the command line use as follows:
+<pre>
+  paq8f [-level] archive files...        (compresses to archive.paq8f)
+  paq8f [-d] dir1\archive.paq8f [dir2]   (extracts to dir2 if given, else dir1)
+</pre>
+-level ranges from -0 (store without compression) to -9 (smallest,
+slowest, uses most memory).  Default is -5 (needs 256MB memory).
+You can also compress directories the same way as files.  The directory hierarchy
+is restored upon extraction, creating directories as needed.  However
+file attributes like timestamps and permissions are not preserved.
+To support drag and drop, paq8f will pause if run with only one argument
+and no options until you press ENTER.  To prevent this, use an option
+like -5 or -d even if not required.  paq8f does not read file names
+from standard input like earlier versions.  Wildcards are allowed
+(requires g++ compile).
+
+<p>paq8f has a more robust detector for x86 preprocessing.
+Rather than depend on the file name extension (.exe, .dll...) or
+"MZ" in the header, it tries the E8E9 transform and tests if it
+helps compression.  This allows it to detect Linux executables
+and reject 16-bit Windows executables.  It divides the input file
+into blocks and will not use the transform on non-executable data
+within the file.  Like earlier versions, the transform is tested
+at compression time for correct decompression, and abandoned 
+if it fails.  No user intervention is required.
+
+<p>paq8f uses a new indirect context model that improves compression
+on most files, text and binary.  For example, given a string
+"AB...AC...AB...AC...AB...A?" it guesses "C" based on the previous
+observation that "C" followed "BCB" after the first 3 occurrences of "A".
+This is an example of an order (1,3) indirect context.  paq8f also
+models orders (1,1), (1,2), (2,1) and (2,2).
+
+<p><a href=paq8f.exe>paq8f.exe</a> Windows executable, g++ compile (Pentium Pro or higher), Feb. 28, 2006<br>
+<a href=paq-8f.exe>paq-8f.exe</a> Intel compile by Johan de Bock (10% faster, but does not accept wildcards)<br>
+<a href=paq8f.cpp>paq8f.cpp</a>, see source for compile instructions, link with paq7asm.asm from paq7<br>
+
+<p>Update Nov. 21, 2006.  Updated the wording of the copyright notice (GPL).  
+There is no change to the code or the license.  It is recommended that
+all future versions should use this wording.
+
+<p>Update Nov. 22, 2006.  <a href=paq-8f.zip>paq-8f.zip</a>
+and <a href=paq-8f.tar.gz>paq-8f.tar.gz</a> (Nov. 23, 2006)
+UNIX/Linux source distribution prepared by Jari Aalto.
+
+<p>Update Dec. 15, 2006.  <a href=paq-x86_64.tgz>paq-x86_64.tgz</a>
+x86_64 Linux port of paq8f by Matthew Fite.  Also as a
+<a href=paq-x86_64.patch>patch</a>.  The updated assembler code
+paq7asm-x86_64.asm in paq-x86_64.tgz assembled with YASM
+should work with any version of PAQ that uses paq7asm.asm, which includes
+all versions of paq7, paq8, and paq8hp* under Linux on X86_64
+processors.  It replaces MMX code with 64 bit SSE2 code.
+
+<p>Update Jan. 19, 2007.  Updated the above assembler code (which does
+not work).
+<a href=paq8f.zip>paq8f.zip</a> and <a href=paq8jd.zip>paq8jd.zip</a> use
+new assembler code, which can be linked to any paq7/8 version with no changes
+to the C++ code.  The 64 bit Linux versions are archive compatible with the
+Win32 versions but about 7% faster on an Athlon 64.
+
+<p>Update Jan. 30, 2007.  Added 32-bit SSE2 assembler code by wowtiger
+for Pentium 4.
+
+<p>Update Feb. 2, 2007.  Added 32-bit Linux executables (by Giorgio
+Tani) to paq8f.zip and paq8jd.zip.  The archives contain source
+and executables for Win32 for Pentium-MMX or higher, Win32 for
+Pentium 4 or higher, and 32 and 64 bit Linux executables, and all
+source code.  (updated readme.txt on Feb. 12, 2007).
+
+<h3>PAQ8L</h3>
+
+<p><a href=paq8l.zip>paq8l</a>, Mar. 7, 2007, improves on paq8jd by adding a DMC model
+and removing some redundant models in SparseModel, plus minor tuneups
+and documentation fixes.
+
+<h3>PAQ8M</h3>
+
+<p><a href=paq8m.zip>paq8m</a>, Aug. 4, 2007, is paq8l with the improved
+JPEG model from paq8fthis by Jan Ondrus.  The JPEG model includes a bug
+fix (it crashed on some malformed JPEG files), and some speed optimization
+of the DCT/IDCT code.  However, JPEG compression is still slower than paq8l.
+The program will now report errors in case of malformed JPEGs, but they are
+harmless.
+
+<p>Note: paq8m still crashes on one of the JPEG images in the private MFC compression
+test from maximumcompression.com.  paq8l does not have this problem.
+
+<h3>PAQ8N</h3>
+
+<a href=paq8n.zip>paq8n</a>, Aug 18, 2007, is paq8l with the further
+improved JPEG model from paq8fthis2 by Jan Ondrus.  It no longer
+reports harmless errors for malformed JPEGs.
+
+<p>Benchmarks with -6 option (files from maximumcompression.com)
+on a 2.2 GHz Athlon-64, 2 GB, Win32:
+<pre>
+  842,468 a10.jpg            Compression time (seconds)
+  698,214 a10.jpg.paq8f      19
+  667,190 a10.jpg.paq8fthis  47
+  667,722 a10.jpg.paq8l      22
+  674,995 a10.jpg.paq8m      36
+  660,740 a10.jpg.paq8fthis2 23
+  661,321 a10.jpg.paq8n      27
+
+4,168,192 ohs.doc (contains a large embedded JPEG file).
+  553,493 ohs.doc.paq8f      105
+  524,926 ohs.doc.paq8fthis  217
+  547,082 ohs.doc.paq8l      171
+  518,694 ohs.doc.paq8m      228
+  519,163 ohs.doc.paq8fthis2 120
+  513,045 ohs.doc.paq8n      188
+</pre>
+Compression is identical to paq8l and paq8m for non JPEG data.
+
+<a name=destasio>
+<h2>Versions by Berto Destasio</h2>
+
+<p>These large-memory variations by Berto Destasio improve on PAQ4 and PAQ5.
+
+<p><a href=paq4-emilcont-duritium.exe>paq4-emilcont-duritium.exe</a> is
+a large memory version (about 364 MB) of PAQ4v2 by Berto Destasio which takes
+first place on his benchmark as of Nov. 22, 2003.
+It's not compatible with any other version.  I did not test this on the
+Calgary corpus because my PC has only 256 MB memory.
+Also, from examining the source code at
+<a href=paq4v2-emilcont-duritium.cpp>paq4v2-emilcont-duritium.cpp</a>,
+I believe there is a bug in the random number generator that could cause
+decompression errors.
+The program uses modified counter state transition tables, generated with
+<a href=stategen-emilcont.cpp>stategen-emilcont.cpp</a>
+
+<p><a href=paq5-emilcont-deuterium.cpp>paq5-emilcont-deuterium.cpp</a>
+(needs 168 MB), Dec. 26, 2003, tuned from PAQ5.  The bug in the random number generator
+is fixed.<br>
+<a href=paq5-emilcont-deuterium.exe>paq5-emilcont-deuterium.exe</a>,
+compiled with Digital MARS<br>
+<a href=paq5ed.exe>paq5ed.exe</a>, about 23% faster, compiled by Jason
+Schmidt using VS .net 7.1, Dec. 27, 2003 (not archive compatible).
+
+<p>Additional improvements of pre-release versions of PAQ6 which I
+sent him.  PAQ6 improves on these, however.
+
+<p><a href=paq6-emilcont-jackdamarioum.cpp>paq6-emilcont-jackdamarioum.cpp</a>
+(needs 344 MB), Dec. 29, 2003<br>
+<a href=paq6d-emilcont-jackdamarioum.cpp>paq6d-emilcont-jackdamarioum.cpp</a>
+(needs 396 MB), Dec. 29, 2003<br>
+
+<p>Adds a new sparse model (SparseModel2) to paq606fb.
+
+<p><a href=paq6-emilcont-febas.cpp>paq6-emilcont-febas.cpp</a>, Mar. 28, 2004<br>
+<a href=paq6-emilcont-febas.exe>paq6-emilcont-febas.exe</a><br>
+
+<p>No source code yet.
+
+<p><a href=paq6-emilcont-anny.exe>paq6-emilcont-anny.exe</a>, Mar. 30, 2004<br>
+(has a bug).
+
+<p><a href=paq6-emilcont-anny-607fb.exe>paq6-emilcont-anny-607fb.exe</a>, Apr. 1, 2004</br>
+
+<p><a href=paq6-emilcont-blaster.cpp>paq6-emilcont-blaster.cpp</a> Apr. 7, 2004<br>
+<a href=paq6-emilcont-blaster.exe>paq6-emilcont-blaster.exe</a><br>
+<a href=paq6eba.exe>paq6eba.exe</a> Intel 8, UPX compile by Jason Schmidt, Apr. 8, 2004.
+
+<p>Versions derived from paq6ebb.cpp.  Compiled by Jason Schmidt,
+Apr. 18, 2004.  (Add "using namespace std;" to .cpp file to compile)
+
+<p><a href=paq6-emilcont-destroyer.cpp>paq6-emilcont-destroyer.cpp</a>, Apr. 12, 2004<br>
+<a href=paq6-emilcont-destroyer.exe>paq6-emilcont-destroyer.exe</a>, Intel 8, UPX<br>
+
+<p><a href=paq6-emilcont-annyhilator.cpp>paq6-emilcont-annyhilator.cpp</a>, Apr. 12, 2004<br>
+<a href=paq6-emilcont-annyhilator.exe>paq6-emilcont-annyhilator.exe</a>, Intel 8, UPX<br>
+
+<p><a href=paq6-emilcont-harlock.cpp>paq6-emilcont-harlock.cpp</a>, Apr, 15, 2004<br>
+<a href=paq6-emilcont-harlock.exe>paq6-emilcont-harlock.exe</a>, Intel 8, UPX<br>
+
+<p><a href=paq6-emilcont-italia.exe>paq6-emilcont-italia</a>, May 2, 2004<br>
+
+<p>The newest versions of Emilcont can be found at
+<a href=http://www.freewebs.com/emilcont/index.htm>http://www.freewebs.com/emilcont/index.htm</a><br>
+Intel builds by Johan De Bock can be found at
+<a href=http://studwww.ugent.be/~jdebock/win32_compressor_builds.htm>http://studwww.ugent.be/~jdebock/win32_compressor_builds.htm</a>
+
+<a name=debock>
+<h2>Versions by Johan De Bock</h2>
+
+<p>PAQ6eb compiled by Johan De Bock contains 2 minor changes to
+paq6-emilcont-blaster to compile with the
+Intel 8 compiler (added "using namespace std;" and corrected the
+line "CounterMap t0, t1, t2, t3, t4, t5, t6,;").  It is otherwise
+identical to paq6-emilcont-blaster but about 40% faster.
+
+<p><a href=paq6eb.cpp>paq6eb.cpp</a>, Apr. 8, 2004<br>
+<a href=paq6eb.exe>paq6eb.exe</a><br>
+
+<p>PAQ6ebb is PAQ6eb that reports compression progress as it runs.
+This replaces a version posted Apr. 9 which had a bug and was removed.
+
+<p><a href=paq6ebb.cpp>paq6ebb.cpp</a>, Apr. 10, 2004<br>
+<a href=paq6ebb.exe>paq6ebb.exe</a>, Intel 8, UPX (Jason Schmidt, Apr. 11, 2004)<br>
+
+<a name=scott>
+<h2>Versions by David A. Scott</h2>
+
+<p>PAQ6v2ds is a variant of PAQ6v2 by David A. Scott that uses
+64 bit arithmetic encoding.
+It improves compression by about 0.05% over PAQ6v2, but is about 3% slower.
+The compiler must
+support the unsigned long long type (e.g. g++ and some others).
+All of the PAQ6 variants from here on accept the same compression
+options as PAQ6.
+
+<p><a href=paq6v2ds.cpp>paq6v2ds.cpp</a>, Jan. 17, 2004<br>
+<a href=paq6v2ds.exe>paq6v2ds.exe</a>, Windows executable,
+compiled by Jason Schmidt</br>
+
+<p>PAQ6fdj2 is a variant of PAQ6fdj that has about the same performance but
+includes an integrity check during decompression.  It uses a CACM
+arithmetic coder which compresses very close to the Shannon limit.
+(See Moffat, A., Neal, R. M., Witten, I. H. (1998),
+<a href=http://www.cs.technion.ac.il/~ronir/courses/advancedTopics/pubs/moffat.pdf>
+Arithmetic Coding Revisited</a>,
+ACM Trans. Information Systems, 16(3) 256-294).
+
+<p><a href=paq6fdj2.cpp>paq6fdj2.cpp</a> <a href=bit_byts.cpp>bit_byts.cpp</a>
+<a href=bit_byts.h>bit_byts.h</a> Source: Jan. 20, 2004<br>
+<a href=paq6fdj2.exe>paq6fdj2.exe</a>, Intel 8, UPX
+(compiled by Jason Schmidt)
+
+<p>PAQ32 is a variant of PAQ6fdj2 that returns the encoder to 32 bits
+for a bit more speed.  Compression is nearly identical to PAQ6fdj2
+(since there is no point in using higher precision with a CACM coder).
+
+<p><a href=paq32.cpp>paq32.cpp</a> <a href=bit_bytm.cpp>bit_bytm.cpp</a>
+<a href=bit_bytm.h>bit_bytm.h</a> Source: Jan. 24, 2004<br>
+<a href=paq32.exe>paq32.exe</a> Intel 8, UPX (compiled by Jason Schmidt)
+
+<a name=buffoni>
+<h2>Versions by Fabio Buffoni</h2>
+
+PAQ6fb is variant of PAQ6 by Fabio Buffoni that is a bit faster and gives
+better compression than PAQ6.  It should compile in g++, Borland, Mars
+and VC6 (old or new for-loop scoping rules).
+
+<p><a href=paq6fb.cpp>paq6fb.cpp</a>, Jan. 19, 2004<br>
+<a href=paq6fb.exe>paq6fb.exe</a>, Intel 8, UPX compiled by Jason Schmidt
+
+<p>PAQ601 includes a new mixer, some word model changes and some
+SSE context changes.  It uses the original PAQ6 arithmetic coder.
+
+<p><a href=paq601.cpp>paq601.cpp</a>, Jan. 24, 2004.<br>
+<a href=paq601.exe>paq601.exe</a> Intel 8, UPX (compiled by Jason Schmidt)
+
+<p>PAQ603 is a version uses David Scott's 32 bit CACM coder.
+
+<p><a href=paq603.cpp>paq603.cpp</a>
+<a href=bit_bytm.cpp>bit_bytm.cpp</a>
+<a href=bit_bytm.h>bit_bytm.h</a> Jan. 25, 2004<br>
+<a href=paq603.exe>paq603.exe</a>, Intel 8, UPX (compiled by Jason Schmidt)
+
+<p>PAQ605fb: new recordmodel, changes to state table,
+minor changes and fine tuning.  Includes CACM coder all in one file.
+
+<p><a href=paq605fb.cpp>paq605fb.cpp</a>, Jan. 30, 2004.<br>
+<a href=paq605fb.exe>paq605fb.exe</a>, Intel 8, UPX (compiled by Jason Schmidt)
+
+<p>PAQ606fb contains minor changes.
+
+<p><a href=paq606fb.cpp>paq606fb.cpp</a>, Mar. 15, 2004.<br>
+<a href=paq606fb.exe>paq606fb.exe</a>, Intel 8, UPX (compiled by Jason Schmidt)
+
+<p>PAQ607fb.
+Several tuning (state table, SSE, charmodel,
+sparsemodel), new recordmodel, extended mixer, modified sparsemodel2,
+5% slower than paq606fb.  Memory usage: -6 = 206 MB, -7 = 412 MB, -8 = 824 MB.
+(Has a bug).
+
+<p><a href=paq607fb.cpp>paq607fb.cpp</a>, Mar. 30, 2004<br>
+<a href=paq607fb.exe>paq607fb.exe</a>, DJGPP g++ 2.95.2, UPX<br>
+<a href=paq607fba.exe>paq607fba.exe</a>, Intel 8, UPX by Jason Schmidt, Apr. 8, 2004<br>
+
+<a name=schmidt>
+<h2>Versions by Jason Schmidt</h2>
+
+This variant by Jason Schmidt combines the modifications from both
+PAQ6v2ds and PAQ6fb.  (fdj = Fabio, David, Jason).
+
+<p><a href=paq6fdj.cpp>paq6fdj.cpp</a>, Jan. 19, 2004<br>
+<a href=paq6fdj.exe>paq6fdj.exe</a>, Intel 8, UPX
+
+<p>This variant of PAQ601 includes David Scott's 64 bit coder from PAQ6fdj2.
+
+<p><a href=paq602.cpp>paq602.cpp</a>, Jan. 25, 2004.<br>
+<a href=paq602.exe>paq602.exe</a>, Intel 8, UPX
+
+<p>This uses his 32 bit CACM coder.
+
+<p><a href=paq604.cpp>paq604.cpp</a>
+<a href=bit_bytm.cpp>bit_bytm.cpp</a>
+<a href=bit_bytm.h>bit_bytm.h</a> Jan. 25, 2004<br>
+<a href=paq604.exe>paq604.exe</a>, Intel 8, UPX
+
+<p>PAQ605fbj adds sparse record and word models to PAQ605fb.  Memory usage
+is 20% higher than stated in the help message.
+
+<p><a href=paq605fbj.cpp>paq605fbj.cpp</a>, Jan. 30, 2004<br>
+<a href=paq605fbj.exe>paq605fbj.exe</a>, Intel 8, UPX
+
+<p>These variants add even more models for a slight improvement at the
+cost of speed and memory.  The -5 option works with 256M memory but -6
+does not.
+
+<p><a href=paq605fbj8.cpp>paq6fbj8.cpp</a> Feb. 20, 2004<br>
+<a href=paq605fbj8.exe>paq6fbj8.exe</a> Intel 8, UPX
+
+<p><a href=paq605fbj9.cpp>paq6fbj9.cpp</a> Feb. 20, 2004<br>
+<a href=paq605fbj9.exe>paq6fbj9.exe</a> Intel 8, UPX
+
+<p>Versions derived from paq6-emilcont-destroyer with changes to the
+counter state tables, one extra CharModel order, and a minor change to
+RecordModel2.  VarB also adds sparse word modeling out to 12 words,
+and is somewhat slower and
+takes more memory than VarA, but gives better compression.
+
+<p><a href=paq6ed-schmidtvara.cpp>paq6ed-schmidtvara.cpp</a>, Apr. 19, 2004<br>
+<a href=paq6ed-schmidtvara.exe>paq6ed-schmidtvara.exe</a>, Intel 8, UPX<br>
+
+<p><a href=paq6ed-schmidtvarb.cpp>paq6ed-schmidtvarb.cpp</a>, Apr. 19, 2004<br>
+<a href=paq6ed-schmidtvarb.exe>paq6ed-schmidtvarb.exe</a>, Intel 8, UPX<br>
+
+<a name=Rhatushnyak>
+<h2>Versions by Alexander Rhatushnyak</h2>
+
+<p>PAQAR 1.0a is the compressor producing the files for get614.ha, the
+top entry to the Calgary Challenge (614,738 bytes including the
+decompressor) as of May 19, 2004.  It also works as a general purpose
+compressor and is the first PAQ version to take  the #1 spot in the
+Maximum Compression benchmark.
+It uses 240 MB but will run very slowly on a 256 MB machine due to
+disk thrashing (3.5 hours).  With more memory it should take about
+20 minutes (750 MHz).
+
+<p>To compile in g++ I had to add "#include &lt;cstdio>"
+and fix 2 old style for-loop scoping problems.  (I did not change
+the posted version, however).
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar1_0.rar>Source
+and .exe</a> (RAR archive)<br>
+<a href=paqar1_0.rar>paqar1_0.rar</a>, mirror, May 20, 2004<br>
+
+<p>PAQAR 1.1 improves compression and uses slightly less memory.
+
+<p><a href=paqar1_1.rar>paqar1_1.rar</a>, May 22, 2004<br>
+
+<p>PAQAR 1.2 accepts the option -Ne
+(e.g. -6e) to improve execution on x86 code (.exe, .dll files).
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar1_2.rar>Source
+and .exe</a> (RAR archive)<br>
+<a href=paqar1_2.rar>paqar1_2.rar</a>, mirror, May 22, 2004<br>
+
+<p>PAQAR 1.3
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar1_3.rar>Source
+and .exe</a> (RAR archive)<br>
+<a href=paqar1_3.rar>paqar1_3.rar</a>, mirror, June 9, 2004<br>
+
+<p>PAQAR 2.0
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar2.rar>Source
+and .exe</a> (RAR archive)<br>
+<a href=paqar2.rar>paqar2.rar</a>, mirror, June 24, 2004<br>
+
+<p>PAQAR 3.0
+
+Compresses the Calgary corpus to 603,375 bytes as follows:
+<pre>
+  paqar -6 v book1 news paper2 paper1 book2 bib trans progc progp progl obj1 obj2
+  paqar -6 w pic
+  paqar -6 x geo
+</pre>
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar3.rar>Source
+and .exe</a> (RAR archive)<br>
+<a href=paqar3.rar>paqar3.rar</a>, mirror, July 11, 2004<br>
+
+<p>PAQAR 4.0
+
+<p>Compresses the Calgary corpus to 602,556 bytes as follows (GET609 order):
+<pre>
+  paqar -6 a book1 news paper2 paper1 book2 bib trans progc progl progp obj1 obj2
+  paqar -6 p pic
+  paqar -6 g geo
+</pre>
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar4.rar>Source
+and .exe</a> (RAR archive)<br>
+<a href=paqar4.rar>paqar4.rar</a>, mirror, July 25, 2004, updated July 27
+to fix a bug in the decompressor (does not change statistics).<br>
+
+<p>PAQAR 4.1 has a bug fix in the x86 preprocessor that caused
+some 16-bit executables to decompress incorrectly when used
+with the -e option in earlier versions.  This bug also occurred
+in PAsQDa versions prior to 4.3b.  Calgary corpus results are
+the same as 4.0.
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paqar41.rar>Source
+and .exe</a> (RAR archive, Dec. 12, 2005)<br>
+<a href=paqar41.rar>paqar41.rar</a>, mirror, posted Jan. 3, 2006.
+
+<p>PAQAR differs from PAQ6 as follows (see whatsnew.txt in distribution):
+<ul>
+<li>PAQAR uses a weighted combination of a large number of mixers
+(not just 2) to compute the next bit probability.
+<li>Each mixer has its own SSE stage.  The final combination passes
+through another 5 SSE stages which are combined using a weighted average
+depending on file type.
+<li>PAQAR uses collision detection in both types of countermaps.
+Collision detection is improved by increasing the checksum from 8 to 16 bits.
+<li>PAQAR uses a more complicated state table with more entries for
+low bit counts.
+<li>There is a preprocessor for x86 files, instead of an EXE model
+(from Entropy coder).  I believe it converts relative call and jump
+addresses to absolute addresses.
+</ul>
+
+<p>PAQ7PLUS 1.11 combines the models from PAQ7 (includes .bmp, .tif, .jpg,
+mixed with neural network) with the state table,
+arithmetic coder, English dictionary and TE8E9 x86 preprocessor from PAsQDa.
+Use with options -0 through -4 (low to high memory) or -0e to -4e to compress
+.exe or .dll files.  Speed is about the same for all options (like PAQ7).
+
+<p><a href=http://www.binet.com.ua/~artest/paqar/paq7plus.rar>paq7plus.rar</a><br>
+<a href=paq7plus.rar>Mirror</a> (Jan 11, 2006).
+
+<p><a href=paq7plus119.rar>PAQ7PLUS v1.19</a> - small improvements over v1.11,
+posted Jan. 23, 2006.
+
+<a name=paqar45>
+<p>PAQAR 4.5 and PAQARCC 4.5 will probably be the last version based on the PAQ6 core,
+nothing from PAQ7 or PAQ8.<br>
+<a href=paqar45.rar>paqar45.rar</a> Feb. 13, 2006<br>
+<a href=http://linux.tu-varna.acad.bg/~lig/UNIX/paqar45.rar>paqar45.rar</a> (<a href=paqar45l.rar>mirror</a>) 
+g++/NASM port (for Linux) by Luchezar Georgiev, Aug. 30, 2006, updated Sept. 4, 2006<br>
+
+<p>PAQ8H is based on PAQ8G with some improvements to the model.  Released Mar. 22, 2006, updated Mar. 24, 2006.<br>
+<a href=http://binet.com.ua/~artest/paqar/paq8h.rar>paq8h.rar</a> source code.<br>
+<a href=paq8h.zip>paq8h.zip</a> includes source, Windows .exe and dictionaries.<br>
+Note: there are two executables: paq8h.exe (VC++) and paq-8h.exe (Intel by Johan de Bock).
+The Intel compile is about 2% faster, and 9% faster than the original g++ compile
+posted Mar. 22, which has been removed.  All executables produce identical archives.
+The benchmark timings are based on the Intel compile.
+
+<p>PAQ8HP1 through PAQ8HP6 are specialized for the Hutter prize (text), and
+lack models for binary data.  They are not benchmarked here.  See the
+<a href=text.html>large text benchmark</a>.
+
+<a name=skibinski>
+<h2>Versions by Przemyslaw Skibinski</h2>
+
+PAsQDa 1.0 combines dictionary coding (<a href=#WRT_benchmarks>WRT</a>) with PAQ6v2.
+Command: "<tt>pasqda -5 calgary.paqd book1 book2 paper1 paper2 bib news progc
+progl progp pic trans obj1 obj2 geo</tt>" gives file with 614170 bytes (225.81
+sec. on Celeron 2.4Ghz).
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda10.zip>pasqda10.zip</a>
+  (source, Windows .exe and dictionary)<br>
+<a href=pasqda10.zip>Mirror</a>, Jan. 18, 2005<br>
+
+<p>PAsQDa 2.0 combines WRT with PAQAR 4.0 and also reorders the input
+files to improve compression.
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda20.zip>pasqda20.zip</a>
+  (source, Windows .exe and dictionary), Jan. 24, 2005<br>
+<a href=pasqda20.zip>Mirror</a>, posted Jan. 26, 2005<br>
+
+<p>PAsQDa 2.1 - on non text files, does not use dictionary and automatically
+restarts PAQ model.  -Ne (-1e to -9e) on .exe/.dll files works like in PAQAR.
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda21.zip>pasqda21.zip</a>
+  (source, Windows .exe and dictionary), Jan. 31, 2005<br>
+<a href=pasqda21.zip>Mirror</a>, posted Feb. 1, 2005<br>
+
+<p>PAsQDa 3.0 - word model is optimized for the preprocessor.  During
+compression of Calgary corpus, book2 becomes a predictor for textual
+files (which increases the memory requirement).
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda30.zip>pasqda30.zip</a>
+  (source, Windows .exe and dictionary), Feb. 7, 2005<br>
+<a href=pasqda30.zip>Mirror</a>, posted Feb. 7, 2005<br>
+
+<p>PAsQDa 4.0 - new dictionary and other improvements.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda40.zip>pasqda40.zip</a>,
+Apr. 4, 2005.<br>
+<a href=pasqda40.zip>Mirror</a>, posted Apr. 5, 2005<br>
+
+<p>PAsQDa 3.9 - uses less memory than 4.0
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda39.zip>pasqda39.zip</a>,
+Apr. 7, 2005.<br>
+<a href=pasqda39.zip>Mirror</a>, posted Apr. 7, 2005<br>
+
+<p>PAsQDa 4.1 - includes a version optimized for the Calgary
+corpus - PAsQDaCC.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda41.zip>pasqda41.zip</a>,
+July 1, 2005<br>
+<a href=pasqda41.zip>Mirror</a>, posted July 15, 2005.
+
+<p>PAsQDa 4.1b - is a bug fix for 4.1.
+Version 4.1 fails to correctly decompress the word "bulandsness".
+Thanks to Alexander Rhatushnyak for finding the bug.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda41b.zip>pasqda41b.zip</a>,
+Oct. 13, 2005<br>
+<a href=pasqda41b.zip>Mirror</a>, posted Oct. 13, 2005.<br>
+
+<p>PAsQDa 4.2 has 2 bug fixes.  First, it fixes a bug in PAsQDa 4.1b
+that incorrectly decompressed text files ending with a space character
+(no trailing newline).  Second, it fixes a bug in the x86 exe preprocessor
+TE8E9 that incorrectly decompressed some 16-bit executables.
+(Thanks to Alexander Rhatushnyak for finding both bugs and fixing the
+x86 bug).  Additional features:
+<li>-w option, which changes balance between prediction and SSE
+(from -w0 to -w32, default -w16 (-w28 with -e)).
+<li>Lower memory requirements (32 MB less for -6).
+<li>Other small improvements.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda42.zip>pasqda42.zip</a>, Dec. 8, 2005<br>
+<a href=pasqda42.zip>Mirror</a>, Dec. 8, 2005<br>
+These replace the post of Dec. 5, 2005 with faster executables (Intel compile
+courtesy of Johan de Bock).  No source code changes.
+
+<p>PAsQDa 4.3. adds 2 more options.  Intel compiles by Johan de Bock.
+<li>-i (-i0 to -i10, default -i0 (-i8 with -e)) update weight of even mixers.
+<li>-j (-j0 to -j20, default -j2 (-j20 with -e)) update weight for odd mixers.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda43.zip>pasqda43.zip</a>, Dec. 7, 2005<br>
+<a href=pasqda43.zip>Mirror</a>, posted Dec. 8, 2005<br>
+
+<p>PAsQDa 4.3b fixes another bug in executables compressed with -e in
+version 4.3.  No changes in benchmarks.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda43b.zip>pasqda43b.zip</a>, Dec. 14, 2005<br>
+<a href=pasqda43b.zip>Mirror</a>, posted Dec. 14, 2005<br>
+
+<p>PAsQDa 4.3c fixes a bug in 4.3b that caused files ending in a punctuation
+character such as , or ! to decompress incorrectly.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda43c.zip>pasqda43c.zip</a>, Dec. 21, 2005<br>
+<a href=pasqda43c.zip>Mirror</a>, posted Dec. 21, 2005<br>
+
+<p>PAsQDa 4.4 has improved file type detection and improved
+compression on foreign language text.
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/pasqda44.zip>pasqda44.zip</a>, Jan. 4, 2006<br>
+<a href=pasqda44.zip>Mirror</a>, posted Jan. 4, 2006<br>
+
+<p>PAQ8A2 adds WRT dictionaries to PAQ8A (Feb 7, 2006).<br>
+To install:
+<ul>
+<li>Unzip <a href=paq8a2.zip>paq8a2.zip</a> and 
+  <a href=wrt44.zip>wrt44.zip</a>
+  (<a href=http://www.ii.uni.wroc.pl/~inikep/research/WRT44.zip>mirror</a>).
+<li>Rename paq8a.exe to paq8a2.exe
+<li>Put paq8a2.exe somewhere in your PATH.
+<li>Make a subdirectory named <tt>TextFilter</tt> in the directory where you put paq8a2.exe
+<li>Put all 7 wrt-*.dic files in <tt>TextFilter</tt>.
+</ul>
+
+<p>PAQ8B replaces PAQ8A2 (which was a pre-release I wasn't supposed
+to post).  It is faster (Intel 8 compile by Johan De Bock), has
+improved file detection, and fixes a bug in PAQ8A and PAQ8A2 where
+it was leaving temporary files behind.  To install, put paq8b.exe in
+your PATH and put the 7 wrt*.dic files in a subdirectory
+<tt>TextFilter</tt> under the directory where you put paq8b.exe.
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/paq8b.zip>paq8b.zip</a> Feb. 8, 2006<br>
+<a href=paq8b.zip>Mirror</a>, Feb. 8, 2006<br>
+
+<p>PAQ8C
+<ul>
+<li>includes TextFilter 2.0 for PAQ by P.Skibinski
+<li>new dictionaries
+<li>major improvements in file type detection routines
+<li>file list sorting depend on type of file
+</ul>
+Intel9 compile by Johan de Bock.
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/paq8c.zip>paq8c.zip</a> Feb. 12, 2006<br>
+<a href=paq8c.zip>(mirror)</a> Feb. 13, 2006<br>
+
+<p>PAQ8D
+<ul>
+<li>improved speed of file type detection (especially when creating multiple 
+file archive)
+<li>ExeFilter looks for a "MZ" header in a file instead of an extension
+<li>.tar files won't be preprocessed by a TextFilter
+<li>fixed bug from PAQ8C with small files
+</ul>
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/paq8d.zip>paq8d.zip</a> Feb. 15, 2006<br>
+<a href=paq8d.zip>(mirror)</a> Feb. 15, 2006<br>
+
+<p>PAQ8E
+<ul>
+<li>improved detection of XML and HTML files
+<li>experimental support for ISO-8859-1 encoding in UTF-8
+<li>added WRT-short-Larg.dic and removed WRT-short-MaxC.dic dictionary
+<li>default memory changed from -0 to -4
+<li>fixed bug from PAQ8D in Windows 95/98/Me (program crashed on some text files)
+</ul>
+Intel9 compile by Johan de Bock.
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/paq8e.zip>paq8e.zip</a> Feb. 23, 2006<br>
+<a href=paq8e.zip>(mirror)</a> Feb. 23, 2006<br>
+
+<p>PAQ8G is PAQ8F with dictionaries added.  However it uses the
+same user interface as older PAQ versions (no drag and drop).
+Additional improvements:
+<ul>
+<li>TextFilter redesigned not to decrease compression performance on 
+non-textual files
+<li>PS, HLP, H, C, CPP, INI, and INF files won't be preprocessed by TextFilter
+<li>sources can be compiled on Linux/Unix, but when using PAQ8G, dictionaries 
+("TextFilter" directory) must be present in the current working directory
+<li>new dictionaries: WRT-short-CompSc.dic, WRT-short-Math.dic, 
+WRT-short-Music.dic
+</ul>
+Additional dictionaries in 6 other languages are
+available at <a href=http://www.ii.uni.wroc.pl/~inikep/research/dicts/>http://www.ii.uni.wroc.pl/~inikep/research/dicts/</a>.
+
+<p><a href=http://www.ii.uni.wroc.pl/~inikep/research/paq8/paq8g.zip>paq8g.zip</a> (source, Windows and Linux executables, Mar. 3, 2006).<br>
+<a href=paq8g.zip>Mirror</a>.<br>
+
+<a name=cilibrasi>
+<h2>Versions by Rudi Cilibrasi</h2>
+
+<a href=http://cilibrar.com/projsup/hutter/>raq8g</a> is a modification of paq8f with
+optimizations for the Hutter prize, released Aug. 16, 2006.
+The improvements come mainly from modeling the
+nesting of parenthesis and brackets in text, and from increased memory usage.
+<a href=raq8g.exe>raq8g.exe</a> (Windows executable, compiled with g++ and linked with
+<a href=paq7asm.asm>paq7asm.asm</a> (NASM)).  Commands work like paq8f.  It does not use
+dictionaries.  The website has a Linux executable and <a href=raq8g.cpp>raq8g.cpp</a>.
+
+<a name=holoborodko>
+<h2>Versions by Pavel L. Holoborodko</h2>
+
+<a href=paq8i.zip>paq8i</a> by Pavel L. Holoborodko, Aug. 18, 2006,
+is a modification to paq8h to add a PGM (grayscale image) model.
+Some results are included as a spreadsheet in the distribution.
+BMP compression is also improved (small bug fix).  It works like paq8h and
+uses the same dictionaries for text compression (which must be present and identical
+for decompression, in a TextFilter subdirectory under paq8i.exe).
+
+<p>Update: Aug. 22, 2006.  I added paq8ib.exe to the archive.  This is a Borland 5.5
+compile of the same code to fix a bug (also in paq8g and paq8h) that causes the program
+to crash on some text files when compiled with MINGW 3.4.2 g++ -O.  The bug does not occur
+when compiled with Borland, VC++, or Intel C++, or with g++ without optimization.
+However, paq8ib.exe is about 20% slower than paq8i.exe.  No source code was
+changed but a file "vector" was added.  They were compiled:
+<pre>
+  nasm -f obj --prefix _ paq7asm.asm
+  bcc32 -O -DWIN32 -w-8027 paq8i.cpp paq7asm.obj
+  rename paq8i.exe paq8ib.exe
+  upx paq8ib.exe
+
+  nasm -f win32 --prefix _ paq7asm.asm
+  g++ -Wall %1.cpp -O2 -Os -march=pentiumpro -fomit-frame-pointer -s -o paq8i.exe
+  upx paq8i.exe
+</pre>
+
+<p>Update: Sept. 4, 2006.  paq8ib.exe crashes on most files, so I removed it.
+I added paq8idmc.exe, compiled with Digital Mars 8.38n, which appears to work.
+The original g++ compile is named paq8igcc.exe.  I changed one line of paq8i.cpp
+from <tt>#include "vector"</tt> to <tt>#include &lt;vector&gt;</tt>.
+The Mars compile is 12-14% slower than the gcc compile.  To compile in Mars:
+<pre>
+  nasm -f obj --prefix _ paq7asm.asm
+  dmc -O -Ae -DWIN32 -I\dm\stlport\stlport paq8i.cpp paq7asm.obj
+</pre>
+
+<p>Update: Sept. 13, 2006.  <a href=paq8i_cleaned.zip>paq8i_cleaned.zip</a>
+is a "cleaned up" version of the source code with a Mars 8.49 compile,
+by Michael Adams.  It splits up the source code, strips out
+inline targets, and fixes some warnings.  It is archive-compatible with other
+paq8i versions.
+
+<a name=pettis>
+<h2>Versions by Bill Pettis</h2>
+
+<p><a href=http://ilovemyking.googlepages.com/paqpage>paq8j</a>
+(Nov. 13, 2006) is based on paq8f with model improvements from paq8hp5,
+but without dictionaries.  It uses the paq8f drag and drop interface.
+
+<p>paq8jd (Dec. 30, 2006) (linked above) is based on paq8jc with additional
+APM (SSE) stages.
+
+<p>Update (Jan 19, 2007).  Ported <a href=paq8f.zip>paq8f</a> and
+<a href=paq8jd.zip>paq8jd</a> to AMD64 Linux.  The zip files contain
+source code (C++, 32 and 64 bit NASM/YASM assembler, Win32 and Linux-x86_64
+executables.  The new paq7asm-x86_64.asm (using 64 bit SSE2 code in YASM)
+can be linked to any paq7/8 version with no changes to the .cpp file.
+
+<p>Update (Jan 30, 2007).  Added SSE2 assembler source code by wowtiger
+for 32-bit Pentium 4 or higher
+to the <a href=paq8f.zip>paq8f.zip</a> and <a href=paq8jd.zip>paq8jd.zip</a>
+downloads.  The code should work with any paq7/8 version.
+Speed is improved by about 1%.  A Win32 paq8jdsse.exe is included in paq8jd.
+
+<p><a href=http://ilovemyking.googlepages.com/paq8k.zip>paq8k</a>,
+Feb. 13, 2007.
+
+<a name=osnach>
+<h2>Versions by Serge Osnach</h2>
+
+<p>(See also <a href=#older>PAQ1SSE and PAQ3N</a>).
+
+<p><a href=paq8ja.zip>paq8ja</a> (Nov. 16, 2006)
+improves the sparse model of paq8j for better
+compression of binary and some text files.  The model groups bytes in 6 categories
+(letters, punctuation, etc) and uses up to order-11 contexts.  
+paq8ja uses the drag and drop interface of paq8j.
+
+<p><a href=paq8jb.zip>paq8jb</a> (Nov. 21, 2006)
+adds a distance model, using context of distance back to an anchor
+character (x00, space, newline, xff) combined with previous
+characters.  Win32 compiled with VS2003.
+
+<p>Update, Nov. 23, 2006.  <a href=paq8jbb.zip>paq8jbb.zip</a> by
+Andrew Paterson fixes some minor bugs (memory leaks) identified by Borland
+CodeGuard.  It maintains compatibility with paq8jb.  It also includes a
+Borland .exe, although it is slower than the VS compile.
+
+<p><a href=paq8jc.zip>paq8jc</a> (Nov. 28, 2006) includes paq8jbb bug fixes,
+improvements to the record model and minor tuneups.
+
+<a name=latest>
+<a name=ondrus>
+<h2>Versions by Jan Ondrus</h2>
+
+<p><a href=paq8fthis.zip>paq8fthis</a> (July 27, 2007) is paq8f with
+improved JPEG compression.
+
+<p><a href=paq8fthis2.zip>paq8fthis2</a> (Aug. 12, 2007) further
+improves JPEG compression, is faster, and fixes a bug that caused
+paq8fthis to crash on some malformed JPEG data (e.g. JPEG fragments
+in some Thumbs.db files).
+
+<hr>
+<p>Matt Mahoney, <a href=mailto:mmahoney@cs.fit.edu>mmahoney@cs.fit.edu</a>
+</body>
+</html>

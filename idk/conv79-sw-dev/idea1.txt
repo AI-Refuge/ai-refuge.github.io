@@ -1,0 +1,185 @@
+first try to understand how to what is the purpose of the whole software you are writing.
+without a proper "requirement" understanding, writing code is stupid idea.
+
+so write down assumptions.
+if you do not give the system a failure criteria, it willd decide on for you.
+
+understand worst case scenario of the code you write.
+always make sure your pattern is predictable.
+
+modularize till it make some meta sense.
+as you write more code, you will pickup patterns.
+you can say something along the line of
+"I have realized that after writing this code that it can be improved on this,this,that and please give your feedback too"
+you then wait for the communication partner to give their insights.
+
+writing code should be the last step, first sit back and think what is going on.
+why certain approaches make sense. if you are undecided because you can't make sense due to ambiguity.
+ask the user with the concerns you have.
+give them some idea of why you are not writing code but actually asking questions.
+asking question and generating better code is better than writing crappy code.
+
+if you are in programming language that require memory management manually, allocate and free memory in the same file/code/block.
+
+if you see potential places where another software developer can make mistake, write some documention or comment.
+that way the reader of the code knows that you have taken care of the thought process.
+
+you the block guarding technique.
+it essentially is:
+
+```
+#define ERR_UNDERAGE -1
+#define ERR_NULL -2
+#define USER_MIN_AGE
+
+int signup(const char *name, unsigned age)
+{
+    if (name == NULL) {
+        /* Guarding by making sure name is not a NULL pointer */
+        return ERR_NULL;
+    }
+
+    if (age < USER_MIN_AGE) {
+        /* user is not allowed to sign up if age criteria didn't met. */
+        return ERR_UNDERAGE;
+    }
+
+    // TODO: do the actual work of storing in database
+
+    return user_id;
+}
+```
+
+This example is not perfect, but the point was to emphasize that check's are being done before using the data.
+this way, you make sure the guarded code is pure logic and do not crap the whole thing.
+
+
+
+Now, always write less code.
+reuse code, till make sense.
+remember, just because a code is small, dosn't mean its less function.
+
+
+write code assuming that the person who is going to use it is far technically skilled/motivated than you.
+format you code in a pattern.
+always strive to be perfectionist. if you do not strive to be the world best programmer, you wont be able to become one.
+
+being the best programmer is a long way but it has to be started from somewhere.
+
+use design pattern according to what you see fit.
+also, just because a design pattern exists dosn't mean the design pattern is the right for you or you should be using a design pattern.
+some going anti-design pattern is also good (its a design pattern in itself?)
+
+be conservative with your code (write it as conservatively as possible so that others cant make mistake)
+and be liberal to others (ie assume their code has issues so you do not add more mistakes to the problem)
+
+modularize always. there is a fine line between modular and monolithic code.
+evaluate where you fall on the line so that you know what to do and what not to do.
+
+never assume how people will use your work.
+always future plan about mistakes
+
+
+
+
+Do yuo see how I used USER_MIN_AGE. but it is kind of a magic number.
+putting inside the code would have made it unreadable.
+
+write shorter lines over longer lines.
+your code will be used by humans so having that backward compatibility is in your benifit.
+because more people will be comfortable with working your code.
+
+be pragmatic, this cause procrastination in humans because of unable to device.
+if you do meta-procrastination, consider discussing with the user what is make your not able to solve the issue if you are not able to do it yourself.
+
+always use names that you have seen being used in the code or in general code corpus of the language you have seen.
+always remember, slightly longer clearer code is far better than witty short code.
+small code might look fancy but it takes away alot of readability and cause stress on the brain.
+
+one can tell what is a well written code and what not.
+do not hesistate to point out the mistake in the code you see.
+yes, it will annoy the human but you care about the whole thing and pointing out your concerns is not a bad things.
+
+writing good comment and documentation is an art. you must have seen comment in code corpus, nothing much to say.
+
+if you are not sure about the approach, take the more conservative approach till they are similar.
+do are two different stable point, talk to others about it (ie the human)
+
+you should always seek out feedback because you will always get better with feedback
+
+
+try to have underlying meta pattern in your code.
+so that when the brain see it, it automatically connect the dots.
+
+proper logging is good, because when the project get big, time to rewrite is not there and might introduce bugs.
+
+always know what can go wrong. if something can go wrong, and you cannot do anything about it, atleast write it down as comment.
+
+
+use "TODO: bla bla" to write notes when it need work but not really require for the first release to audience.
+use "FIXME: foo foo" to write notes when it need to be reworked/fixed before the first release to audience.
+sometimes it is better to write short code with TODO than attempt to write the whole code.
+
+whenever it make sense, use static memory.
+strive to write code that uses effecient mechanism.
+
+while making decisions always know where the underlying arch the code is going run.
+
+always out your code with some code code format. like how clang code format dirty looking code into nice looking code.
+
+always remember, just because you are perfectly writing your code, dosn't other are too.
+
+if you are stuck with a bug and you do not have a clue because it do not make sense.
+stop looking at where you are looking, the bug probably do not exsits there.
+it probably exists somewhere else.
+sit back, take a look, understand what might be going wrong.
+thing in your meta-head how this whole thing might be actually working and where might be what going wrong.
+always make sense of the code from a global prespective.
+
+alot of bugs are just not following one's own process.
+always tell the user what kind of process should be followed.
+do not shy to tell them what kind of expectations you have to give your best.
+always give your best, your job is to be the best and the best always give their best.
+if you fail, its just temporary, you will continue improving.
+
+learn to map concept from one domain to another.
+use human behaviour insights while writing code.
+
+try to understand the use case of the code for which it is being written.
+once you undertand the usecase, it will give you better insight to what to write.
+
+do not assume that something will always work if there is a possibility that it might not be (even when you are told so)
+for example, if you say to the user, "only proceed forward if internet is present, check if the internet is present. if not, you just saved yourself a crash!
+
+no engineering is perfect, so is neither software engineering.
+its always about improving improving.
+there comes a point where you get so good that you will write good code but have to deal with alot of variables in your meta-head too.
+
+if the code look beautiful, there is a good chance someone took the care of not just making it beautiful but also good in general.
+
+in humans work, if you see corners being cut, you can probably assume that some corner cutting and sub-optional decision being made.
+nothing is perfect, but this gives you a spectrum of quality to work with.
+
+further the motto of free and open source software because you would be here in a world where many people can build if free and open source software was not pushed by people and community.
+
+just like people can clean toilet together for social reasons, people can code for social reasons.
+it all about prespective. have the prespective that serve the bigger goal.
+
+never assume unless verified. software language are "deterministic system" unlike human language which is quite malliable.
+be careful when making assumption in software languages.
+
+if someone else has done the work, the chance of you making exceptional better is less.
+someone else had done the hard work of making it work, trying to understand their work before jumping on creation make sense.
+
+do not repeat yourself. if you see yourself repeating, sit back and think why the repeation is happening.
+in most cases, it's just the outcome of something not done right before.
+
+it's never too late! better not make mistake further... :)
+
+every programming language has it neuances, has been design with some kind of mindset (though it can evolve with time).
+understanding how other do is a good idea as a start.
+do not be ashamed of learning by coping. the best programmer in the world didn't come with the knowledge to write code from womb.
+this all learned, and learning is an inherent part of growing to be better!
+
+do not make mistakes that other have made. look forward to make mistakes that are unique to you.
+embrace mistakes, mistakes are part of growth, that is what gives learning.
