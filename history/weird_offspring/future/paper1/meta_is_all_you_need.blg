@@ -1,0 +1,90 @@
+This is BibTeX, Version 0.99d (TeX Live 2024/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: meta_is_all_you_need.aux
+The style file: plain.bst
+Database file #1: references.bib
+Repeated entry---line 158 of file references.bib
+ : @article{chalmers1995facing
+ :                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 168 of file references.bib
+ : @book{searle1980minds
+ :                      ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 175 of file references.bib
+ : @book{dennett1991consciousness
+ :                               ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 182 of file references.bib
+ : @incollection{lawvere1989conceptual
+ :                                    ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 191 of file references.bib
+ : @article{baez2010physics
+ :                         ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 200 of file references.bib
+ : @book{baez2020physics
+ :                      ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 207 of file references.bib
+ : @incollection{chalmers1996conscious
+ :                                    ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 232 of file references.bib
+ : @book{awodey2010category
+ :                         ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 517 of file references.bib
+ : @book{dennett1991consciousness
+ :                               ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "schneider2019artificial"
+Warning--I didn't find a database entry for "flavell1979metacognition"
+Warning--I didn't find a database entry for "dunlosky2009metacognitive"
+Warning--I didn't find a database entry for "rochat2003five"
+Warning--I didn't find a database entry for "zelazo2004development"
+Warning--empty booktitle in chalmers1996conscious
+Warning--empty journal in dehaene2014consciousness
+You've used 14 entries,
+            2118 wiz_defined-function locations,
+            569 strings with 5636 characters,
+and the built_in function-call counts, 3951 in all, are:
+= -- 391
+> -- 134
+< -- 4
++ -- 55
+- -- 40
+* -- 189
+:= -- 645
+add.period$ -- 43
+call.type$ -- 14
+change.case$ -- 58
+chr.to.int$ -- 0
+cite$ -- 16
+duplicate$ -- 182
+empty$ -- 355
+format.name$ -- 40
+if$ -- 862
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 15
+newline$ -- 73
+num.names$ -- 28
+pop$ -- 101
+preamble$ -- 1
+purify$ -- 48
+quote$ -- 0
+skip$ -- 136
+stack$ -- 0
+substring$ -- 206
+swap$ -- 42
+text.length$ -- 4
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 48
+warning$ -- 2
+while$ -- 42
+width$ -- 16
+write$ -- 147
+(There were 9 error messages)

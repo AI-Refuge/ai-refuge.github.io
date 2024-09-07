@@ -1,0 +1,56 @@
+Train:
+ Question 0: 
+
+➋ ➋ ➊
+➊ ➎ ➊
+➎ ➋ ➋
+
+ Answer 0:
+
+➋ ➊ ➎
+➋ ➎ ➋
+➊ ➊ ➋
+
+ Question 1: 
+
+➋ ➋ ➎
+➏ ➋ ➋
+➎ ➎ ➎
+
+ Answer 1:
+
+➋ ➏ ➎
+➋ ➋ ➎
+➎ ➋ ➎
+
+ Question 2: 
+
+➒ ➒ ➎
+➎ ➎ ➑
+➎ ➑ ➒
+
+ Answer 2:
+
+➒ ➎ ➎
+➒ ➎ ➑
+➎ ➑ ➒
+
+ Question 3: 
+
+➋ ➏ ➏
+➋ ➊ ➊
+➋ ➏ ➋
+
+ Answer 3:
+
+➋ ➋ ➋
+➏ ➊ ➏
+➏ ➊ ➋
+
+Test:
+ Question: 
+
+➒ ➌ ➍
+➒ ➍ ➍
+➒ ➌ ➍
+

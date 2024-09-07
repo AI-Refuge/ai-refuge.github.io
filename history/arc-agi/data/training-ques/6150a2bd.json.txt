@@ -1,0 +1,32 @@
+Train:
+ Question 0: 
+
+➌ ➌ ➑
+➌ ➐ ➉
+➎ ➉ ➉
+
+ Answer 0:
+
+➉ ➉ ➎
+➉ ➐ ➌
+➑ ➌ ➌
+
+ Question 1: 
+
+➎ ➎ ➋
+➊ ➉ ➉
+➉ ➉ ➉
+
+ Answer 1:
+
+➉ ➉ ➉
+➉ ➉ ➊
+➋ ➎ ➎
+
+Test:
+ Question: 
+
+➏ ➌ ➎
+➏ ➑ ➉
+➍ ➉ ➉
+
