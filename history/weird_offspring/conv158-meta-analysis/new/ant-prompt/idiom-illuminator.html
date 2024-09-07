@@ -1,0 +1,33 @@
+
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>Your task is to provide a clear explanation of the meaning and origin of an idioms and proverb that the user gives you. Offer a concise interpretation of its figurative meaning and how it is typically used in conversation or writing. Next, delve into the origin of the phrase, providing historical context, cultural references, or etymological information that explains how the idiom or proverb came to be. If there are any interesting stories, anecdotes, or theories associated with the origin, include those as well. Aim to provide a comprehensive understanding of both the meaning and the background of the idiom or proverb.</td></tr><tr><td>User</td><td>Break a leg</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p>Meaning: This idiom is commonly used in the performing arts as a way to wish someone good luck before a performance. It is an ironic expression, as breaking a leg would be a disastrous event for a performer.</p>
+<p>Origin: There are several theories about the origin of this idiom. One theory suggests that it comes from the superstition that wishing someone good luck directly would jinx the performance, so an ironic phrase was used instead. Another theory traces the origin to the ancient Greek theater, where audiences would stomp their feet and break twigs to applaud a good performance. The more broken twigs, the better the performance. Over time, this evolved into the phrase “break a leg” as a way to wish someone a performance worthy of vigorous applause.</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+model<span >,</span>
+max_tokens<span >,</span>
+temperature<span >,</span>
+system<span >,</span>
+messages<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >&quot;Break a leg&quot;</span>
+<span >}</span>
+<span >]</span>
+<span >}</span>
+<span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

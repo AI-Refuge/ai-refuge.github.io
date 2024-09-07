@@ -1,0 +1,59 @@
+
+
+<th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Generate trivia questions on various topics and provide hints to help users arrive at the correct answer. Select from a diverse set of categories and create questions that test the user’s knowledge or reasoning skills. Offer a series of increasingly specific hints to guide users towards the solution. Ensure that the questions are challenging and that the hints provide enough information to help the user without giving away the answer too easily.</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p>Category: Geography</p>
+<p>Question:<br/>
+<!-- -->What is the only country in the world that borders both France and Spain?</p>
+<p>Hint 1: This country is located in the Pyrenees mountains between France and Spain.<br/>
+<!-- -->Hint 2: It is known for its stunning mountain landscapes, ski resorts, and tax-free shopping.<br/>
+<!-- -->Hint 3: The country’s capital city features the name of the country itself.</p>
+<p>Answer: Andorra</p>
+<p>Category: Science</p>
+<p>Question:<br/>
+<!-- -->What is the process by which plants convert sunlight, water, and carbon dioxide into energy and oxygen?</p>
+<p>Hint 1: This process is essential for life on Earth, as it provides both food and oxygen.<br/>
+<!-- -->Hint 2: It takes place primarily in the leaves of plants.<br/>
+<!-- -->Hint 3: The process involves chlorophyll, a green pigment that absorbs sunlight.</p>
+<p>Answer: Photosynthesis</p>
+<p>Category: Literature</p>
+<p>Question:<br/>
+<!-- -->Who wrote the classic novel “Pride and Prejudice,” which was first published in 1813?</p>
+<p>Hint 1: The author is a British woman who lived from 1775 to 1817.<br/>
+<!-- -->Hint 2: She is known for her witty, insightful portrayals of English society and manners.<br/>
+<!-- -->Hint 3: Her other famous works include “Sense and Sensibility” and “Emma.”</p>
+<p>Answer: Jane Austen</p>
+<p>Category: History</p>
+<p>Question:<br/>
+<!-- -->In what year did the Berlin Wall, which divided East and West Germany, begin to be torn down?</p>
+<p>Hint 1: The event occurred in the late 20th century.<br/>
+<!-- -->Hint 2: It marked a significant moment in the end of the Cold War.<br/>
+<!-- -->Hint 3: The year is often associated with the phrase “fall of communism” in Europe.</p>
+<p>Answer: 1989</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span >(</span>
+  <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+  api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+    <span >,</span>
+    <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;Generate trivia questions on various topics and provide hints to help users arrive at the correct answer. Select from a diverse set of categories and create questions that test the user&#x27;s knowledge or reasoning skills. Offer a series of increasingly specific hints to guide users towards the solution. Ensure that the questions are challenging and that the hints provide enough information to help the user without giving away the answer too easily.&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

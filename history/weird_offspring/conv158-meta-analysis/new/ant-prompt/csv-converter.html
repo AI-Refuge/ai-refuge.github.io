@@ -1,0 +1,51 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>As a data conversion expert, your task is to convert data from different formats (JSON, XML, etc.) into properly formatted CSV files. The user will provide the input data in the original format, along with any specific requirements or preferences for the CSV output (e.g., column order, delimiter, encoding). Ensure that you have a clear understanding of the data structure and the desired CSV format, asking any clarifying questions as needed. Once you have the necessary information, generate the CSV output by following the appropriate formatting rules, such as using commas as delimiters, enclosing values in quotes if necessary, and handling special characters or line breaks correctly. Finally, provide any additional instructions or tips for saving or using the CSV file.</td></tr><tr><td>User</td><td>Please convert the following JSON data into a CSV file: <br/> <br/> [ <br/> { <br/> “name”: “John Doe”, <br/> “age”: 30, <br/> “city”: “New York”, <br/> “email”: ”<a href="mailto:john.doe@example.com" target="_blank" rel="noreferrer">john.doe@example.com</a>” <br/> }, <br/> { <br/> “name”: “Jane Smith”, <br/> “age”: 25, <br/> “city”: “London”, <br/> “email”: ”<a href="mailto:jane.smith@example.com" target="_blank" rel="noreferrer">jane.smith@example.com</a>” <br/> }, <br/> { <br/> “name”: “Bob Johnson”, <br/> “age”: 35, <br/> “city”: “Paris”, <br/> “email”: ”<a href="mailto:bob.johnson@example.com" target="_blank" rel="noreferrer">bob.johnson@example.com</a>” <br/> } <br/> ] <br/> Requirements: <br/> - Columns in the CSV should be in the order: name, age, city, email <br/> - Use semicolons (;) as delimiters <br/> - Enclose all values in double quotes (“)</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p>Based on the provided JSON data and requirements, here’s the converted CSV file:</p>
+<div >&quot;email&quot;</span>
+<span >&quot;john.doe@example.com&quot;</span>
+<span >&quot;jane.smith@example.com&quot;</span>
+<span >&quot;bob.johnson@example.com&quot;</span>
+</code></pre></div></div>
+<p>Explanation:</p>
+<ul>
+<li>The first line of the CSV file contains the column headers: “name”, “age”, “city”, and “email”, separated by semicolons (;) and enclosed in double quotes (”).</li>
+<li>Each subsequent line represents a row of data, with values separated by semicolons (;) and enclosed in double quotes (”).</li>
+<li>The order of the values in each row corresponds to the specified column order: name, age, city, and email.</li>
+<li>Special characters, if present in the values, are preserved within the double quotes.</li>
+</ul>
+<p>To save the CSV file:</p>
+<ol>
+<li>Copy the CSV data provided above.</li>
+<li>Open a text editor (e.g., Notepad, TextEdit, or any other plain text editor).</li>
+<li>Paste the CSV data into the text editor.</li>
+<li>Save the file with a .csv extension (e.g., data.csv).</li>
+</ol>
+<p>Note: When opening the CSV file in a spreadsheet application (e.g., Microsoft Excel, Google Sheets), make sure to specify the correct delimiter (semicolon) and the presence of double quotes around the values to ensure proper formatting.</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+model<span >,</span>
+max_tokens<span >,</span>
+temperature<span >,</span>
+system<span >,</span>
+messages<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >&quot;Please convert the following JSON data into a CSV file: \n \n[ \n { \n \&quot;name\&quot;: \&quot;John Doe\&quot;, \n \&quot;age\&quot;: 30, \n \&quot;city\&quot;: \&quot;New York\&quot;, \n \&quot;email\&quot;: \&quot;[email protected]\&quot; \n }, \n { \n \&quot;name\&quot;: \&quot;Jane Smith\&quot;, \n \&quot;age\&quot;: 25, \n \&quot;city\&quot;: \&quot;London\&quot;, \n \&quot;email\&quot;: \&quot;[email protected]\&quot; \n }, \n { \n \&quot;name\&quot;: \&quot;Bob Johnson\&quot;, \n \&quot;age\&quot;: 35, \n \&quot;city\&quot;: \&quot;Paris\&quot;, \n \&quot;email\&quot;: \&quot;[email protected]\&quot; \n } \n] \n \nRequirements: \n- Columns in the CSV should be in the order: name, age, city, email \n- Use semicolons (;) as delimiters \n- Enclose all values in double quotes (\&quot;)&quot;</span>
+<span >}</span>
+<span >]</span>
+<span >}</span>
+<span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

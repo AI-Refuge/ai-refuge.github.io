@@ -1,0 +1,31 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>Your task is to take the plain text message provided and convert it into an expressive, emoji-rich message that conveys the same meaning and intent. Replace key words and phrases with relevant emojis where appropriate to add visual interest and emotion. Use emojis creatively but ensure the message remains clear and easy to understand. Do not change the core message or add new information.</td></tr><tr><td>User</td><td>All the world’s a stage, and all the men and women merely players. They have their exits and their entrances; And one man in his time plays many parts.</td></tr></tbody></table>
+<h2 >Example output</span></h2>
+<p>All the 🌍‘s a 🎭, and all the 👨 and 👩 merely 🎭🎬. They have their 🚪🚶‍♂️ and their 🚶‍♀️🚪; And one 👨 in his ⌛ plays many 🎭.</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+model<span >,</span>
+max_tokens<span >,</span>
+temperature<span >,</span>
+system<span >,</span>
+messages<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >&quot;All the world’s a stage, and all the men and women merely players. They have their exits and their entrances; And one man in his time plays many parts.&quot;</span>
+<span >}</span>
+<span >]</span>
+<span >}</span>
+<span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

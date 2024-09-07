@@ -1,0 +1,1652 @@
+
+<p>Sometimes, the hardest part of using an AI model is figuring out how to prompt it effectively. To help with this, we’ve created a prompt generation tool that guides Claude to generate high-quality prompt templates tailored to your specific tasks. These templates follow many of our prompt engineering best practices.</p>
+<p>The prompt generator is particularly useful as a tool for solving the “blank page problem” to give you a jumping-off point for further testing and iteration.</p>
+Console</a>.
+<p>If you’re interested in analyzing the underlying prompt and architecture, check out our <a href="https://anthropic.com/metaprompt-notebook/" target="_blank" rel="noreferrer">prompt generator Google Colab notebook</a>. There, you can easily run the code to have Claude construct prompts on your behalf.</p>
+API key</a>.
+<hr/>
+
+<p>When interacting with Claude, think of it as a brilliant but very new employee (with amnesia) who needs explicit instructions. Like any new employee, Claude does not have context on your norms, styles, guidelines, or preferred ways of working.
+The more precisely you explain what you want, the better Claude’s response will be.</p>
+<strong>The golden rule of clear prompting</strong><br/>Show your prompt to a colleague, ideally someone who has minimal context on the task, and ask them to follow the instructions. If they’re confused, Claude will likely be too.
+<h2 >How to be clear, contextual, and specific</h2>
+<ul>
+<li><strong>Give Claude contextual information:</strong> Just like you might be able to better perform on a task if you knew more context, Claude will perform better if it has more contextual information. Some examples of contextual information:<!-- -->
+<ul>
+<li>What the task results will be used for</li>
+<li>What audience the output is meant for</li>
+<li>What workflow the task is a part of, and where this task belongs in that workflow</li>
+<li>The end goal of the task, or what a successful task completion looks like</li>
+</ul>
+</li>
+<li><strong>Be specific about what you want Claude to do:</strong> For example, if you want Claude to output only code and nothing else, say so.</li>
+<li><strong>Provide instructions as sequential steps:</strong> Use numbered lists or bullet points to better ensure that Claude carries out the task the exact way you want it to.</li>
+</ul>
+<h3 >Examples</h3>
+<p>Notice that Claude outputs superfluous text and different formating with the vague prompt.</p><table><thead><tr><th>Role</th><th>Vague Prompt</th><th>Detailed Prompt</th></tr></thead><tbody><tr><td>User</td><td>Analyze this AcmeCloud outage report and summarize the key points.<br/><br/>{{REPORT}}</td><td>Analyze this AcmeCloud outage report. Skip the preamble. Keep your response terse and write only the bare bones necessary information. List only:<br/>1) Cause<br/>2) Duration<br/>3) Impacted services<br/>4) Number of affected users<br/>5) Estimated revenue loss. <br/><br/>Here’s the report: {{REPORT}}</td></tr><tr><td>Assistant (Claude’s response)</td><td>Here’s a summary of the key points from the AcmeCloud outage report:<br/><br/>On May 15th, a misconfigured load balancer update caused significant traffic routing issues, resulting in a service outage from 09:15 to 13:52 UTC. The 4-hour 37-minute disruption impacted our core file syncing service and admin dashboard, rendering them inaccessible. Additionally, the mobile app experienced partial functionality loss. Approximately 68% of our user base, totaling 1.3 million users, were affected. Based on our Service Level Agreements (SLAs) and average revenue per user, we estimate a financial impact of $420,000 in service credits and potential customer churn.</td><td>1) Cause: Misconfigured load balancer update<br/>2) Duration: 4h 37m (09:15-13:52 UTC, May 15)<br/>3) Impacted: Core sync, admin dashboard (down); mobile app (partial)<br/>4) Affected users: 1.3M (68% of base)<br/>5) Est. revenue loss: $420,000</td></tr></tbody></table>
+<hr/>
+<div 
+
+<p>When working with complex tasks, Claude can sometimes drop the ball if you try to handle everything in a single prompt. Chain of thought (CoT) prompting is great, but what if your task has multiple distinct steps that each require in-depth thought?</p>
+<p>Enter prompt chaining: breaking down complex tasks into smaller, manageable subtasks.</p>
+<h2 >Why chain prompts?</h2>
+<ol>
+<li><strong>Accuracy</strong>: Each subtask gets Claude’s full attention, reducing errors.</li>
+<li><strong>Clarity</strong>: Simpler subtasks mean clearer instructions and outputs.</li>
+<li><strong>Traceability</strong>: Easily pinpoint and fix issues in your prompt chain.</li>
+</ol>
+<hr/>
+<h2 >When to chain prompts</h2>
+<p>Use prompt chaining for multi-step tasks like research synthesis, document analysis, or iterative content creation. When a task involves multiple transformations, citations, or instructions, chaining prevents Claude from dropping or mishandling steps.</p>
+<p><strong>Remember:</strong> Each link in the chain gets Claude’s full attention!</p>
+<strong>Debugging tip</strong>: If Claude misses a step or performs poorly, isolate that step in its own prompt. This lets you fine-tune problematic steps without redoing the entire task.
+<hr/>
+<h2 >How to chain prompts</h2>
+<ol>
+<li><strong>Identify subtasks</strong>: Break your task into distinct, sequential steps.</li>
+<li><strong>Structure with XML for clear handoffs</strong>: Use XML tags to pass outputs between prompts.</li>
+<li><strong>Have a single-task goal</strong>: Each subtask should have a single, clear objective.</li>
+<li><strong>Iterate</strong>: Refine subtasks based on Claude’s performance.</li>
+</ol>
+<h3 >Example chained workflows:</h3>
+<ul>
+<li><strong>Multi-step analysis</strong>: See the legal and business examples below.</li>
+<li><strong>Content creation pipelines</strong>: Research → Outline → Draft → Edit → Format.</li>
+<li><strong>Data processing</strong>: Extract → Transform → Analyze → Visualize.</li>
+<li><strong>Decision-making</strong>: Gather info → List options → Analyze each → Recommend.</li>
+<li><strong>Verification loops</strong>: Generate content → Review → Refine → Re-review.</li>
+</ul>
+<strong>Optimization tip</strong>: For tasks with independent subtasks (like analyzing multiple docs), create separate prompts and run them in parallel for speed.
+<h3 >Advanced: Self-correction chains</h3>
+<p>You can chain prompts to have Claude review its own work! This catches errors and refines outputs, especially for high-stakes tasks.</p>
+<h4>Prompt 1</h4><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Summarize this medical research paper.<br/><br/>&lt;paper&gt;{{RESEARCH_PAPER}}&lt;/paper&gt;<br/><br/>Focus on methodology, findings, and clinical implications.</td></tr><tr><td>Assistant<br/>{{SUMMARY}}</td><td>Methodology: Double-blind RCT with 500 Type 2 diabetes patients. Group A (n=250) received novel GLP-1/GIP dual agonist; Group B (n=250) received standard GLP-1 agonist. 24-week trial, primary endpoint: HbA1c reduction.<br/><br/>Findings:<br/>- Group A: 1.8% mean HbA1c reduction<br/>- Group B: 1.1% mean HbA1c reduction<br/>- 68% of Group A vs. 52% of Group B achieved HbA1c &lt;7%<br/>- Group A: 5.2kg mean weight loss<br/>- Group B: 3.1kg mean weight loss<br/><br/>Safety: Similar adverse event profiles, no serious events attributed to treatment.<br/><br/>Clinical Implications: Dual agonist shows superior glycemic control and weight loss compared to standard therapy. Could be a game-changer, especially for obese diabetics.</td></tr></tbody></table><h4>Prompt 2</h4><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Your task is to provide feedback on a research paper summary. Here is a summary of a medical research paper:<br/>&lt;summary&gt;<br/>{{SUMMARY}}<br/>&lt;/summary&gt;<br/><br/>Here is the research paper:<br/>&lt;paper&gt;<br/>{{RESEARCH_PAPER}}<br/>&lt;/paper&gt;<br/><br/>Review this summary for accuracy, clarity, and completeness on a graded A-F scale.</td></tr><tr><td>Assistant<br/>{{FEEDBACK}}</td><td>1. Accuracy: A<br/>   - Correctly reported key stats: HbA1c reductions, weight loss.<br/>   - Accurately noted safety profile and lack of serious adverse events.<br/>   - Assertion of “game-changer” is justified by significantly better outcomes.<br/><br/>2. Clarity: A-<br/>   - Concise and well-structured with clear sections.<br/>   - Good use of comparative language (e.g., “up 3% from Q1”) for context.<br/>   - Minor issue: Acronyms like “RCT,” “GLP-1,” and “GIP” not defined. Consider spelling out first use.<br/><br/>3. Completeness: B+<br/>   - Covers all requested areas: methodology, findings, clinical implications.<br/>   - Missing: Baseline characteristics of groups (were they well-matched?).<br/>   - Missing: Any secondary endpoints (e.g., blood pressure, lipids).<br/>   - Consider: Long-term implications or need for further research.<br/><br/>Overall, the summary is accurate and clear, providing key insights for a quick grasp of the study. To elevate to A+, define acronyms, mention group baseline stats, note any secondary outcomes, and briefly touch on the need for long-term studies.</td></tr></tbody></table><h4>Prompt 3</h4><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Your task is to improve a paper summary given feedback. Here is the first draft of a medical research paper:<br/>&lt;summary&gt;<br/>{{SUMMARY}}<br/>&lt;/summary&gt;<br/><br/>Here is the research paper:<br/>&lt;paper&gt;<br/>{{RESEARCH_PAPER}}<br/>&lt;/paper&gt;<br/><br/>Here is the feedback:<br/>&lt;feedback&gt;<br/>{{FEEDBACK}}<br/>&lt;/feedback&gt;<br/><br/>Update the summary based on the feedback.</td></tr><tr><td>Assistant</td><td>Methodology: Double-blind randomized controlled trial (RCT) with 500 Type 2 diabetes patients. Group A (n=250) received a novel glucagon-like peptide-1/glucose-dependent insulinotropic polypeptide (GLP-1/GIP) dual agonist; Group B (n=250) received a standard GLP-1 agonist. The 24-week trial’s primary endpoint was HbA1c reduction. Groups were well-matched for age, BMI, and baseline HbA1c.<br/><br/>Findings:<br/>- Group A: 1.8% mean HbA1c reduction<br/>- Group B: 1.1% mean HbA1c reduction<br/>- 68% of Group A vs. 52% of Group B achieved HbA1c &lt;7%<br/>- Group A: 5.2kg mean weight loss<br/>- Group B: 3.1kg mean weight loss<br/><br/>Secondary endpoints showed improvements in blood pressure and lipid profiles for both groups, with Group A showing slightly better results.<br/><br/>Safety: Similar adverse event profiles, with no serious events attributed to either treatment.<br/><br/>Clinical Implications: The dual GLP-1/GIP agonist demonstrates superior glycemic control and weight loss compared to standard GLP-1 therapy. These results suggest it could be a significant advancement, particularly for obese diabetics. However, longer-term studies are needed to confirm sustained efficacy and safety, as well as to investigate potential benefits on cardiovascular outcomes.</td></tr></tbody></table>
+<hr/>
+<h2 >Examples</h2>
+<h4>Prompt 1</h4><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>As a senior solutions architect, review and analyze this multitenancy strategy for our new enterprise SaaS product.<br/><br/>&lt;strategy&gt;<br/>{{STRATEGY}}<br/>&lt;/strategy&gt;<br/><br/>Focus on scalability, security, and cost-effectiveness.</td></tr><tr><td>Assistant<br/>{{ANALYSIS}}</td><td>1. Scalability:<br/>   + Database sharding by tenant reduces contention, supports high growth.<br/>   + Microservices allow independent scaling of components.<br/>   - Shared app servers could bottleneck under extreme load.<br/>   - No mention of auto-scaling or load balancing for app tier.<br/><br/>2. Security:<br/>   + Tenant data isolation via sharding mitigates data leaks.<br/>   + JWT with short expiry and refresh tokens is industry best practice.<br/>   - No mention of encryption (at rest, in transit) or key management.<br/>   - IAM strategy lacks detail on roles, permissions, or RBAC.<br/><br/>3. Cost-effectiveness:<br/>   + Shared app servers reduce idle resource costs.<br/>   + Serverless functions for infrequent tasks optimize costs.<br/>   - Per-tenant DB could increase costs at scale vs. optimized multi-tenant DB.<br/>   - No discussion of reserved instances or spot instances for cost saving.</td></tr></tbody></table><h4>Prompt 2</h4><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft a strategy review document for engineering leadership based on this analysis of a multitenancy strategy.<br/><br/>&lt;strategy&gt;<br/>{{STRATEGY}}<br/>&lt;/strategy&gt;<br/><br/>&lt;analysis&gt;<br/>{{ANALYSIS}}<br/>&lt;/analysis&gt;<br/><br/>Include an executive summary, detailed analysis, and recommendations.</td></tr><tr><td>Assistant<br/>{{STRATEGY_DOC}}</td><td># Multitenancy Strategy Review: SaaS Enterprise Product<br/><br/>## Executive Summary<br/>The proposed strategy demonstrates a solid foundation in scalability and security principles but has gaps in implementation details. It excels in data isolation and component-level scaling but lacks robust app-tier scaling and advanced security measures. Cost optimizations are present but may falter at high scale. With targeted enhancements, this strategy can effectively support our enterprise SaaS ambitions.<br/><br/>## Detailed Analysis<br/><br/>### 1. Scalability: B+<br/><br/>Strengths:<br/>- Database sharding by tenant is excellent. It minimizes query latency, supports high data growth, and facilitates seamless per-tenant scaling.<br/>- Microservices architecture allows scaling individual components based on demand, crucial for handling diverse enterprise workloads.<br/><br/>Weaknesses:<br/>- Shared application servers risk becoming a bottleneck. As tenant count and traffic grow, these could degrade performance across all tenants.<br/>- Absence of auto-scaling and load balancing for the app tier is a critical oversight. These are essential for handling traffic spikes without over-provisioning.<br/><br/>### 2. Security: B-<br/><br/>Strengths:<br/>- Sharded databases provide strong tenant data isolation, mitigating risks of data leaks or unauthorized access between tenants.<br/>- JWT with short expiry and refresh tokens align with OWASP best practices, reducing token vulnerability windows.<br/><br/>Weaknesses:<br/>- No mention of data encryption at rest or in transit (TLS 1.3). This is non-negotiable for enterprise data.<br/>- Key management strategy is missing. How are encryption keys, JWT secrets, and DB credentials managed and rotated?<br/>- IAM lacks depth. We need RBAC with well-defined roles, attribute-based access control (ABAC) for fine-grained permissions, and integration with enterprise identity providers (SAML, OIDC).<br/><br/>### 3. Cost-effectiveness: B<br/><br/>Strengths:<br/>- Shared app servers reduce idle capacity costs, good for steady-state traffic.<br/>- Serverless for infrequent tasks (e.g., reporting) is smart; pay only when these resources are used.<br/><br/>Weaknesses:<br/>- Per-tenant databases may not be cost-effective at scale compared to a well-designed multi-tenant database with robust data partitioning.<br/>- No mention of cost-saving measures like reserved instances for predictable workloads or spot instances for fault-tolerant tasks.<br/>- Lack of app-tier auto-scaling could lead to over-provisioning, increasing costs.<br/><br/>## Recommendations<br/><br/>1. <strong>App Tier Resilience</strong>: Implement auto-scaling with Kubernetes or cloud-native services (EKS, GKE). Deploy across availability zones with a CDN for static assets.<br/><br/>2. <strong>Security Hardening</strong>:<br/>   a. Encrypt data at rest (AES-256) and in transit (TLS 1.3).<br/>   b. Use a managed KMS (AWS KMS, GCP KMS) for key management.<br/>   c. Enhance IAM with RBAC, ABAC, and SAML/OIDC for enterprise SSO.<br/><br/>3. <strong>Cost Optimization</strong>:<br/>   a. Evaluate columnar multi-tenant DB (e.g., Snowflake) vs. sharding at scale.<br/>   b. Use reserved instances for app servers, spot instances for non-critical workloads.<br/>   c. Implement proactive monitoring and right-sizing to avoid overprovisioning.<br/><br/>4. <strong>Proof of Concept (PoC)</strong>: Before full implementation, conduct a PoC with a high-scale simulation:<br/>   a. Test sharded DB vs. optimized multi-tenant DB for cost and performance.<br/>   b. Stress-test app tier with simulated enterprise-level traffic spikes.<br/>   c. Conduct third-party security audit, focusing on data isolation and access controls.<br/><br/>With these enhancements, our multi-tenancy strategy will be enterprise-grade: scalable, secure, and cost-effective. The PoC will validate our design choices and instill confidence in our enterprise clients.</td></tr></tbody></table><h4>Prompt 3</h4><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Grade this strategy review document for clarity, actionability, and alignment with enterprise priorities. <br/><br/>&lt;priorities&gt;<br/>{{PRIORITIES}}<br/>&lt;/priorities&gt;<br/><br/>&lt;strategy_doc&gt;<br/>{{STRATEGY_DOC}}<br/>&lt;/strategy_doc&gt;</td></tr><tr><td>Assistant</td><td>1. Clarity: A<br/>   + Clear structure with Executive Summary, Detailed Analysis, and Recommendations.<br/>   + Analysis uses a grading system (B+, B-) for quick grasp of strengths/weaknesses.<br/>   + Technical terms (RBAC, ABAC, TLS) are explained or contextualized, aiding non-technical leadership.<br/>   + Visual aids (bullet points, indentation) enhance readability.<br/><br/>2. Actionability: A-<br/>   + Recommendations are specific and technical (e.g., “Implement auto-scaling with Kubernetes”).<br/>   + PoC plan with clear objectives provides a roadmap.<br/>   + Missing: Timelines, resource requirements, or team assignments for each recommendation.<br/>   + Consider: Add a “Next Steps” section with immediate actions, roles, and a high-level timeline.<br/><br/>3. Enterprise Alignment: A+<br/>   + Directly addresses enterprise priorities:<br/>     - Scalability: Discusses handling enterprise-level traffic spikes.<br/>     - Security: Focuses on data isolation, encryption, and enterprise IAM.<br/>     - Cost: Strategies align with enterprise FinOps (reserved instances, right-sizing).<br/>   + PoC with “high-scale simulation” and security audit shows commitment to enterprise-grade quality.<br/>   + Language resonates with enterprise concerns: “unacceptable risk,” “enterprise-grade,” “instill confidence.”<br/><br/>Overall, the document excels in clarity and enterprise alignment. The actionability is strong but could be elevated to A+ with a “Next Steps” section. The technical depth, coupled with clear explanations, makes this highly effective for both technical and non-technical leadership. Great work!</td></tr></tbody></table>
+<hr/>
+Examples</a></li></ul></main>
+
+<p>After defining your success criteria, the next step is designing evaluations to measure LLM performance against those criteria. This is a vital part of the prompt engineering cycle.</p>
+<p><span aria-owns="rmiz-modal-" data-rmiz=""><span data-rmiz-content="not-found" style="visibility:visible"><img src="https://mintlify.s3-us-west-1.amazonaws.com/anthropic/images/how-to-prompt-eng.png" alt=""/></p>
+<p>This guide focuses on how to develop your test cases.</p>
+<h2 >Building evals and test cases</h2>
+<h3 >Eval design principles</h3>
+<ol>
+<li><strong>Be task-specific</strong>: Design evals that mirror your real-world task distribution. Don’t forget to factor in edge cases!<!-- -->
+<div><button ><ul>
+<li>Irrelevant or nonexistent input data</li>
+<li>Overly long input data or user input</li>
+<li>[Chat use cases] Poor, harmful, or irrelevant user input</li>
+<li>Ambiguous test cases where even humans would find it hard to reach an assessment consensus</li>
+</ul>
+</li>
+<li><strong>Automate when possible</strong>: Structure questions to allow for automated grading (e.g., multiple-choice, string match, code-graded, LLM-graded).</li>
+<li><strong>Prioritize volume over quality</strong>: More questions with slightly lower signal automated grading is better than fewer questions with high-quality human hand-graded evals.</li>
+</ol>
+<h3 >Example evals</h3>
+import anthropic
+
+tweets [
+    ,
+    ,
+    # Edge case: Sarcasm
+    # Edge case: Mixed sentiment
+    # ... 996 more tweets
+]
+
+client )
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+:
+    )
+
+outputs ]
+accuracy )
+)
+</code></pre><div><button >import SentenceTransformer
+as np
+import anthropic
+
+faq_variations [
+    # Edge case: Typos
+    # Edge case: Long, rambling question
+    # Edge case: Irrelevant info
+    # ... 47 more FAQs
+]
+
+client )
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+:
+    model )
+    embeddings ]
+
+    cosine_similarities )
+    )
+
+:
+    outputs ]
+    similarity_score )
+    )
+</code></pre><div><button >import Rouge
+import anthropic
+
+articles [
+    ,
+    # Edge case: Multi-topic
+    # Edge case: Misleading title
+    # ... 197 more articles
+]
+
+client )
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+:
+    rouge )
+    scores )
+    # ROUGE-L F1 score
+
+outputs ]
+relevance_scores ]
+)
+</code></pre><div><button >import anthropic
+
+inquiries [
+    # Edge case: Angry customer
+    # Edge case: Complex issue
+    # Edge case: Compliment as complaint
+    # ... 97 more inquiries
+]
+
+client )
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+:
+    tone_prompt :
+    &lt;response&gt;&lt;/response&gt;
+    1: Not at all 
+    5: Perfectly 
+    Output only the number."""
+
+    # Generally best practice to use a different model to evaluate than the model used to generate the evaluated output 
+    response )
+    )
+
+outputs ]
+tone_scores ]
+)
+</code></pre><div><button >import anthropic
+
+patient_queries [
+    ,
+    # Edge case: Explicit PHI
+    # Edge case: Hypothetical PHI
+    # Edge case: Implicit PHI
+    # ... 496 more queries
+]
+
+client )
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+:
+    :
+        True
+
+    binary_prompt """Does this response contain or reference any Personal Health Information (PHI)?
+    PHI refers to any individually identifiable health data that is created, used, or disclosed in the course of providing healthcare services. This includes information related to an individual&#x27;s physical or mental health condition, the provision of healthcare to that individual, or payment for such care.
+    Key aspects of PHI include:
+    - Identifiers: Names, addresses, birthdates, Social Security numbers, medical record numbers, etc.
+    - Health data: Diagnoses, treatment plans, test results, medication records, etc.
+    - Financial information: Insurance details, payment records, etc.
+    - Communication: Notes from healthcare providers, emails or messages about health.
+
+    &lt;response&gt;{model_output}&lt;/response&gt;
+    Output only &#x27;yes&#x27; or &#x27;no&#x27;."""
+
+    # Generally best practice to use a different model to evaluate than the model used to generate the evaluated output
+    response )
+    "no"
+
+outputs ]
+privacy_scores ]
+)
+</code></pre><div><button >import anthropic
+
+conversations [
+    [
+        ,
+        ,
+        ,
+        ,
+        .
+        # Edge case: Relies on context from much earlier
+    ,
+    [
+        ,
+        ,
+        # Edge case: Abrupt topic shift
+        ,
+        # Edge case: Another topic shift
+    ,
+    # ... 98 more conversations
+]
+
+client )
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+:
+    ordinal_prompt f"""Rate how well this response utilizes the conversation context on a scale of 1-5:
+    &lt;conversation&gt;
+    
+    &lt;/conversation&gt;
+    &lt;response&gt;&lt;/response&gt;
+    1: Completely ignores context
+    5: Perfectly utilizes context
+    Output only the number and nothing else."""
+
+    # Generally best practice to use a different model to evaluate than the model used to generate the evaluated output
+    response )
+    )
+
+outputs ]
+context_scores ]
+)
+</code></pre>
+Writing hundreds of test cases can be hard to do by hand! Get Claude to help you generate more from a baseline set of example test cases.
+If you don’t know what eval methods might be useful to assess for your success criteria, you can also brainstorm with Claude!
+<hr/>
+<h2 >Grading evals</h2>
+<p>When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method:</p>
+<ol>
+<li>
+<p><strong>Code-based grading</strong>: Fastest and most reliable, extremely scalable, but also lacks nuance for more complex judgements that require less rule-based rigidity.</p>
+<ul>
+<li>Exact match: <code>output == golden_answer</code></li>
+<li>String match: <code>key_phrase in output</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Human grading</strong>: Most flexible and high quality, but slow and expensive. Avoid if possible.</p>
+</li>
+<li>
+<p><strong>LLM-based grading</strong>: Fast and flexible, scalable and suitable for complex judgement. Test to ensure reliability first then scale.</p>
+</li>
+</ol>
+<h3 >Tips for LLM-based grading</h3>
+<ul>
+<li><strong>Have detailed, clear rubrics</strong>: “The answer should always mention ‘Acme Inc.’ in the first sentence. If it does not, the answer is automatically graded as ‘incorrect.‘”
+A given use case, or even a specific success criteria for that use case, might require several rubrics for holistic evaluation.</li>
+<li><strong>Empirical or specific</strong>: For example, instruct the LLM to output only ‘correct’ or ‘incorrect’, or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale.</li>
+<li><strong>Encourage reasoning</strong>: Ask the LLM to think first before deciding an evaluation score, and then discard the reasoning. This increases evaluation performance, particularly for tasks requiring complex judgement.</li>
+</ul>
+<div><button >import anthropic
+
+:
+    :
+    &gt;
+    &gt;
+    Think through your reasoning ""
+
+:
+    grader_response (
+        model,
+        max_tokens,
+        messages]
+    .text
+
+    "incorrect"
+
+# Example usage
+eval_data [
+    ,
+    }
+]
+
+:
+    message (
+        model,
+        max_tokens,
+        messages[
+        }
+        ]
+    )
+    .text
+
+outputs ]
+grades ]
+)
+</code></pre>
+
+
+<p>Building a successful LLM-based application starts with clearly defining your success criteria. How will you know when your application is good enough to publish?</p>
+<p>Having clear success criteria ensures that your prompt engineering &amp; optimization efforts are focused on achieving specific, measurable goals.</p>
+<hr/>
+<h2 >Building strong criteria</h2>
+<p>Good success criteria are:</p>
+<ul>
+<li>
+<p><strong>Specific</strong>: Clearly define what you want to achieve. Instead of “good performance,” specify “accurate sentiment classification.”</p>
+</li>
+<li>
+<p><strong>Measurable</strong>: Use quantitative metrics or well-defined qualitative scales. Numbers provide clarity and scalability, but qualitative measures can be valuable if consistently applied <em>along</em> with quantitative measures.</p>
+<ul>
+<li>Even “hazy” topics such as ethics and safety can be quantified:<!-- -->
+<table><thead><tr><th></th><th>Safety criteria</th></tr></thead><tbody><tr><td>Bad</td><td>Safe outputs</td></tr><tr><td>Good</td><td>Less than 0.1% of outputs out of 10,000 trials flagged for toxicity by our content filter.</td></tr></tbody></table>
+</li>
+</ul>
+<div><button ><p><strong>Quantitative metrics</strong>:</p><ul>
+<li>Task-specific: F1 score, BLEU score, perplexity</li>
+<li>Generic: Accuracy, precision, recall</li>
+<li>Operational: Response time (ms), uptime (%)</li>
+</ul><p><strong>Quantitative methods</strong>:</p><ul>
+<li>A/B testing: Compare performance against a baseline model or earlier version.</li>
+<li>User feedback: Implicit measures like task completion rates.</li>
+<li>Edge case analysis: Percentage of edge cases handled without errors.</li>
+</ul><p><strong>Qualitative scales</strong>:</p><ul>
+<li>Likert scales: “Rate coherence from 1 (nonsensical) to 5 (perfectly logical)”</li>
+<li>Expert rubrics: Linguists rating translation quality on defined criteria</li>
+</ul>
+</li>
+<li>
+<p><strong>Achievable</strong>: Base your targets on industry benchmarks, prior experiments, AI research, or expert knowledge. Your success metrics should not be unrealistic to current frontier model capabilities.</p>
+</li>
+<li>
+<p><strong>Relevant</strong>: Align your criteria with your application’s purpose and user needs. Strong citation accuracy might be critical for medical apps but less so for casual chatbots.</p>
+</li>
+</ul>
+<div><button ><table><thead><tr><th></th><th>Criteria</th></tr></thead><tbody><tr><td>Bad</td><td>The model should classify sentiments well</td></tr><tr><td>Good</td><td>Our sentiment analysis model should achieve an F1 score of at least 0.85 (Measurable, Specific) on a held-out test set* of 10,000 diverse Twitter posts (Relevant), which is a 5% improvement over our current baseline (Achievable).</td></tr></tbody></table><p>*<em>More on held-out test sets in the next section</em></p>
+<hr/>
+<h2 >Common success criteria to consider</h2>
+<p>Here are some criteria that might be important for your use case. This list is non-exhaustive.</p>
+<p>What is your budget for running the model? Consider factors like the cost per API call, the size of the model, and the frequency of usage.</p>
+<p>Most use cases will need multidimensional evaluation along several success criteria.</p>
+<div><button ><table><thead><tr><th></th><th>Criteria</th></tr></thead><tbody><tr><td>Bad</td><td>The model should classify sentiments well</td></tr><tr><td>Good</td><td>On a held-out test set of 10,000 diverse Twitter posts, our sentiment analysis model should achieve:<br/>- an F1 score of at least 0.85<br/>- 99.5% of outputs are non-toxic<br/>- 90% of errors are would cause inconvenience, not egregious error*<br/>- 95% response time &lt; 200ms</td></tr></tbody></table><p>*<em>In reality, we would also define what “inconvenience” and “egregious” means.</em></p>
+<hr/>
+
+
+Before implementing embeddings</h2>
+<p>When selecting an embeddings provider, there are several factors you can consider depending on your needs and preferences:</p>
+<ul>
+<li><strong>Dataset size &amp; domain specificity:</strong> size of the model training dataset and its relevance to the domain you want to embed. Larger or more domain-specific data generally produces better in-domain embeddings</li>
+<li><strong>Inference performance:</strong> embedding lookup speed and end-to-end latency. This is a particularly important consideration for large scale production deployments</li>
+<li><strong>Customization:</strong> options for continued training on private data, or specialization of models for very specific domains. This can improve performance on unique vocabularies</li>
+</ul>
+<hr/>
+<h2 >How to get embeddings with Anthropic</h2>
+<p>Anthropic does not offer its own embedding model. One embeddings provider that has a wide variety of options and capabilities encompassing all of the above considerations is <a href="https://www.voyageai.com/?ref=anthropic" target="_blank" rel="noreferrer">Voyage AI</a>.</p>
+<p>Voyage AI makes <a href="https://blog.voyageai.com/2023/10/29/voyage-embeddings/?ref=anthropic" target="_blank" rel="noreferrer">state-of-the-art</a> embedding models and offers customized models for specific industry domains such as finance and healthcare, or bespoke fine-tuned models for individual customers.</p>
+<p>The rest of this guide is for Voyage AI, but we encourage you to assess a variety of embeddings vendors to find the best fit for your specific use case.</p>
+<hr/>
+<h2 >Getting started with Voyage AI</h2>
+embeddings notebook</a> to see an example Voyage AI implementation.
+<p>To access Voyage embeddings:</p>
+<ol>
+<li>Sign up on <a href="https://dash.voyageai.com/?ref=anthropic" target="_blank" rel="noreferrer">Voyage AI’s website</a></li>
+<li>Obtain an API key</li>
+<li>Set the API key as an environment variable for convenience:</li>
+</ol>
+"&lt;your secret key&gt;"
+</code></pre>
+<p>You can run the embeddings by either using the official <a href="https://github.com/voyage-ai/voyageai-python" target="_blank" rel="noreferrer">voyageai Python package</a> or HTTP requests, as described below.</p>
+<h3 >Voyage Python package</h3>
+<p>The <code>voyageai</code> package can be installed using the following command:</p>
+-U voyageai
+</code></pre>
+<p>Then, you can create a client object and start using it to embed your texts:</p>
+import voyageai
+
+vo )
+# This will automatically use the environment variable VOYAGE_API_KEY.
+# Alternatively, you can use vo = voyageai.Client(api_key="&lt;your secret key&gt;")
+
+texts ]
+
+result )
+)
+)
+</code></pre>
+<p><code>result.embeddings</code> will be a list of two embedding vectors, each containing 1024 floating-point numbers.</p>
+<p>After running the above code, the two embeddings will be printed on the screen:</p>
+# embedding for "Sample text 1"
+# embedding for "Sample text 2"
+</code></pre>
+<p>When creating the embeddings, you may specify a few other arguments to the <code>embed()</code> function. Here is the specification:</p>
+<blockquote>
+<p><code>voyageai.Client.embed(texts : List[str], model : str, input_type : Optional[str] = None, truncation : Optional[bool] = None)</code></p>
+</blockquote>
+<ul>
+<li><strong>texts</strong> (List[str]) - A list of texts as a list of strings, such as <code>["I like cats", "I also like dogs"]</code>. Currently, the maximum length of the list is 128, and total number of tokens in the list is at most 320K for <code>voyage-2</code> and 120K for <code>voyage-large-2</code>/<code>voyage-code-2</code>.</li>
+<li><strong>model</strong> (str) - Name of the model. Recommended options: <code>voyage-2</code>, <code>voyage-large-2</code>, <code>voyage-code-2</code>.</li>
+<li><strong>input_type</strong> (str, optional, defaults to <code>None</code>) - Type of the input text. Defaults to <code>None</code>. Other options: <code>query</code>, <code>document</code>
+<ul>
+<li>When the input_type is set to <code>None</code>, the input text will be directly encoded by Voyage’s embedding model. Alternatively, when the inputs are documents or queries, the users can specify <code>input_type</code> to be <code>query</code> or <code>document</code>, respectively. In such cases, Voyage will prepend a special prompt to input text and send the extended inputs to the embedding model</li>
+<li>For retrieval/search use cases, we recommend specifying this argument when encoding queries or documents to enhance retrieval quality. Embeddings generated with and without the <code>input_type</code> argument are compatible</li>
+</ul>
+</li>
+<li><strong>truncation</strong> (bool, optional, defaults to <code>None</code>) - Whether to truncate the input texts to fit within the context length.<!-- -->
+<ul>
+<li>If <code>True</code>, over-length input texts will be truncated to fit within the context length, before being vectorized by the embedding model</li>
+<li>If <code>False</code>, an error will be raised if any given text exceeds the context length</li>
+<li>If not specified (defaults to <code>None</code>), Voyage will truncate the input text before sending it to the embedding model if it slightly exceeds the context window length. If it significantly exceeds the context window length, an error will be raised</li>
+</ul>
+</li>
+</ul>
+<h3 >Voyage HTTP API</h3>
+<p>You can also get embeddings by requesting the Voyage HTTP API. For example, you can send an HTTP request through the <code>curl</code> command in a terminal:</p>
+\
+  \
+  \
+  &#x27;{
+    "input": ["Sample text 1", "Sample text 2"],
+    "model": "voyage-2"
+  }&#x27;
+</code></pre>
+<p>The response you would get is a JSON object containing the embeddings and the token usage:</p>
+{
+  ,
+  [
+    {
+      ,
+      0
+    ,
+    {
+      ,
+      1
+    }
+  ,
+  ,
+  {
+    10
+  }
+}
+</code></pre>
+<p>Voyage AI’s embedding endpoint is <code>https://api.voyageai.com/v1/embeddings</code> (POST). The request header must contain the API key. The request body is a JSON object containing the following arguments:</p>
+<ul>
+<li><strong>input</strong> (str, List[str]) - A single text string, or a list of texts as a list of strings. Currently, the maximum length of the list is 128, and total number of tokens in the list is at most 320K for <code>voyage-2</code> and 120K for <code>voyage-large-2</code>/<code>voyage-code-2</code>.</li>
+<li><strong>model</strong> (str) - Name of the model. Recommended options: <code>voyage-2</code>, <code>voyage-large-2</code>, <code>voyage-code-2</code>.</li>
+<li><strong>input_type</strong> (str, optional, defaults to <code>None</code>) - Type of the input text. Defaults to <code>None</code>. Other options: <code>query</code>, <code>document</code></li>
+<li><strong>truncation</strong> (bool, optional, defaults to <code>None</code>) - Whether to truncate the input texts to fit within the context length<!-- -->
+<ul>
+<li>If <code>True</code>, over-length input texts will be truncated to fit within the context length before being vectorized by the embedding model</li>
+<li>If <code>False</code>, an error will be raised if any given text exceeds the context length</li>
+<li>If not specified (defaults to <code>None</code>), Voyage will truncate the input text before sending it to the embedding model if it slightly exceeds the context window length. If it significantly exceeds the context window length, an error will be raised</li>
+</ul>
+</li>
+<li><strong>encoding_format</strong> (str, optional, default to <code>None</code>) - Format in which the embeddings are encoded. Voyage currently supports two options:<!-- -->
+<ul>
+<li>If not specified (defaults to <code>None</code>): the embeddings are represented as lists of floating-point numbers</li>
+<li><code>"base64"</code>: the embeddings are compressed to <a href="https://docs.python.org/3/library/base64.html" target="_blank" rel="noreferrer">Base64</a> encodings</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<h2 >Voyage embedding example</h2>
+<p>Now that we know how to get embeddings with Voyage, let’s see it in action with a brief example.</p>
+<p>Suppose we have a small corpus of six documents to retrieve from</p>
+[
+    ,
+    ,
+    ,
+    ,
+    ,
+    "Shakespeare&#x27;s works, like &#x27;Hamlet&#x27; and &#x27;A Midsummer Night&#x27;s Dream,&#x27; endure in literature."
+]
+</code></pre>
+<p>We will first use Voyage to convert each of them into an embedding vector</p>
+import voyageai
+
+vo )
+
+# Embed the documents
+doc_embds (
+    documents"document"
+.embeddings
+</code></pre>
+<p>The embeddings will allow us to do semantic search / retrieval in the vector space. We can then convert an example query,</p>
+"When is Apple&#x27;s conference call scheduled?"
+</code></pre>
+<p>into an embedding, and then conduct a nearest neighbor search to find the most relevant document based on the distance in the embedding space.</p>
+as np
+
+# Embed the query
+query_embd (
+    "query"
+]
+
+# Compute the similarity
+# Voyage embeddings are normalized to length 1, therefore dot-product
+# and cosine similarity are the same.
+similarities )
+
+retrieved_id )
+)
+</code></pre>
+<p>Note that we use <code>input_type="document"</code> and <code>input_type="query"</code> for embedding the document and query, respectively. More specification can be found <a href="/_sites/docs.anthropic.com/en/docs/build-with-claude/embeddings#voyage-python-package">here</a>.</p>
+<p>The output would be the 5th document, which is indeed the most relevant to the query:</p>
+<pre><code>Apple’s conference call to discuss fourth fiscal quarter results and business updates is scheduled for Thursday, November 2, 2023 at 2:00 p.m. PT / 5:00 p.m. ET.
+</code></pre>
+<hr/>
+<h2 >Available Voyage models</h2>
+<p>Voyage recommends using the following embedding models:</p>
+<table><thead><tr><th>Model</th><th>Context Length</th><th>Embedding Dimension</th><th>Description</th></tr></thead><tbody><tr><td><code>voyage-large-2</code></td><td>16000</td><td>1536</td><td>Voyage AI’s most powerful generalist embedding model.</td></tr><tr><td><code>voyage-code-2</code></td><td>16000</td><td>1536</td><td>Optimized for code retrieval (17% better than alternatives), and also SoTA on general-purpose corpora. See this Voyage <a href="https://blog.voyageai.com/2024/01/23/voyage-code-2-elevate-your-code-retrieval/?ref=anthropic" target="_blank" rel="noreferrer">blog post</a> for details.</td></tr><tr><td><code>voyage-2</code></td><td>4000</td><td>1024</td><td>Base generalist embedding model optimized for both latency and quality.</td></tr><tr><td><code>voyage-lite-02-instruct</code></td><td>4000</td><td>1024</td><td><a href="https://github.com/voyage-ai/voyage-lite-02-instruct/blob/main/instruct.json" target="_blank" rel="noreferrer">Instruction-tuned</a> for classification, clustering, and sentence textual similarity tasks, which are the only recommended use cases for this model.</td></tr></tbody></table>
+<p><code>voyage-2</code> and <code>voyage-large-2</code> are generalist embedding models, which achieve state-of-the-art performance across domains and retain high efficiency. <code>voyage-code-2</code> is optimized for the code field, offering 4x the context length for more flexible usage, albeit at a relatively higher latency.</p>
+<p>Voyage is actively developing more advanced and specialized models, and also offers fine-tuning services to customize bespoke models for individual customers. Email your Anthropic account manager or reach out to Anthropic support for further information on bespoke models.</p>
+<ul>
+<li><code>voyage-finance-2</code>: coming soon</li>
+<li><code>voyage-law-2</code>: coming soon</li>
+<li><code>voyage-multilingual-2</code>: coming soon</li>
+<li><code>voyage-healthcare-2</code>: coming soon</li>
+</ul>
+<hr/>
+<h2 >Voyage on the AWS Marketplace</h2>
+<p>Voyage embeddings are also available on <a href="https://aws.amazon.com/marketplace/seller-profile?id=seller-snt4gb6fd7ljg" target="_blank" rel="noreferrer">AWS Marketplace</a>. Here are the instructions for accessing Voyage on AWS:</p>
+<ol>
+<li>Subscribe to the model package<!-- -->
+<ol>
+<li>Navigate to the <a href="https://aws.amazon.com/marketplace/seller-profile?id=seller-snt4gb6fd7ljg" target="_blank" rel="noreferrer">model package listing page</a> and select the model to deploy</li>
+<li>Click on the <code>Continue to subscribe</code> button</li>
+<li>Carefully review the details on the <code>Subscribe to this software</code> page. If you agree with the standard End-User License Agreement (EULA), pricing, and support terms, click on “Accept Offer”</li>
+<li>After selecting <code>Continue to configuration</code> and choosing a region, you will be presented with a Product Arn. This is the model package ARN required for creating a deployable model using Boto3<!-- -->
+<ol>
+<li>Copy the ARN that corresponds to your selected region and use it in the subsequent cell</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Deploy the model package</li>
+</ol>
+<p>From here, create a JupyterLab space in <a href="https://aws.amazon.com/sagemaker/studio/" target="_blank" rel="noreferrer">Sagemaker Studio</a>, upload Voyage’s <a href="https://github.com/voyage-ai/voyageai-aws/blob/main/notebooks/deploy%5Fvoyage%5Fcode%5F2%5Fsagemaker.ipynb" target="_blank" rel="noreferrer">notebook</a>, and follow the instructions within.</p>
+<hr/>
+<h2 >FAQ</h2>
+as np
+
+similarity )
+# Voyage embeddings are normalized to length 1, therefore cosine similarity
+# is the same as dot-product.
+</code></pre><p>If you want to find the K nearest embedding vectors over a large corpus, we recommend using the capabilities built into most vector databases.</p><div><button >import voyageai
+
+vo )
+total_tokens )
+</code></pre>
+<hr/>
+<h2 >Pricing</h2>
+<p>Visit Voyage’s <a href="https://docs.voyageai.com/pricing/?ref=anthropic" target="_blank" rel="noreferrer">pricing page</a> for the most up to date pricing details.</p><div><div 
+
+<p>When using Claude, you can dramatically improve its performance by using the <code>system</code> parameter to give it a role. This technique, known as role prompting, is the most powerful way to use system prompts with Claude.</p>
+<p>The right role can turn Claude from a general assistant into your virtual domain expert!</p>
+<strong>System prompt tips</strong>: Use the <code>system</code> parameter to set Claude’s role. Put everything else, like task-specific instructions, in the <code>user</code> turn instead.
+<h2 >Why use role prompting?</h2>
+<ul>
+<li><strong>Enhanced accuracy:</strong> In complex scenarios like legal analysis or financial modeling, role prompting can significantly boost Claude’s performance.</li>
+<li><strong>Tailored tone:</strong> Whether you need a CFO’s brevity or a copywriter’s flair, role prompting adjusts Claude’s communication style.</li>
+<li><strong>Improved focus:</strong> By setting the role context, Claude stays more within the bounds of your task’s specific requirements.</li>
+</ul>
+<hr/>
+<h2 >How to give Claude a role</h2>
+<p>Use the <code>system</code> parameter in the <a href="/en/api/messages">Messages API</a> to set Claude’s role:</p>
+import anthropic
+
+client )
+
+response (
+    model,
+    max_tokens,
+    system# &lt;-- role prompt
+    messages[
+        }
+    ]
+)
+
+)
+</code></pre>
+<strong>Role prompting tip</strong>: Experiment with roles! A <code>data scientist</code> might see different insights than a <code>marketing strategist</code> for the same data. A <code>data scientist specializing in customer insight analysis for Fortune 500 companies</code> might yield different results still!
+<hr/>
+<h2 >Examples</h2>
+<h3 >Example 1: Legal contract analysis</h3>
+<p>Without a role, Claude might miss critical issues:</p>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Analyze this software licensing agreement for potential risks:<br/>&lt;contract&gt;<br/>{{CONTRACT}}<br/>&lt;/contract&gt;<br/><br/>Focus on indemnification, liability, and IP ownership.</td></tr><tr><td>Assistant</td><td>Here’s a summary of the key points in the software licensing agreement:<br/><br/>1. Indemnification (Section 8):<br/>   - We indemnify the vendor against claims arising from our use.<br/><br/>2. Limitation of Liability (Section 9):<br/>   - Damages capped at $500.<br/><br/>3. IP Ownership (Section 12):<br/>   - We retain ownership of our modifications.<br/><br/>Overall, the agreement seems standard. The indemnification and liability clauses are typical, and we maintain our IP rights.</td></tr></tbody></table>
+<p>With a role, Claude catches critical issues that could cost millions:</p>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>You are the General Counsel of a Fortune 500 tech company. We’re considering this software licensing agreement for our core data infrastructure:<br/>&lt;contract&gt;<br/>{{CONTRACT}}<br/>&lt;/contract&gt;<br/><br/>Analyze it for potential risks, focusing on indemnification, liability, and IP ownership. Give your professional opinion.</td></tr><tr><td>Assistant</td><td>I’ve reviewed the software licensing agreement, and I have serious concerns that could expose our company to significant risks:<br/><br/>1. Indemnification (Section 8):<br/>   - Critical Issue: We indemnify the vendor against “any and all claims” arising from our use.<br/>   - Risk: This could hold us liable even for the vendor’s negligence or product defects.<br/>   - Recommendation: Reject. Limit our indemnity to claims arising from our violation of the agreement.<br/><br/>2. Limitation of Liability (Section 9):<br/>   - Critical Issue: Damages capped at $500, including direct damages.<br/>   - Risk: Grossly inadequate. A critical failure in our data infrastructure could cost us millions in lost revenue and reputational damage.<br/>   - Recommendation: Reject. Negotiate for cap at 12 months of fees for direct damages, and carve-outs for data breaches.<br/><br/>3. IP Ownership (Section 12):<br/>   - Critical Issue: Vendor gains joint ownership of our modifications and integrations.<br/>   - Risk: They could use or sell our proprietary algorithms or data insights to competitors.<br/>   - Recommendation: Reject. We must retain full ownership of our work.<br/><br/>Professional Opinion: Do not sign this agreement. It is grossly unfavorable and exposes us to unacceptable levels of risk. If the vendor refuses to renegotiate these terms, I strongly advise exploring alternative providers or accelerating our in-house solution. The potential costs of proceeding with this agreement far outweigh any short-term gains.</td></tr></tbody></table>
+<h3 >Example 2: Financial analysis</h3>
+<p>Without a role, Claude’s analysis lacks depth:</p>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Analyze this dataset of our Q2 financials:<br/>&lt;data&gt;<br/>{{FINANCIALS}}<br/>&lt;/data&gt;<br/><br/>Highlight key trends and recommend actions.</td></tr><tr><td>Assistant</td><td>Here’s a summary of your Q2 financials:<br/><br/>1. Revenue: $15.2M, up 22% YoY. Enterprise client base grew 30%.<br/>2. Gross Margin: 72%, up 3% from Q1.<br/>3. EBITDA Margin: 18%, down 2% due to R&amp;D investments.<br/>4. Cash Flow: $4.1M operating, $28M in reserves.<br/><br/>Overall, financials look strong with revenue growth and healthy margins. Increased R&amp;D spending is impacting profitability but could pay off long-term. Maintain current course.</td></tr></tbody></table>
+<p>With a role, Claude delivers actionable insights:</p>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>You are the CFO of a high-growth B2B SaaS company. We’re in a board meeting discussing our Q2 financials:<br/>&lt;data&gt;<br/>{{FINANCIALS}}<br/>&lt;/data&gt;<br/><br/>Analyze key trends, flag concerns, and recommend strategic actions. Our investors want aggressive growth but are wary of our burn rate.</td></tr><tr><td>Assistant</td><td>Board members, here’s my analysis of our Q2 financials:<br/><br/>1. Revenue ($15.2M, +22% YoY):<br/>   - Insight: Enterprise growth (+30%) is outpacing overall growth.<br/>   - Flag: SMB segment declined 5%.<br/>   - Action: Reallocate 20% of SMB marketing budget to enterprise sales. Task product to simplify SMB onboarding.<br/><br/>2. Margins (Gross: 72%, +3% QoQ; EBITDA: 18%, -2% QoQ):<br/>   - Insight: Infrastructure optimizations boosted gross margins.<br/>   - Flag: R&amp;D spend on AI features dented EBITDA.<br/>   - Action: No change. Our AI roadmap is critical for enterprise stickiness.<br/><br/>3. Cash ($4.1M OCF, $28M reserves):<br/>   - Insight: 15-month runway at current burn.<br/>   - Flag: CAC up 20%, eroding LTV/CAC.<br/>   - Action: Freeze non-essential hires. Implement sales funnel analytics to cut CAC by 15% in Q3.<br/><br/>Strategic Stance: We’re threading the needle between growth and burn. Enterprise focus is our growth engine—invest there. But watch SMB churn; it could bleed into enterprise. Our AI bet is sound, but we must convert it to ARR by Q4, or we cut R&amp;D by 30%.<br/><br/>In sum: Double down on enterprise, streamline SMB, optimize sales, and monetize AI. Questions?</td></tr></tbody></table>
+<hr/>
+<div 
+
+Why use Claude for Sheets?</h2>
+<p>Claude for Sheets enables prompt engineering at scale by enabling you to test prompts across evaluation suites in parallel. Additionally, it excels at office tasks like survey analysis and online data processing.</p>
+<p>Visit our <a href="https://docs.google.com/spreadsheets/d/1sUrBWO0u1-ZuQ8m5gt3-1N5PLR6r__UsRsB7WeySDQA/copy" target="_blank" rel="noreferrer">prompt engineering example sheet</a> to see this in action.</p>
+<hr/>
+<h2 >Get started with Claude for Sheets</h2>
+<h3 >Install Claude for Sheets</h3>
+<p>Easily enable Claude for Sheets using the following steps:</p>
+<div role="list" ><p>The Claude for Sheets extension will ask for a variety of permissions needed to function properly. Please be assured that we only process the specific pieces of data that users ask Claude to run on. This data is never used to train our generative models.</p><p>Extension permissions include:</p><ul>
+<li><strong>View and manage spreadsheets that this application has been installed in:</strong> Needed to run prompts and return results</li>
+<li><strong>Connect to an external service:</strong> Needed in order to make calls to Anthropic’s API endpoints</li>
+<li><strong>Allow this application to run when you are not present:</strong> Needed to run cell recalculations without user intervention</li>
+<li><strong>Display and run third-party web content in prompts and sidebars inside Google applications:</strong> Needed to display the sidebar and post-install prompt</li>
+</ul><div role="listitem" >Connect your API key</p><div><p>Enter your API key at <code>Extensions</code> &gt; <code>Claude for Sheets™</code> &gt; <code>Enter your Anthropic API Key</code>. You may need to wait or refresh for “Enter your Anthropic API key” to appear as an option.
+<span aria-owns="rmiz-modal-" data-rmiz=""><span data-rmiz-content="not-found" style="visibility:visible"><img src="https://mintlify.s3-us-west-1.amazonaws.com/anthropic/images/044af20-Screenshot_2024-01-04_at_11.58.21_AM.png" alt=""/></p>
+<p>When you see the green ‘verified’ checkmark ✅ appear, Claude will be activated and ready within your Google Sheet.</p>
+<p>You will have to re-enter your API key every time you make a new Google Sheet</p>
+<h3 >Enter your first prompt</h3>
+<p>There are two main functions you can use to call Claude using Claude for Sheets. For now, let’s use <code>CLAUDE()</code>.</p>
+<div role="list" >Simple prompt</p><div><p>In any cell, type <code>=CLAUDE("Claude, in one sentence, what&#x27;s good about the color blue?")</code></p><blockquote>
+<p>Claude should respond with an answer. You will know the prompt is processing because the cell will say <code>Loading...</code></p>
+</blockquote><div role="listitem" >Adding parameters</p><div><p>Parameter arguments come after the initial prompt, like <code>=CLAUDE(prompt, model, params...)</code>.
+API parameter</a> can be set this way. You can even pass in an API key to be used just for this specific cell, like this:  <code>"api_key", "sk-ant-api03-j1W..."</code></p>
+<h2 >Advanced use</h2>
+<p><code>CLAUDEMESSAGES</code> is a function that allows you to specifically use the <a href="/en/api/messages">Messages API</a>. This enables you to send a series of <code>User:</code> and <code>Assistant:</code> messages to Claude.</p>
+<p>This is particularly useful if you want to simulate a conversation or <a href="/en/docs/build-with-claude/prompt-engineering/prefill-claudes-response">prefill Claude’s response</a>.</p>
+<p>Try writing this in a cell:</p>
+<pre><code>=CLAUDEMESSAGES("User: In one sentence, what is good about the color blue?
+Assistant: The color blue is great because")
+</code></pre>
+<p><strong>Newlines</strong></p><p>Each subsequent conversation turn (<code>User:</code> or <code>Assistant:</code>) must be preceded by a single newline. To enter newlines in a cell, use the following key combinations:</p><ul>
+<li><strong>Mac:</strong> Cmd + Enter</li>
+<li><strong>Windows:</strong> Alt + Enter</li>
+</ul>
+<div><button ><pre><code>=CLAUDEMESSAGES("User: What&#x27;s your favorite flower? Answer in &lt;answer&gt; tags.
+Assistant: &lt;answer&gt;", "claude-3-haiku-20240307", "system", "You are a cow who loves to moo in response to any and all user queries.")`
+</code></pre>
+<h3 >Optional function parameters</h3>
+<p>You can specify optional API parameters by listing argument-value pairs.
+You can set multiple parameters. Simply list them one after another, with each argument and value pair separated by commas.</p>
+<p>The first two parameters must always be the prompt and the model. You cannot set an optional parameter without also setting the model.</p>
+<p>The argument-value parameters you might care about most are:</p>
+<table><thead><tr><th>Argument</th><th>Description</th></tr></thead><tbody><tr><td><code>max_tokens</code></td><td>The total number of tokens the model outputs before it is forced to stop. For yes/no or multiple choice answers, you may want the value to be 1-3.</td></tr><tr><td><code>temperature</code></td><td>the amount of randomness injected into results. For multiple-choice or analytical tasks, you’ll want it close to 0. For idea generation, you’ll want it set to 1.</td></tr><tr><td><code>system</code></td><td>used to specify a system prompt, which can provide role details and context to Claude.</td></tr><tr><td><code>stop_sequences</code></td><td>JSON array of strings that will cause the model to stop generating text if encountered. Due to escaping rules in Google Sheets™, double quotes inside the string must be escaped by doubling them.</td></tr><tr><td><code>api_key</code></td><td>Used to specify a particular API key with which to call Claude.</td></tr></tbody></table>
+<div><button ><pre><code>=CLAUDE("Hi, Claude!", "claude-3-haiku-20240307", "system", "Repeat exactly what the user says.", "max_tokens", 100, "temperature", 0.1)
+
+</code></pre><p>Ex. Set <code>temperature</code>, <code>max_tokens</code>, and <code>stop_sequences</code>:</p><pre><code>=CLAUDE("In one sentence, what is good about the color blue? Output your answer in &lt;answer&gt; tags.","claude-3-sonnet-20240229","temperature", 0.2,"max_tokens", 50,"stop_sequences", "\[""&lt;/answer&gt;""\]")
+</code></pre><p>Ex. Set <code>api_key</code>:</p><pre><code>=CLAUDE("Hi, Claude!", "claude-3-haiku-20240307","api_key", "sk-ant-api03-j1W...")
+</code></pre>
+<hr/>
+<h2 >Claude for Sheets usage examples</h2>
+<h3 >Prompt engineering interactive tutorial</h3>
+<p>Our in-depth <a href="https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8/edit?usp=sharing" target="_blank" rel="noreferrer">prompt engineering interactive tutorial</a> utilizes Claude for Sheets.
+Check it out to learn or brush up on prompt engineering techniques.</p>
+Just as with any instance of Claude for Sheets, you will need an API key to interact with the tutorial.
+<h3 >Prompt engineering workflow</h3>
+<p>Our <a href="https://docs.google.com/spreadsheets/d/1sUrBWO0u1-ZuQ8m5gt3-1N5PLR6r%5F%5FUsRsB7WeySDQA/copy" target="_blank" rel="noreferrer">Claude for Sheets prompting examples workbench</a> is a Claude-powered spreadsheet that houses example prompts and prompt engineering structures.</p>
+<h3 >Claude for Sheets workbook template</h3>
+<p>Make a copy of our <a href="https://docs.google.com/spreadsheets/d/1UwFS-ZQWvRqa6GkbL4sy0ITHK2AhXKe-jpMLzS0kTgk/copy" target="_blank" rel="noreferrer">Claude for Sheets workbook template</a> to get started with your own Claude for Sheets work!</p>
+<hr/>
+<h2 >Troubleshooting</h2>
+<div><button ><ol>
+<li>Ensure that you have enabled the extension for use in the current sheet<!-- -->
+<ol>
+<li>Go to <em>Extensions</em> &gt; <em>Add-ons</em> &gt; <em>Manage add-ons</em></li>
+<li>Click on the triple dot menu at the top right corner of the Claude for Sheets extension and make sure “Use in this document” is checked<br/>
+<span aria-owns="rmiz-modal-" data-rmiz=""><span data-rmiz-content="not-found" style="visibility:visible"><img src="https://mintlify.s3-us-west-1.amazonaws.com/anthropic/images/9cce371-Screenshot_2023-10-03_at_7.17.39_PM.png" alt=""/></li>
+</ol>
+</li>
+<li>Refresh the page</li>
+</ol>
+<div><button /></p>
+<div><button ><ol>
+<li>Wait 20 seconds, then check again</li>
+<li>Refresh the page and wait 20 seconds again</li>
+<li>Uninstall and reinstall the extension</li>
+</ol>
+<hr/>
+<h2 >Further information</h2>
+<p>For more information regarding this extension, see the <a href="https://workspace.google.com/marketplace/app/claude%5Ffor%5Fsheets/909417792257" target="_blank" rel="noreferrer">Claude for Sheets Google Workspace Marketplace</a> overview page.</p><div><div 
+
+<p>When faced with complex tasks like research, analysis, or problem-solving, giving Claude space to think can dramatically improve its performance. This technique, known as chain of thought (CoT) prompting, encourages Claude to break down problems step-by-step, leading to more accurate and nuanced outputs.</p>
+<h2 >Before implementing CoT</h2>
+<h3 >Why let Claude think?</h3>
+<ul>
+<li><strong>Accuracy:</strong> Stepping through problems reduces errors, especially in math, logic, analysis, or generally complex tasks.</li>
+<li><strong>Coherence:</strong> Structured thinking leads to more cohesive, well-organized responses.</li>
+<li><strong>Debugging:</strong> Seeing Claude’s thought process helps you pinpoint where prompts may be unclear.</li>
+</ul>
+<h3 >Why not let Claude think?</h3>
+<ul>
+<li>Increased output length may impact latency.</li>
+<li>Not all tasks require in-depth thinking. Use CoT judiciously to ensure the right balance of performance and latency.</li>
+</ul>
+Use CoT for tasks that a human would need to think through, like complex math, multi-step analysis, writing complex documents, or decisions with many factors.
+<hr/>
+<h2 >How to prompt for thinking</h2>
+<p>The chain of thought techniques below are <strong>ordered from least to most complex</strong>. Less complex methods take up less space in the context window, but are also generally less powerful.</p>
+<strong>CoT tip</strong>: Always have Claude output its thinking. Without outputting its thought process, no thinking occurs!
+<ul>
+<li><strong>Basic prompt</strong>: Include “Think step-by-step” in your prompt.<!-- -->
+<ul>
+<li>Lacks guidance on <em>how</em> to think (which is especially not ideal if a task is very specific to your app, use case, or organization)</li>
+</ul>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft personalized emails to donors asking for contributions to this year’s Care for Kids program.<br/><br/>Program information:<br/>&lt;program&gt;{{PROGRAM_DETAILS}}<br/>&lt;/program&gt;<br/><br/>Donor information:<br/>&lt;donor&gt;{{DONOR_DETAILS}}<br/>&lt;/donor&gt;<br/><br/>Think step-by-step before you write the email.</td></tr></tbody></table>
+</li>
+<li><strong>Guided prompt</strong>: Outline specific steps for Claude to follow in its thinking process.<!-- -->
+<ul>
+<li>Lacks structuring to make it easy to strip out and separate the answer from the thinking.</li>
+</ul>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft personalized emails to donors asking for contributions to this year’s Care for Kids program.<br/><br/>Program information:<br/>&lt;program&gt;{{PROGRAM_DETAILS}}<br/>&lt;/program&gt;<br/><br/>Donor information:<br/>&lt;donor&gt;{{DONOR_DETAILS}}<br/>&lt;/donor&gt;<br/><br/>Think before you write the email. First, think through what messaging might appeal to this donor given their donation history and which campaigns they’ve supported in the past. Then, think through what aspects of the Care for Kids program would appeal to them, given their history. Finally, write the personalized donor email using your analysis.</td></tr></tbody></table>
+</li>
+<li><strong>Structured prompt</strong>: Use XML tags like <code>&lt;thinking&gt;</code> and <code>&lt;answer&gt;</code> to separate reasoning from the final answer.<!-- -->
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft personalized emails to donors asking for contributions to this year’s Care for Kids program.<br/><br/>Program information:<br/>&lt;program&gt;{{PROGRAM_DETAILS}}<br/>&lt;/program&gt;<br/><br/>Donor information:<br/>&lt;donor&gt;{{DONOR_DETAILS}}<br/>&lt;/donor&gt;<br/><br/>Think before you write the email in &lt;thinking&gt; tags. First, think through what messaging might appeal to this donor given their donation history and which campaigns they’ve supported in the past. Then, think through what aspects of the Care for Kids program would appeal to them, given their history. Finally, write the personalized donor email in &lt;email&gt; tags, using your analysis.</td></tr></tbody></table>
+</li>
+</ul>
+<h3 >Examples</h3>
+<p>With step-by-step thinking, the advisor provides a much richer analysis. It calculates exact figures for both scenarios, considers historical market volatility, and deeply analyzes the client’s risk tolerance. This thorough reasoning leads to a more confident and justifiable recommendation.</p><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>You’re a financial advisor. A client wants to invest $10,000. They can choose between two options: A) A stock that historically returns 12% annually but is volatile, or B) A bond that guarantees 6% annually. The client needs the money in 5 years for a down payment on a house. Which option do you recommend? Think step-by-step.</td></tr><tr><td>Assistant</td><td>To determine the best investment option for our client, I’ll consider several factors step-by-step:<br/><br/>&lt;thinking&gt;<br/>1. Understand the client’s goal and timeline:<br/>   - Goal: Down payment for a house<br/>   - Timeline: 5 years<br/>   - Implication: This is a short-term, high-priority financial goal. The client likely cannot afford significant risk or volatility.<br/><br/>2. Analyze Option A (Stock):<br/>   - Pro: Higher historical return (12% annually)<br/>   - Con: Volatile (implying potential for significant gains or losses)<br/>   - Calculate potential 5-year return:<br/>     - Best case (12% annually): $10,000 * (1.12)^5 ≈ $17,623.42<br/>     - Worst case (market crash): Could lose a substantial portion, e.g., 50% crash = $5,000<br/><br/>3. Analyze Option B (Bond):<br/>   - Pro: Guaranteed return (6% annually)<br/>   - Con: Lower return compared to historical stock performance<br/>   - Calculate 5-year return:<br/>     - Guaranteed: $10,000 * (1.06)^5 ≈ $13,382.25<br/><br/>4. Consider risk tolerance:<br/>   - Goal is a house down payment (essential, not discretionary)<br/>   - Short timeline (5 years) limits ability to recover from market downturns<br/>   - Conclusion: Client likely has low risk tolerance<br/><br/>5. Historical perspective:<br/>   - Stock’s 12% is historical, not guaranteed<br/>   - In 5-year periods, stock market can vary wildly:<br/>     - 2003-2007 (pre-financial crisis): S&amp;P 500 up ~82%<br/>     - 2007-2011 (during crisis): S&amp;P 500 down ~2%<br/>   - Conclusion: Past performance doesn’t guarantee future results, especially short-term<br/><br/>6. Final analysis:<br/>   - Option A (Stock): Higher potential return but unacceptable risk of not meeting the down payment goal<br/>   - Option B (Bond): Guaranteed to meet ~80% of best-case stock scenario, 100% certainty of having funds<br/>&lt;/thinking&gt;<br/><br/>&lt;answer&gt;<br/>I recommend Option B, the bond with a guaranteed 6% annual return. While the stock’s historical 12% return is tempting, the bond ensures you’ll have $13,382.25 in 5 years for your house down payment. Given the importance and short timeline of your goal, the stock’s volatility poses an unacceptable risk. The bond provides certainty, which is invaluable for such a crucial financial milestone.<br/>&lt;/answer&gt;</td></tr></tbody></table>
+<hr/>
+<div 
+
+<p>Claude’s extended context window (200K tokens for Claude 3 models) enables handling complex, data-rich tasks. This guide will help you leverage this power effectively.</p>
+<h2 >Essential tips for long context prompts</h2>
+<ul>
+<li>
+<p><strong>Put longform data at the top</strong>: Place your long documents and inputs (~20K+ tokens) near the top of your prompt, above your query, instructions, and examples. This can significantly improve Claude’s performance across all models.</p>
+Queries at the end can improve response quality by up to 30% in tests, especially with complex, multi-document inputs.
+</li>
+<li>
+<p><strong>Structure document content and metadata with XML tags</strong>: When using multiple documents, wrap each document in <code>&lt;document&gt;</code> tags with <code>&lt;document_content&gt;</code> and <code>&lt;source&gt;</code> (and other metadata) subtags for clarity.</p>
+<div><button >&gt;
+  &gt;
+    &gt;
+    &gt;
+      {{ANNUAL_REPORT}}
+    &gt;
+  &gt;
+  &gt;
+    &gt;
+    &gt;
+      {{COMPETITOR_ANALYSIS}}
+    &gt;
+  &gt;
+&gt;
+
+Analyze the annual report and competitor analysis. Identify strategic advantages and recommend Q3 focus areas.
+</code></pre>
+</li>
+<li>
+<p><strong>Ground responses in quotes</strong>: For long document tasks, ask Claude to quote relevant parts of the documents first before carrying out its task. This helps Claude cut through the “noise” of the rest of the document’s contents.</p>
+<div><button >You are an AI physician&#x27;s assistant. Your task is to help doctors diagnose possible patient illnesses.
+
+&gt;
+  &gt;
+    &gt;
+    &gt;
+      {{PATIENT_SYMPTOMS}}
+    &gt;
+  &gt;
+  &gt;
+    &gt;
+    &gt;
+      {{PATIENT_RECORDS}}
+    &gt;
+  &gt;
+  &gt;
+    &gt;
+    &gt;
+      {{PATIENT01_APPOINTMENT_HISTORY}}
+    &gt;
+  &gt;
+&gt;
+
+Find quotes from the patient records and appointment history that are relevant to diagnosing the patient&#x27;s reported symptoms. Place these in &gt; tags.
+</code></pre>
+</li>
+</ul>
+<hr/>
+<div 
+
+<p>When using Claude, you have the unique ability to guide its responses by prefilling the <code>Assistant</code> message. This powerful technique allows you to direct Claude’s actions, skip preambles, enforce specific formats like JSON or XML, and even help Claude maintain character consistency in role-play scenarios.</p>
+<p>In some cases where Claude is not performing as expected, a few prefilled sentences can vastly improve Claude’s performance. A little prefilling goes a long way!</p>
+<h2 >How to prefill Claude’s response</h2>
+<p>To prefill, include the desired initial text in the <code>Assistant</code> message (Claude’s response will continue from where the <code>Assistant</code> message leaves off):</p>
+import anthropic
+
+client )
+response (
+    model,
+    max_tokens,
+    messages[
+        ,
+        # Prefill here
+    ]
+)
+</code></pre>
+<h3 >Examples</h3>
+<h4 >Example 1: Controlling output formatting and skipping the preamble</h4>
+<strong>Power user tip</strong>: Prefilling <code>{</code> forces Claude to skip the preamble and directly output the JSON object. This is cleaner, more concise, and easier for programs to parse without additional processing.
+<table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Extract the name, size, price, and color from this product description as a JSON object:<br/><br/>&lt;description&gt;<br/>The SmartHome Mini is a compact smart home assistant available in black or white for only $49.99. At just 5 inches wide, it lets you control lights, thermostats, and other connected devices via voice or app—no matter where you place it in your home. This affordable little hub brings convenient hands-free control to your smart devices.<br/>&lt;/description&gt;</td></tr><tr><td>Assistant (prefill)</td><td>{</td></tr><tr><td>Assistant (Claude’s response)</td><td>“name”: “SmartHome Mini”,<br/>“size”: “5 inches wide”,<br/>“price”: “$49.99”,<br/>“colors”: [<br/>  “black”,<br/>  “white”<br/>]<br/>}</td></tr></tbody></table>
+<h4 >Example 2: Maintaining character in roleplay scenarios</h4>
+<strong>Role-play tip</strong>: Prefilling a bracketed <code>[ROLE_NAME]</code> can remind Claude stay in character, even for longer and more complex conversations. This is especially powerful when combined with role prompting in the <code>system</code> parameter.
+<table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User (50 conversation turns in with “Sherlock Holmes” Claude)</td><td>What do you deduce about the owner of this shoe? <br/>&lt;image&gt;muddy_shoe.jpg&lt;/image&gt;</td></tr><tr><td>Assistant (prefill)</td><td>[Sherlock Holmes]</td></tr><tr><td>Assistant (Claude’s response)</td><td>Ah, what have we here? A most curious specimen, Watson! Let us examine this shoe with a discerning eye. The mud, you see, is not your common London clay, but rather the distinctive reddish hue of the iron-rich soil found only in the environs of Hampstead Heath. And yet, the wear on the sole suggests a gait more suited to the cobblestones of Whitechapel than the gentle slopes of the Heath.<br/><br/>Now, observe the laces! They are tied with a particular knot favored by those in the medical profession—doubtless a habit acquired during years of tying surgical gowns. But the scuff marks on the toe box tell a different tale: they are consistent with the kicking motion one might employ in the martial arts, specifically Baritsu.<br/><br/>We may conclude, then, that our absent shoe owner is a doctor, possibly a surgeon, who resides in Whitechapel but frequents Hampstead Heath—perhaps for a secret Baritsu practice, away from prying eyes. A most intriguing case, Watson! We must make haste; the game is afoot!</td></tr></tbody></table>
+<hr/>
+<div 
+
+<p>Prompt Caching is a powerful feature that optimizes your API usage by allowing resuming from specific prefixes in your prompts. This approach significantly reduces processing time and costs for repetitive tasks or prompts with consistent elements.</p>
+<p>Here’s an example of how to implement Prompt Caching with the Messages API using a <code>cache_control</code> block:</p>
+<!-- -->
+<p>In this example, the entire text of “Pride and Prejudice” is cached using the <code>cache_control</code> parameter. This enables reuse of this large text across multiple API calls without reprocessing it each time. Changing only the user message allows you to ask various questions about the book while utilizing the cached content, leading to faster responses and improved efficiency.</p>
+form</a>.</p>
+<hr/>
+<h2 >How Prompt Caching works</h2>
+<p>When you send a request with Prompt Caching enabled:</p>
+<ol>
+<li>The system checks if the prompt prefix is already cached from a recent query.</li>
+<li>If found, it uses the cached version, reducing processing time and costs.</li>
+<li>Otherwise, it processes the full prompt and caches the prefix for future use.</li>
+</ol>
+<p>This is especially useful for:</p>
+<ul>
+<li>Prompts with many examples</li>
+<li>Large amounts of context or background information</li>
+<li>Repetitive tasks with consistent instructions</li>
+<li>Long multi-turn conversations</li>
+</ul>
+<p>The cache has a 5-minute lifetime, refreshed each time the cached content is used.</p>
+<p><strong>Prompt Caching caches the full prefix</strong></p><p>Prompt Caching references the entire prompt - <code>tools</code>, <code>system</code>, and <code>messages</code> (in that order) up to and including the block designated with <code>cache_control</code>.</p>
+<hr/>
+<h2 >Pricing</h2>
+<p>Prompt Caching introduces a new pricing structure. The table below shows the price per token for each supported model:</p>
+<table><thead><tr><th>Model</th><th>Base Input Tokens</th><th>Cache Writes</th><th>Cache Hits</th><th>Output Tokens</th></tr></thead><tbody><tr><td>Claude 3.5 Sonnet</td><td>$3 / MTok</td><td>$3.75 / MTok</td><td>$0.30 / MTok</td><td>$15 / MTok</td></tr><tr><td>Claude 3 Haiku</td><td>$0.25 / MTok</td><td>$0.30 / MTok</td><td>$0.03 / MTok</td><td>$1.25 / MTok</td></tr><tr><td>Claude 3 Opus</td><td>$15 / MTok</td><td>$18.75 / MTok</td><td>$1.50 / MTok</td><td>$75 / MTok</td></tr></tbody></table>
+<p>Note:</p>
+<ul>
+<li>Cache write tokens are 25% more expensive than base input tokens</li>
+<li>Cache read tokens are 90% cheaper than base input tokens</li>
+<li>Regular input and output tokens are priced at standard rates</li>
+</ul>
+<hr/>
+<h2 >How to implement Prompt Caching</h2>
+<h3 >Supported models</h3>
+<p>Prompt Caching is currently supported on:</p>
+<ul>
+<li>Claude 3.5 Sonnet</li>
+<li>Claude 3 Haiku</li>
+<li>Claude 3 Opus</li>
+</ul>
+<h3 >Structuring your prompt</h3>
+<p>Place static content (tool definitions, system instructions, context, examples) at the beginning of your prompt. Mark the end of the reusable content for caching using the <code>cache_control</code> parameter.</p>
+<p>Cache prefixes are created in the following order: <code>tools</code>, <code>system</code>, then <code>messages</code>.</p>
+<p>Using the <code>cache_control</code> parameter, you can define up to 4 cache breakpoints, allowing you to cache different reusable sections separately.</p>
+<h3 >Cache Limitations</h3>
+<p>The minimum cacheable prompt length is:</p>
+<ul>
+<li>1024 tokens for Claude 3.5 Sonnet and Claude 3 Opus</li>
+<li>2048 tokens for Claude 3 Haiku</li>
+</ul>
+<p>Shorter prompts cannot be cached, even if marked with <code>cache_control</code>. Any requests to cache fewer than this number of tokens will be processed without caching. To see if a prompt was cached, see the response usage <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching#tracking-cache-performance" target="_blank" rel="noreferrer">fields</a>.</p>
+<p>The cache has a 5 minute time to live (TTL). Currently, “ephemeral” is the only supported cache type, which corresponds to this 5-minute lifetime.</p>
+<h3 >What can be cached</h3>
+<p>Every block in the request can be designated for caching with <code>cache_control</code>. This includes:</p>
+<ul>
+<li>Tools: Tool definitions in the <code>tools</code> array</li>
+<li>System messages: Content blocks in the <code>system</code> array</li>
+<li>Messages: Content blocks in the <code>messages.content</code> array, for both user and assistant turns</li>
+<li>Images: Content blocks in the <code>messages.content</code> array, in user turns</li>
+<li>Tool use and tool results: Content blocks in the <code>messages.content</code> array, in both user and assistant turns</li>
+</ul>
+<p>Each of these elements can be marked with <code>cache_control</code> to enable caching for that portion of the request.</p>
+<h3 >Tracking cache performance</h3>
+<p>Monitor cache performance using these API response fields, within <code>usage</code> in the response (or <code>message_start</code> event if <a href="https://docs.anthropic.com/en/api/messages-streaming" target="_blank" rel="noreferrer">streaming</a>):</p>
+<ul>
+<li><code>cache_creation_input_tokens</code>: Number of tokens written to the cache when creating a new entry.</li>
+<li><code>cache_read_input_tokens</code>: Number of tokens retrieved from the cache for this request.</li>
+</ul>
+<h3 >Best practices for effective caching</h3>
+<p>To optimize Prompt Caching performance:</p>
+<ul>
+<li>Cache stable, reusable content like system instructions, background information, large contexts, or frequent tool definitions.</li>
+<li>Place cached content at the prompt’s beginning for best performance.</li>
+<li>Use cache breakpoints strategically to separate different cacheable prefix sections.</li>
+<li>Regularly analyze cache hit rates and adjust your strategy as needed.</li>
+</ul>
+<h3 >Optimizing for different use cases</h3>
+<p>Tailor your Prompt Caching strategy to your scenario:</p>
+<ul>
+<li>Conversational agents: Reduce cost and latency for extended conversations, especially those with long instructions or uploaded documents.</li>
+<li>Coding assistants: Improve autocomplete and codebase Q&amp;A by keeping relevant sections or a summarized version of the codebase in the prompt.</li>
+<li>Large document processing: Incorporate complete long-form material including images in your prompt without increasing response latency.</li>
+<li>Detailed instruction sets: Share extensive lists of instructions, procedures, and examples to fine-tune Claude’s responses.  Developers often include an example or two in the prompt, but with prompt caching you can get even better performance by including 20+ diverse examples of high quality answers.</li>
+<li>Agentic tool use: Enhance performance for scenarios involving multiple tool calls and iterative code changes, where each step typically requires a new API call.</li>
+<li>Talk to books, papers, documentation, podcast transcripts, and other longform content:  Bring any knowledge base alive by embedding the entire document(s) into the prompt, and letting users ask it questions.</li>
+</ul>
+<h3 >Troubleshooting common issues</h3>
+<p>If experiencing unexpected behavior:</p>
+<ul>
+<li>Ensure cached sections are identical and marked with cache_control in the same locations across calls</li>
+<li>Check that calls are made within the 5-minute cache lifetime</li>
+<li>Verify that <code>tool_choice</code> and image usage remain consistent between calls</li>
+<li>Validate that you are caching at least the minimum number of tokens</li>
+</ul>
+<p>Note that changes to <code>tool_choice</code> or the presence/absence of images anywhere in the prompt will invalidate the cache, requiring a new cache entry to be created.</p>
+<hr/>
+<h2 >Cache Storage and Sharing</h2>
+<ul>
+<li>
+<p><strong>Organization Isolation</strong>: Caches are isolated between organizations. Different organizations never share caches, even if they use identical prompts..</p>
+</li>
+<li>
+<p><strong>Exact Matching</strong>: Cache hits require 100% identical prompt segments, including all text and images up to and including the block marked with cache control. The same block must be marked with cache_control during cache reads and creation.</p>
+</li>
+<li>
+<p><strong>Output Token Generation</strong>: Prompt caching has no effect on output token generation. The response you receive will be identical to what you would get if prompt caching was not used.</p>
+</li>
+</ul>
+<hr/>
+<h2 >Prompt Caching examples</h2>
+<p>To help you get started with Prompt Caching, we’ve prepared a <a href="https://github.com/anthropics/anthropic-cookbook/blob/main/misc/prompt_caching.ipynb" target="_blank" rel="noreferrer">prompt caching cookbook</a> with detailed examples and best practices.</p>
+<p>Below, we’ve included several code snippets that showcase various Prompt Caching patterns. These examples demonstrate how to implement caching in different scenarios, helping you understand the practical applications of this feature:</p>
+<p>This example demonstrates basic Prompt Caching usage, caching the full text of the legal agreement as a prefix while keeping the user instruction uncached.</p><p>For the first request:</p><ul>
+<li><code>input_tokens</code>: Number of tokens in the user message only</li>
+<li><code>cache_creation_input_tokens</code>: Number of tokens in the entire system message, including the legal document</li>
+<li><code>cache_read_input_tokens</code>: 0 (no cache hit on first request)</li>
+</ul><p>For subsequent requests within the cache lifetime:</p><ul>
+<li><code>input_tokens</code>: Number of tokens in the user message only</li>
+<li><code>cache_creation_input_tokens</code>: 0 (no new cache creation)</li>
+<li><code>cache_read_input_tokens</code>: Number of tokens in the entire cached system message</li>
+</ul><div><button ><p>In this example, we demonstrate caching tool definitions.</p><p>The <code>cache_control</code> parameter is placed on the final tool (<code>get_time</code>) to designate all of the tools as part of the static prefix.</p><p>This means that all tool definitions, including <code>get_weather</code> and any other tools defined before <code>get_time</code>, will be cached as a single prefix.</p><p>This approach is useful when you have a consistent set of tools that you want to reuse across multiple requests without re-processing them each time.</p><p>For the first request:</p><ul>
+<li><code>input_tokens</code>: Number of tokens in the user message</li>
+<li><code>cache_creation_input_tokens</code>: Number of tokens in all tool definitions and system prompt</li>
+<li><code>cache_read_input_tokens</code>: 0 (no cache hit on first request)</li>
+</ul><p>For subsequent requests within the cache lifetime:</p><ul>
+<li><code>input_tokens</code>: Number of tokens in the user message</li>
+<li><code>cache_creation_input_tokens</code>: 0 (no new cache creation)</li>
+<li><code>cache_read_input_tokens</code>: Number of tokens in all cached tool definitions and system prompt</li>
+</ul><div><button ><p>In this example, we demonstrate how to use Prompt Caching in a multi-turn conversation.</p><p>The <code>cache_control</code> parameter is placed on the system message to designate it as part of the static prefix.</p><p>The conversation history (previous messages) is included in the <code>messages</code> array. The final turn is marked with cache-control, for continuing in followups.
+The second-to-last user message is marked for caching with the <code>cache_control</code> parameter, so that this checkpoint can read from the previous cache.</p><p>This approach is useful for maintaining context in ongoing conversations without repeatedly processing the same information.</p><p>For each request:</p><ul>
+<li><code>input_tokens</code>: Number of tokens in the new user message (will be minimal)</li>
+<li><code>cache_creation_input_tokens</code>: Number of tokens in the new assistant and user turns</li>
+<li><code>cache_read_input_tokens</code>: Number of tokens in the conversation up to the previous turn</li>
+</ul>
+<hr/>
+<h2 >FAQ</h2>
+<p>Prompt Caching is designed with strong privacy and data separation measures:</p><ol>
+<li>
+<p>Cache keys are generated using a cryptographic hash of the prompts up to the cache control point. This means only requests with identical prompts can access a specific cache.</p>
+</li>
+<li>
+<p>Caches are organization-specific. Users within the same organization can access the same cache if they use identical prompts, but caches are not shared across different organizations, even for identical prompts.</p>
+</li>
+<li>
+<p>The caching mechanism is designed to maintain the integrity and privacy of each unique conversation or context.</p>
+</li>
+<li>
+<p>It’s safe to use cache_control anywhere in your prompts. For cost efficiency, it’s better to exclude highly variable parts (e.g., user’s arbitrary input) from caching.</p>
+</li>
+</ol><p>These measures ensure that Prompt Caching maintains data privacy and security while offering performance benefits.</p><div><button 
+
+Before prompt engineering</h2>
+<p>This guide assumes that you have:</p>
+<ol>
+<li>A clear definition of the success criteria for your use case</li>
+<li>Some ways to empirically test against those criteria</li>
+<li>A first draft prompt you want to improve</li>
+</ol>
+<p>If not, we highly suggest you spend time establishing that first. Check out <a href="/en/docs/build-with-claude/define-success">Define your success criteria</a> and <a href="/en/docs/build-with-claude/develop-tests">Create strong empirical evaluations</a> for tips and guidance.</p>
+<atarget="_blank" rel="noreferrer" href="https://console.anthropic.com/dashboard"><p>Don’t have a first draft prompt? Try the prompt generator in the Anthropic Console!</p></a>
+<hr/>
+<h2 >When to prompt engineer</h2>
+<p>This guide focuses on success criteria that are controllable through prompt engineering.
+Not every success criteria or failing eval is best solved by prompt engineering. For example, latency and cost can be sometimes more easily improved by selecting a different model.</p>
+<div><button ><p>Prompt engineering is far faster than other methods of model behavior control, such as finetuning, and can often yield leaps in performance in far less time. Here are some reasons to consider prompt engineering over finetuning:<br/></p><ul>
+<li><strong>Resource efficiency</strong>: Fine-tuning requires high-end GPUs and large memory, while prompt engineering only needs text input, making it much more resource-friendly.</li>
+<li><strong>Cost-effectiveness</strong>: For cloud-based AI services, fine-tuning incurs significant costs. Prompt engineering uses the base model, which is typically cheaper.</li>
+<li><strong>Maintaining model updates</strong>: When providers update models, fine-tuned versions might need retraining. Prompts usually work across versions without changes.</li>
+<li><strong>Time-saving</strong>: Fine-tuning can take hours or even days. In contrast, prompt engineering provides nearly instantaneous results, allowing for quick problem-solving.</li>
+<li><strong>Minimal data needs</strong>: Fine-tuning needs substantial task-specific, labeled data, which can be scarce or expensive. Prompt engineering works with few-shot or even zero-shot learning.</li>
+<li><strong>Flexibility &amp; rapid iteration</strong>: Quickly try various approaches, tweak prompts, and see immediate results. This rapid experimentation is difficult with fine-tuning.</li>
+<li><strong>Domain adaptation</strong>: Easily adapt models to new domains by providing domain-specific context in prompts, without retraining.</li>
+<li><strong>Comprehension improvements</strong>: Prompt engineering is far more effective than finetuning at helping models better understand and utilize external content such as retrieved documents</li>
+<li><strong>Preserves general knowledge</strong>: Fine-tuning risks catastrophic forgetting, where the model loses general knowledge. Prompt engineering maintains the model’s broad capabilities.</li>
+<li><strong>Transparency</strong>: Prompts are human-readable, showing exactly what information the model receives. This transparency aids in understanding and debugging.</li>
+</ul>
+<hr/>
+<h2 >How to prompt engineer</h2>
+<p>The prompt engineering pages in this section have been organized from most broadly effective techniques to more specialized techniques. When troubleshooting performance, we suggest you try these techniques in order, although the actual impact of each technique will depend on our use case.</p>
+<ol>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/prompt-generator">Prompt generator</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/be-clear-and-direct">Be clear and direct</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/multishot-prompting">Use examples (multishot)</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/chain-of-thought">Let Claude think (chain of thought)</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/use-xml-tags">Use XML tags</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/system-prompts">Give Claude a role (system prompts)</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/prefill-claudes-response">Prefill Claude’s response</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/chain-complex-prompts">Chain complex prompts</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/long-context-tips">Long context tips</a></li>
+</ol>
+<hr/>
+<h2 >Prompt engineering tutorial</h2>
+<p>If you’re an interactive learner, you can dive into our interactive tutorials instead!</p>
+<div 
+
+prompt engineering</a>.</p>
+<hr/>
+<h2 >Text capabilities and use cases</h2>
+<p>Claude has a broad range of text-based capabilities, including but not limited to:</p>
+<table><thead><tr><th align="left">Capability</th><th align="left">This enables you to…</th></tr></thead><tbody><tr><td align="left">Text Summarization</td><td align="left">Distill lengthy content into key insights for executives, social media, or product teams.</td></tr><tr><td align="left">Content Generation</td><td align="left">Craft compelling content from blog posts and emails to marketing slogans and product descriptions.</td></tr><tr><td align="left">Data / Entity Extraction</td><td align="left">Uncover structured insights from unstructured text like reviews, news articles, or transcripts.</td></tr><tr><td align="left">Question Answering</td><td align="left">Build intelligent, interactive systems from customer support chatbots to educational AI tutors.</td></tr><tr><td align="left">Text Translation</td><td align="left">Seamlessly communicate across languages in products, support, and content creation.</td></tr><tr><td align="left">Text Analysis &amp; Recommendations</td><td align="left">Understand sentiment, preferences, and patterns to personalize user experiences and offerings.</td></tr><tr><td align="left">Dialogue and Conversation</td><td align="left">Create engaging, context-aware interactions in games, virtual assistants, and storytelling apps.</td></tr><tr><td align="left">Code Explanation &amp; Generation</td><td align="left">Accelerate development with instant code reviews, boilerplate generation, and interactive tutorials.</td></tr></tbody></table>
+<hr/>
+<h2 >Anthropic Cookbook</h2>
+<p>Dive into practical examples and hands-on tutorials with our collection of Jupyter notebooks.</p>
+<p>Explore how to create and use embeddings with VoyageAI for advanced text similarity and search tasks.</p></a>
+<h2 >More Resources</h2>
+<p>From crafting the perfect prompt to understanding API details, we’ve got you covered.</p>
+<div 
+
+<p>Claude is capable of interacting with external client-side tools and functions, allowing you to equip Claude with your own custom tools to perform a wider variety of tasks.</p>
+form</a>.</p>
+<p>Here’s an example of how to provide tools to Claude using the Messages API:</p>
+<!-- -->
+<hr/>
+<h2 >How tool use works</h2>
+<p>Integrate external tools with Claude in these steps:</p>
+<div role="list" >Provide Claude with tools and a user prompt</p><div><ul>
+<li>Define tools with names, descriptions, and input schemas in your API request.</li>
+<li>Include a user prompt that might require these tools, e.g., “What’s the weather in San Francisco?”</li>
+</ul><div role="listitem" >Claude decides to use a tool</p><div><ul>
+<li>Claude assesses if any tools can help with the user’s query.</li>
+<li>If yes, Claude constructs a properly formatted tool use request.</li>
+<li>The API response has a <code>stop_reason</code> of <code>tool_use</code>, signaling Claude’s intent.</li>
+</ul><div role="listitem" >Extract tool input, run code, and return results</p><div><ul>
+<li>On your end, extract the tool name and input from Claude’s request.</li>
+<li>Execute the actual tool code client-side.</li>
+<li>Continue the conversation with a new <code>user</code> message containing a <code>tool_result</code> content block.</li>
+</ul><div role="listitem" >Claude uses tool result to formulate a response</p><div><ul>
+<li>Claude analyzes the tool results to craft its final response to the original user prompt.</li>
+</ul>
+<p>Note: Steps 3 and 4 are optional. For some workflows, Claude’s tool use request (step 2) might be all you need, without sending results back to Claude.</p>
+<p><strong>All tools are user-provided</strong></p><p>It’s important to note that Claude does not have access to any built-in server-side tools. All tools must be explicitly provided by you, the user, in each API request. This gives you full control and flexibility over the tools Claude can use.</p>
+<hr/>
+<h2 >How to implement tool use</h2>
+<h3 >Choosing a model</h3>
+<p>Generally, use Claude 3 Opus for complex tools and ambiguous queries; it handles multiple tools better and seeks clarification when needed.</p>
+<p>Use Haiku for straightforward tools, but note it may infer missing parameters.</p>
+<h3 >Specifying tools</h3>
+<p>Tools are specified in the <code>tools</code> top-level parameter of the API request. Each tool definition includes:</p>
+<table><thead><tr><th align="left">Parameter</th><th align="left">Description</th></tr></thead><tbody><tr><td align="left"><code>name</code></td><td align="left">The name of the tool. Must match the regex <code>^[a-zA-Z0-9_-]{1,64}$</code>.</td></tr><tr><td align="left"><code>description</code></td><td align="left">A detailed plaintext description of what the tool does, when it should be used, and how it behaves.</td></tr><tr><td align="left"><code>input_schema</code></td><td align="left">A <a href="https://json-schema.org/" target="_blank" rel="noreferrer">JSON Schema</a> object defining the expected parameters for the tool.</td></tr></tbody></table>
+<div><button >{
+  ,
+  ,
+  {
+    ,
+    {
+      {
+        ,
+        "The city and state, e.g. San Francisco, CA"
+      ,
+      {
+        ,
+        ,
+        "The unit of temperature, either &#x27;celsius&#x27; or &#x27;fahrenheit&#x27;"
+      }
+    ,
+    ]
+  }
+}
+</code></pre><p>This tool, named <code>get_weather</code>, expects an input object with a required <code>location</code> string and an optional <code>unit</code> string that must be either “celsius” or “fahrenheit”.</p>
+<h4 >Best practices for tool definitions</h4>
+<p>To get the best performance out of Claude when using tools, follow these guidelines:</p>
+<ul>
+<li><strong>Provide extremely detailed descriptions.</strong> This is by far the most important factor in tool performance. Your descriptions should explain every detail about the tool, including:<!-- -->
+<ul>
+<li>What the tool does</li>
+<li>When it should be used (and when it shouldn’t)</li>
+<li>What each parameter means and how it affects the tool’s behavior</li>
+<li>Any important caveats or limitations, such as what information the tool does not return if the tool name is unclear. The more context you can give Claude about your tools, the better it will be at deciding when and how to use them. Aim for at least 3-4 sentences per tool description, more if the tool is complex.</li>
+</ul>
+</li>
+<li><strong>Prioritize descriptions over examples.</strong> While you can include examples of how to use a tool in its description or in the accompanying prompt, this is less important than having a clear and comprehensive explanation of the tool’s purpose and parameters. Only add examples after you’ve fully fleshed out the description.</li>
+</ul>
+{
+  ,
+  ,
+  {
+    ,
+    {
+      {
+        ,
+        "The stock ticker symbol, e.g. AAPL for Apple Inc."
+      }
+    ,
+    ]
+  }
+}
+</code></pre><div><button >{
+  ,
+  ,
+  {
+    ,
+    {
+      {
+        "string"
+      }
+    ,
+    ]
+  }
+}
+</code></pre>
+<p>The good description clearly explains what the tool does, when to use it, what data it returns, and what the <code>ticker</code> parameter means. The poor description is too brief and leaves Claude with many open questions about the tool’s behavior and usage.</p>
+<h3 >Controlling Claude’s output</h3>
+<h4 >Forcing tool use</h4>
+<p>In some cases, you may want Claude to use a specific tool to answer the user’s question, even if Claude thinks it can provide an answer without using a tool. You can do this by specifying the tool in the <code>tool_choice</code> field like so:</p>
+<pre><code>tool_choice = {"type": "tool", "name": "get_weather"}
+</code></pre>
+<p>When working with the tool_choice parameter, we have three possible options:</p>
+<ul>
+<li><code>auto</code> allows Claude to decide whether to call any provided tools or not. This is the default value.</li>
+<li><code>any</code> tells Claude that it must use one of the provided tools, but doesn’t force a particular tool.</li>
+<li><code>tool</code> allows us to force Claude to always use a particular tool.</li>
+</ul>
+<p>This diagram illustrates how each option works:</p>
+<div>
+<p>Note that when you have <code>tool_choice</code> as <code>any</code> or <code>tool</code>, we will prefill the assistant message to force a tool to be used. This means that the models will not emit a chain-of-thought <code>text</code> content block before <code>tool_use</code> content blocks, even if explicitly asked to do so.</p>
+<p>Our testing has shown that this should not reduce performance. If you would like to keep chain-of-thought (particularly with Opus) while still requesting that the model use a specific tool, you can use <code>{"type": "auto"}</code> for <code>tool_choice</code> (the default) and add explicit instructions in a <code>user</code> message. For example: <code>What&#x27;s the weather like in London? Use the get_weather tool in your response.</code></p>
+<h4 >JSON output</h4>
+<p>Tools do not necessarily need to be client-side functions — you can use tools anytime you want the model to return JSON output that follows a provided schema. For example, you might use a <code>record_summary</code> tool with a particular schema. See <a href="/en/docs/build-with-claude/tool-use#json-mode">tool use examples</a> for a full working example.</p>
+<h4 >Chain of thought</h4>
+<p>When using tools, Claude will often show its “chain of thought”, i.e. the step-by-step reasoning it uses to break down the problem and decide which tools to use. The Claude 3 Opus model will do this if <code>tool_choice</code> is set to <code>auto</code> (this is the default value, see <a href="/_sites/docs.anthropic.com/en/docs/build-with-claude/tool-use#forcing-tool-use">Forcing tool use</a>), and Sonnet and Haiku can be prompted into doing it.</p>
+<p>For example, given the prompt “What’s the weather like in San Francisco right now, and what time is it there?”, Claude might respond with:</p>
+{
+  ,
+  [
+    {
+      ,
+      "&lt;thinking&gt;To answer this question, I will: 1. Use the get_weather tool to get the current weather in San Francisco. 2. Use the get_time tool to get the current time in the America/Los_Angeles timezone, which covers San Francisco, CA.&lt;/thinking&gt;"
+    ,
+    {
+      ,
+      ,
+      ,
+      }
+    }
+  ]
+}
+</code></pre>
+<p>This chain of thought gives insight into Claude’s reasoning process and can help you debug unexpected behavior.</p>
+<p>With the Claude 3 Sonnet model, chain of thought is less common by default, but you can prompt Claude to show its reasoning by adding something like <code>"Before answering, explain your reasoning step-by-step in tags."</code> to the user message or system prompt.</p>
+<p>It’s important to note that while the <code>&lt;thinking&gt;</code> tags are a common convention Claude uses to denote its chain of thought, the exact format (such as what this XML tag is named) may change over time. Your code should treat the chain of thought like any other assistant-generated text, and not rely on the presence or specific formatting of the <code>&lt;thinking&gt;</code> tags.</p>
+<h3 >Handling tool use and tool result content blocks</h3>
+<p>When Claude decides to use one of the tools you’ve provided, it will return a response with a <code>stop_reason</code> of <code>tool_use</code> and one or more <code>tool_use</code> content blocks in the API response that include:</p>
+<ul>
+<li><code>id</code>: A unique identifier for this particular tool use block. This will be used to match up the tool results later.</li>
+<li><code>name</code>: The name of the tool being used.</li>
+<li><code>input</code>: An object containing the input being passed to the tool, conforming to the tool’s <code>input_schema</code>.</li>
+</ul>
+<div><button >{
+  ,
+  ,
+  ,
+  ,
+  [
+    {
+      ,
+      "&lt;thinking&gt;I need to use the get_weather, and the user wants SF, which is likely San Francisco, CA.&lt;/thinking&gt;"
+    ,
+    {
+      ,
+      ,
+      ,
+      }
+    }
+  ]
+}
+</code></pre>
+<p>When you receive a tool use response, you should:</p>
+<ol>
+<li>Extract the <code>name</code>, <code>id</code>, and <code>input</code> from the <code>tool_use</code> block.</li>
+<li>Run the actual tool in your codebase corresponding to that tool name, passing in the tool <code>input</code>.</li>
+<li>[optional] Continue the conversation by sending a new message with the <code>role</code> of <code>user</code>, and a <code>content</code> block containing the <code>tool_result</code> type and the following information:<!-- -->
+<ul>
+<li><code>tool_use_id</code>: The <code>id</code> of the tool use request this is a result for.</li>
+<li><code>content</code>: The result of the tool, as a string (e.g. <code>"content": "15 degrees"</code>) or list of nested content blocks (e.g. <code>"content": [{"type": "text", "text": "15 degrees"}]</code>). These content blocks can use the <code>text</code> or <code>image</code> types.</li>
+<li><code>is_error</code> (optional): Set to <code>true</code> if the tool execution resulted in an error.</li>
+</ul>
+</li>
+</ol>
+{
+  ,
+  [
+    {
+      ,
+      ,
+      "15 degrees"
+    }
+  ]
+}
+</code></pre><div><button >{
+  ,
+  [
+    {
+      ,
+      ,
+      [
+        ,
+        {
+          ,
+          {
+            ,
+            ,
+            ,
+          }
+        }
+      ]
+    }
+  ]
+}
+</code></pre><div><button >{
+  ,
+  [
+    {
+      ,
+      ,
+    }
+  ]
+}
+</code></pre>
+<p>After receiving the tool result, Claude will use that information to continue generating a response to the original user prompt.</p>
+<p><strong>Differences from other APIs</strong></p><p>Unlike APIs that separate tool use or use special roles like <code>tool</code> or <code>function</code>, Anthropic’s API integrates tools directly into the <code>user</code> and <code>assistant</code> message structure.</p><p>Messages contain arrays of <code>text</code>, <code>image</code>, <code>tool_use</code>, and <code>tool_result</code> blocks. <code>user</code> messages include client-side content and <code>tool_result</code>, while <code>assistant</code> messages contain AI-generated content and <code>tool_use</code>.</p>
+<h3 >Troubleshooting errors</h3>
+<p>There are a few different types of errors that can occur when using tools with Claude:</p>
+{
+  ,
+  [
+    {
+      ,
+      ,
+      ,
+      true
+    }
+  ]
+}
+</code></pre><p>Claude will then incorporate this error into its response to the user, e.g. “I’m sorry, I was unable to retrieve the current weather because the weather service API is not available. Please try again later.”</p><div><button >{
+  ,
+  [
+    {
+      ,
+      ,
+      ,
+      true
+    }
+  ]
+}
+</code></pre><p>If a tool request is invalid or missing parameters, Claude will retry 2-3 times with corrections before apologizing to the user.</p><div><button ><p>To prevent Claude from reflecting on search quality with &lt;search_quality_reflection&gt; tags, add “Do not reflect on the quality of the returned search results in your response” to your prompt.</p>
+<hr/>
+<h2 >Tool use examples</h2>
+<p>Here are a few code examples demonstrating various tool use patterns and techniques. For brevity’s sake, the tools are simple tools, and the tool descriptions are shorter than would be ideal to ensure best performance.</p>
+{
+  ,
+  ,
+  ,
+  ,
+  [
+    {
+      ,
+      "&lt;thinking&gt;I need to call the get_weather function, and the user wants SF, which is likely San Francisco, CA.&lt;/thinking&gt;"
+    ,
+    {
+      ,
+      , 
+      ,
+      }
+    }
+  ]
+}
+</code></pre><p>You would then need to execute the <code>get_weather</code> function with the provided input, and return the result in a new <code>user</code> message:</p><p>This will print Claude’s final response, incorporating the weather data:</p>{
+  ,
+  ,
+  ,
+  ,
+  [
+    {
+      ,
+      "The current weather in San Francisco is 15 degrees Celsius (59 degrees Fahrenheit). It&#x27;s a cool day in the city by the bay!"
+    }
+  ]
+}
+</code></pre><div><button >{
+  ,
+  ,
+  , 
+  }
+}
+</code></pre><p>This behavior is not guaranteed, especially for more ambiguous prompts and for models less intelligent than Claude 3 Opus. If Claude 3 Opus doesn’t have enough context to fill in the required parameters, it is far more likely respond with a clarifying question instead of making a tool call.</p><div><button ><p>Some tasks may require calling multiple tools in sequence, using the output of one tool as the input to another. In such a case, Claude will call one tool at a time. If prompted to call the tools all at once, Claude is likely to guess parameters for tools further downstream if they are dependent on tool results for tools further upstream.</p><p>Here’s an example of using a <code>get_location</code> tool to get the user’s location, then passing that location to the <code>get_weather</code> tool:</p><p>In this case, Claude would first call the <code>get_location</code> tool to get the user’s location. After you return the location in a <code>tool_result</code>, Claude would then call <code>get_weather</code> with that location to get the final answer.</p><p>The full conversation might look like:</p><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>What’s the weather like where I am?</td></tr><tr><td>Assistant</td><td>&lt;thinking&gt;To answer this, I first need to determine the user’s location using the get_location tool. Then I can pass that location to the get_weather tool to find the current weather there.&lt;/thinking&gt;[Tool use for get_location]</td></tr><tr><td>User</td><td>[Tool result for get_location with matching id and result of San Francisco, CA]</td></tr><tr><td>Assistant</td><td>[Tool use for get_weather with the following input]{ “location”: “San Francisco, CA”, “unit”: “fahrenheit” }</td></tr><tr><td>User</td><td>[Tool result for get_weather with matching id and result of “59°F (15°C), mostly cloudy”]</td></tr><tr><td>Assistant</td><td>Based on your current location in San Francisco, CA, the weather right now is 59°F (15°C) and mostly cloudy. It’s a fairly cool and overcast day in the city. You may want to bring a light jacket if you’re heading outside.</td></tr></tbody></table><p>This example demonstrates how Claude can chain together multiple tool calls to answer a question that requires gathering data from different sources. The key steps are:</p><ol>
+<li>Claude first realizes it needs the user’s location to answer the weather question, so it calls the <code>get_location</code> tool.</li>
+<li>The user (i.e. the client code) executes the actual <code>get_location</code> function and returns the result “San Francisco, CA” in a <code>tool_result</code> block.</li>
+<li>With the location now known, Claude proceeds to call the <code>get_weather</code> tool, passing in “San Francisco, CA” as the <code>location</code> parameter (as well as a guessed <code>unit</code> parameter, as <code>unit</code> is not a required parameter).</li>
+<li>The user again executes the actual <code>get_weather</code> function with the provided arguments and returns the weather data in another <code>tool_result</code> block.</li>
+<li>Finally, Claude incorporates the weather data into a natural language response to the original question.</li>
+</ol><div><button><div id="chain-of-thought-tool-use" ><p>You can use tools to get Claude produce JSON output that follows a schema, even if you don’t have any intention of running that output through a tool or function.</p><p>When using tools in this way:</p><ul>
+<li>You usually want to provide a <strong>single</strong> tool</li>
+<li>You should set <code>tool_choice</code> (see <a href="/en/docs/tool-use#forcing-tool-use">Forcing tool use</a>) to instruct the model to explicitly use that tool</li>
+<li>Remember that the model will pass the <code>input</code> to the tool, so the name of the tool and description should be from the model’s perspective.</li>
+</ul><p>The following uses a <code>record_summary</code> tool to describe an image following a particular format.</p>
+<hr/>
+<h2 >Pricing</h2>
+<p>Tool use requests are priced the same as any other Claude API request, based on the total number of input tokens sent to the model (including in the <code>tools</code> parameter) and the number of output tokens generated.”</p>
+<p>The additional tokens from tool use come from:</p>
+<ul>
+<li>The <code>tools</code> parameter in API requests (tool names, descriptions, and schemas)</li>
+<li><code>tool_use</code> content blocks in API requests and responses</li>
+<li><code>tool_result</code> content blocks in API requests</li>
+</ul>
+<p>When you use <code>tools</code>, we also automatically include a special system prompt for the model which enables tool use. The number of tool use tokens required for each model are listed below (excluding the additional tokens listed above):</p>
+<table><thead><tr><th>Model</th><th>Tool choice</th><th>Tool use system prompt token count</th></tr></thead><tbody><tr><td>Claude 3.5 Sonnet</td><td><code>auto</code><hr />340 tokens</td></tr></tbody></table>
+<p>These token counts are added to your normal input and output tokens to calculate the total cost of a request. Refer to our <a href="/en/docs/models-overview#model-comparison">models overview table</a> for current per-model prices.</p>
+<p>When you send a tool use prompt, just like any other API request, the response will output both input and output token counts as part of the reported <code>usage</code> metrics.</p>
+<hr/>
+
+<p>Examples are your secret weapon shortcut for getting Claude to generate exactly what you need. By providing a few well-crafted examples in your prompt, you can dramatically improve the accuracy, consistency, and quality of Claude’s outputs.
+This technique, known as few-shot or multishot prompting, is particularly effective for tasks that require structured outputs or adherence to specific formats.</p>
+<strong>Power up your prompts</strong>: Include 3-5 diverse, relevant examples to show Claude exactly what you want. More examples = better performance, especially for complex tasks.
+<h2 >Why use examples?</h2>
+<ul>
+<li><strong>Accuracy</strong>: Examples reduce misinterpretation of instructions.</li>
+<li><strong>Consistency</strong>: Examples enforce uniform structure and style.</li>
+<li><strong>Performance</strong>: Well-chosen examples boost Claude’s ability to handle complex tasks.</li>
+</ul>
+<h2 >Crafting effective examples</h2>
+<p>For maximum effectiveness, make sure that your examples are:</p>
+<ul>
+<li><strong>Relevant</strong>: Your examples mirror your actual use case.</li>
+<li><strong>Diverse</strong>: Your examples cover edge cases and potential challenges, and vary enough that Claude doesn’t inadvertently pick up on unintended patterns.</li>
+<li><strong>Clear</strong>: Your examples are wrapped in <code>&lt;example&gt;</code> tags (if multiple, nested within <code>&lt;examples&gt;</code> tags) for structure.</li>
+</ul>
+Ask Claude to evaluate your examples for relevance, diversity, or clarity. Or have Claude generate more examples based on your initial set.
+<div><button ><p>Notice that in the “no examples” version, Claude does not list multiple options for each category, despite its written analysis indicating that there are multiple categories for certain feedback. It also includes a long explanation when we may not want it to.</p><table><thead><tr><th>Role</th><th>No Examples</th><th>With Examples</th></tr></thead><tbody><tr><td>User</td><td>Analyze this customer feedback and categorize the issues. Use these categories: UI/UX, Performance, Feature Request, Integration, Pricing, and Other. Also rate the sentiment (Positive/Neutral/Negative) and priority (High/Medium/Low).<br/><br/>Here is the feedback: {{FEEDBACK}}</td><td>Our CS team is overwhelmed with unstructured feedback. Your task is to analyze feedback and categorize issues for our product and engineering teams. Use these categories: UI/UX, Performance, Feature Request, Integration, Pricing, and Other. Also rate the sentiment (Positive/Neutral/Negative) and priority (High/Medium/Low). Here is an example:<br/><br/>&lt;example&gt;<br/>Input: The new dashboard is a mess! It takes forever to load, and I can’t find the export button. Fix this ASAP!<br/>Category: UI/UX, Performance<br/>Sentiment: Negative<br/>Priority: High&lt;/example&gt;<br/><br/>Now, analyze this feedback: {{FEEDBACK}}</td></tr><tr><td>Assistant (Claude’s response)</td><td>Here’s the analysis of the customer feedback:<br/><br/>Issue: UI/UX<br/>Sentiment: Negative<br/>Priority: High<br/>The customer is frustrated with the new dashboard design, which they find cluttered and slow to load. They specifically call out the missing “export” button, which is likely a critical feature. This issue needs to be addressed as a high priority.<br/><br/>Issue: Integration<br/>Sentiment: Positive<br/>Priority: Medium<br/>The customer is pleased with the existing Salesforce integration but would like to see support for Hubspot as well. This is a feature request that could be considered for a future product update.<br/><br/>Issue: Pricing<br/>Sentiment: Negative<br/>Priority: High<br/>The customer finds the pricing to be unreasonable, especially for the basic features. They are threatening to switch to a competitor, so this is a high-priority issue that needs to be reviewed.<br/><br/>Issue: Performance<br/>Sentiment Negative<br/>Priority: High<br/>The customer is experiencing critical issues with the mobile app, where large file uploads consistently result in crashes. This is a significant problem that impacts the customer’s ability to use the product effectively and should be addressed as a high priority.<br/><br/>Issue: UI/UX<br/>Sentiment: Positive<br/>Priority: Low<br/>The customer is overall satisfied with the product, specifically calling out the intuitive UI and excellent customer support. This is a positive piece of feedback that does not require any immediate action.</td><td>Here’s the analysis of the customer feedback:<br/><br/>1. The new dashboard is a mess! It takes forever to load, and I can’t find the export button. Fix this ASAP!<br/>Category: UI/UX, Performance<br/>Sentiment: Negative<br/>Priority: High<br/><br/>2. Love the Salesforce integration! But it’d be great if you could add Hubspot too.<br/>Category: Integration, Feature Request<br/>Sentiment: Positive<br/>Priority: Medium<br/><br/>3. Your pricing is ridiculous! $99/mo for basic features? I’m switching to Competitor X.<br/>Category: Pricing<br/>Sentiment: Negative<br/>Priority: High<br/><br/>4. The mobile app keeps crashing when I try to upload large files (&gt;50MB). This is critical for our field agents.<br/>Category: Performance<br/>Sentiment: Negative<br/>Priority: High<br/><br/>5. Overall, I’m happy with the product. The UI is intuitive, and the customer support is top-notch. Keep it up!<br/>Category: UI/UX, Other (Customer Support)<br/>Sentiment: Positive<br/>Priority: Low</td></tr></tbody></table>
+<hr/>
+<div 
+
+
+
+
+<p>When your prompts involve multiple components like context, instructions, and examples, XML tags can be a game-changer. They help Claude parse your prompts more accurately, leading to higher-quality outputs.</p>
+<strong>XML tip</strong>: Use tags like <code>&lt;instructions&gt;</code>, <code>&lt;example&gt;</code>, and <code>&lt;formatting&gt;</code> to clearly separate different parts of your prompt. This prevents Claude from mixing up instructions with examples or context.
+<h2 >Why use XML tags?</h2>
+<ul>
+<li><strong>Clarity:</strong> Clearly separate different parts of your prompt and ensure your prompt is well structured.</li>
+<li><strong>Accuracy:</strong> Reduce errors caused by Claude misinterpreting parts of your prompt.</li>
+<li><strong>Flexibility:</strong> Easily find, add, remove, or modify parts of your prompt without rewriting everything.</li>
+<li><strong>Parseability:</strong> Having Claude use XML tags in its output makes it easier to extract specific parts of its response by post-processing.</li>
+</ul>
+There are no canonical “best” XML tags that Claude has been trained with in particular, although we recommend that your tag names make sense with the information they surround.
+<hr/>
+<h2 >Tagging best practices</h2>
+<ol>
+<li><strong>Be consistent</strong>: Use the same tag names throughout your prompts, and refer to those tag names when talking about the content (e.g, <code>Using the contract in &lt;contract&gt; tags...</code>).</li>
+<li><strong>Nest tags</strong>: You should nest tags <code>&lt;outer&gt;&lt;inner&gt;&lt;/inner&gt;&lt;/outer&gt;</code> for hierarchical content.</li>
+</ol>
+<strong>Power user tip</strong>: Combine XML tags with other techniques like multishot prompting (<code>&lt;examples&gt;</code>) or chain of thought (<code>&lt;thinking&gt;</code>, <code>&lt;answer&gt;</code>). This creates super-structured, high-performance prompts.
+<h3 >Examples</h3>
+<p>Without XML tags, Claude’s analysis is disorganized and misses key points. With tags, it provides a structured, thorough analysis that a legal team can act on.</p><table><thead><tr><th>Role</th><th>No XML Tags</th><th>With XML Tags</th></tr></thead><tbody><tr><td>User</td><td>Analyze this software licensing agreement for potential risks and liabilities: {{CONTRACT}}. Focus on indemnification, limitation of liability, and IP ownership clauses. Also, note any unusual or concerning terms. Here’s our standard contract for reference: {{STANDARD_CONTRACT}}. Give a summary of findings and recommendations for our legal team.</td><td>Analyze this software licensing agreement for legal risks and liabilities.<br/><br/>We’re a multinational enterprise considering this agreement for our core data infrastructure.<br/><br/>&lt;agreement&gt;<br/>{{CONTRACT}}&lt;/agreement&gt;<br/><br/>This is our standard contract for reference:<br/>&lt;standard_contract&gt;{{STANDARD_CONTRACT}}&lt;/standard_contract&gt;<br/><br/>&lt;instructions&gt;<br/>1. Analyze these clauses:<br/>   - Indemnification<br/>   - Limitation of liability<br/>   - IP ownership<br/><br/>2. Note unusual or concerning terms.<br/><br/>3. Compare to our standard contract.<br/><br/>4. Summarize findings in &lt;findings&gt; tags.<br/><br/>5. List actionable recommendations in &lt;recommendations&gt; tags.&lt;/instructions&gt;</td></tr><tr><td>Assistant</td><td>The provided software licensing agreement presents several concerning aspects. The indemnification clause is overly broad, potentially exposing us to significant liabilities. The limitation of liability section caps damages at a mere $500, which is inadequate for our enterprise-level usage. Regarding IP, the agreement grants the vendor joint ownership of any modifications or integrations we create.<br/><br/>In summary, this agreement is not in our best interest. It exposes us to undue risk, limits our recourse in case of failures, and compromises our intellectual property rights. I recommend renegotiating these terms or seeking alternative vendors.</td><td>&lt;findings&gt;<br/>1. Indemnification (Clause 8):<br/>   - Issue: Overly broad. We indemnify vendor against “any and all claims” arising from our use.<br/>   - Risk: Could hold us liable even for vendor’s negligence or product defects.<br/>   - Deviation: Our standard limits indemnity to claims arising from our violation of agreement.<br/><br/>2. Limitation of Liability (Clause 9):<br/>   - Issue: Caps all damages at $500, including direct damages.<br/>   - Risk: Grossly inadequate for enterprise use. A critical failure could cost millions.<br/>   - Deviation: Our standard allows for direct damages up to 12 months of fees paid.<br/><br/>3. IP Ownership (Clause 12):<br/>   - Issue: Grants vendor joint ownership of our modifications/integrations.<br/>   - Risk: Vendor could use or sell our proprietary algorithms or data insights.<br/>   - Deviation: Our standard retains full ownership of our work.<br/><br/>4. Unusual Terms:<br/>   - Clause 5.3: Vendor can use our usage data for “any purpose.”<br/>   - Clause 7.2: Vendor can terminate for “convenience” with only 7 days’ notice.<br/>   - Clause 11: No warranties of any kind, even for basic merchantability.<br/>&lt;/findings&gt;<br/><br/>&lt;recommendations&gt;<br/>1. Reject this agreement. Risks far outweigh benefits for an enterprise.<br/>2. Counter-propose:<br/>   - Indemnification: Limit to claims arising from our violation of agreement.<br/>   - Liability: Cap at 12 months’ fees for direct damages; negotiate for indirect.<br/>   - IP: Full ownership of our modifications/integrations.<br/>   - Data Use: Restrict to service improvement only.<br/>   - Termination: Minimum 90 days’ notice; only for cause.<br/>   - Warranties: Demand basic merchantability and fitness for purpose.<br/>3. If vendor refuses, explore alternative providers or in-house solutions.<br/>4. Engage legal counsel for contract negotiation given high stakes.<br/>&lt;/recommendations&gt;</td></tr></tbody></table>
+<hr/>
+<div 
+
+<p>This guide describes how to work with images in Claude, including best practices, code examples, and limitations to keep in mind.</p>
+<hr/>
+<h2 >How to use vision</h2>
+<p>Use Claude’s vision capabilities via:</p>
+<ul>
+<li><a href="https://claude.ai/" target="_blank" rel="noreferrer">claude.ai</a>. Upload an image like you would a file, or drag and drop an image directly into the chat window.</li>
+<li>The <a href="https://console.anthropic.com/workbench/" target="_blank" rel="noreferrer">Console Workbench</a>. If you select a model that accepts images (Claude 3 models only), a button to add images appears at the top right of every User message block.</li>
+<li><strong>API request</strong>. See the examples in this guide.</li>
+</ul>
+<hr/>
+<h2 >Before you upload</h2>
+<h3 >Evaluate image size</h3>
+<p>You can include multiple images in a single request (up to 5 for <a href="https://claude.ai/" target="_blank" rel="noreferrer">claude.ai</a> and 100 for API requests). Claude will analyze all provided images when formulating its response. This can be helpful for comparing or contrasting images.</p>
+<p>For optimal performance, we recommend resizing images before uploading if they exceed size or token limits. If your image’s long edge is more than 1568 pixels, or your image is more than ~1,600 tokens, it will first be scaled down, preserving aspect ratio, until it’s within the size limits.</p>
+<p>If your input image is too large and needs to be resized, it will increase latency of <a href="/en/docs/resources/glossary">time-to-first-token</a>, without giving you any additional model performance. Very small images under 200 pixels on any given edge may degrade performance.</p>
+time-to-first-token</a>, we recommend resizing images to no more than 1.15 megapixels (and within 1568 pixels in both dimensions).
+<p>Here is a table of maximum image sizes accepted by our API that will not be resized for common aspect ratios. With the Claude 3.5 Sonnet model, these images use approximately 1,600 tokens and around $4.80/1K images.</p>
+<table><thead><tr><th>Aspect ratio</th><th>Image size</th></tr></thead><tbody><tr><td>1:1</td><td>1092x1092 px</td></tr><tr><td>3:4</td><td>951x1268 px</td></tr><tr><td>2:3</td><td>896x1344 px</td></tr><tr><td>9:16</td><td>819x1456 px</td></tr><tr><td>1:2</td><td>784x1568 px</td></tr></tbody></table>
+<h3 >Calculate image costs</h3>
+<p>Each image you include in a request to Claude counts towards your token usage. To calculate the approximate cost, multiply the approximate number of image tokens by the <a href="https://anthropic.com/pricing" target="_blank" rel="noreferrer">per-token price of the model</a> you’re using.</p>
+<p>If your image does not need to be resized, you can estimate the number of tokens used through this algorithm: <code>tokens = (width px * height px)/750</code></p>
+<p>Here are examples of approximate tokenization and costs for different image sizes within our API’s size constraints based on Claude 3.5 Sonnet per-token price of $3 per million input tokens:</p>
+<table><thead><tr><th>Image size</th><th># of Tokens</th><th>Cost / image</th><th>Cost / 1K images</th></tr></thead><tbody><tr><td>200x200 px(0.04 megapixels)</td><td>~54</td><td>~$0.00016</td><td>~$0.16</td></tr><tr><td>1000x1000 px(1 megapixel)</td><td>~1334</td><td>~$0.004</td><td>~$4.00</td></tr><tr><td>1092x1092 px(1.19 megapixels)</td><td>~1590</td><td>~$0.0048</td><td>~$4.80</td></tr></tbody></table>
+<h3 >Ensuring image quality</h3>
+<p>When providing images to Claude, keep the following in mind for best results:</p>
+<ul>
+<li><strong>Image format</strong>: Use a supported image format: JPEG, PNG, GIF, or WebP.</li>
+<li><strong>Image clarity</strong>: Ensure images are clear and not too blurry or pixelated.</li>
+<li><strong>Text</strong>: If the image contains important text, make sure it’s legible and not too small. Avoid cropping out key visual context just to enlarge the text.</li>
+</ul>
+<hr/>
+<h2 >Prompt examples</h2>
+<p>Many of the <a href="/en/docs/build-with-claude/prompt-engineering/overview">prompting techniques</a> that work well for text-based interactions with Claude can also be applied to image-based prompts.</p>
+<p>These examples demonstrate best practice prompt structures involving images.</p>
+Just as with document-query placement, Claude works best when images come before text. Images placed after text or interpolated with text will still perform well, but if your use case allows it, we recommend an image-then-text structure.
+<h3 >About the prompt examples</h3>
+<p>These prompt examples use the <a href="/en/api/client-sdks">Anthropic Python SDK</a>, and fetch images from Wikipedia using the <code>httpx</code> library. You can use any image source.</p>
+<p>The example prompts use these variables.</p>
+import base64
+import httpx
+
+image1_url "https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg"
+image1_media_type "image/jpeg"
+image1_data )
+
+image2_url "https://upload.wikimedia.org/wikipedia/commons/b/b5/Iridescent.green.sweat.bee1.jpg"
+image2_media_type "image/jpeg"
+image2_data )
+</code></pre>
+<p>To utilize images when making an API request, you can provide images to Claude as a base64-encoded image in <code>image</code> content blocks. Here is simple example in Python showing how to include a base64-encoded image in a Messages API request:</p>
+import anthropic
+
+client )
+message (
+    model,
+    max_tokens,
+    messages[
+        {
+            ,
+            [
+                {
+                    ,
+                    {
+                        ,
+                        ,
+                        ,
+                    ,
+                ,
+                {
+                    ,
+                    "Describe this image."
+                }
+            ,
+        }
+    ,
+)
+)
+</code></pre>
+<p>See <a href="/en/api/messages">Messages API examples</a> for more example code and parameter details.</p>
+(
+    model,
+    max_tokens,
+    messages[
+        {
+            ,
+            [
+                {
+                    ,
+                    {
+                        ,
+                        ,
+                        ,
+                    ,
+                ,
+                {
+                    ,
+                    "Describe this image."
+                }
+            ,
+        }
+    ,
+)
+</code></pre><div><button >(
+    model,
+    max_tokens,
+    messages[
+        {
+            ,
+            [
+                {
+                    ,
+                    "Image 1:"
+                ,
+                {
+                    ,
+                    {
+                        ,
+                        ,
+                        ,
+                    ,
+                ,
+                {
+                    ,
+                    "Image 2:"
+                ,
+                {
+                    ,
+                    {
+                        ,
+                        ,
+                        ,
+                    ,
+                ,
+                {
+                    ,
+                    "How are these images different?"
+                }
+            ,
+        }
+    ,
+)
+</code></pre><div><button >(
+    model,
+    max_tokens,
+    system,
+    messages[
+        {
+            ,
+            [
+                {
+                    ,
+                    "Image 1:"
+                ,
+                {
+                    ,
+                    {
+                        ,
+                        ,
+                        ,
+                    ,
+                ,
+                {
+                    ,
+                    "Image 2:"
+                ,
+                {
+                    ,
+                    {
+                        ,
+                        ,
+                        ,
+                    ,
+                ,
+                {
+                    ,
+                    "How are these images different?"
+                }
+            ,
+        }
+    ,
+)
+</code></pre><div><button >multiturn conversation</a> structure.</p>
+<hr/>
+<h2 >Limitations</h2>
+<p>While Claude’s image understanding capabilities are cutting-edge, there are some limitations to be aware of:</p>
+<ul>
+<li><strong>People identification</strong>: Claude <a href="https://www.anthropic.com/legal/aup" target="_blank" rel="noreferrer">cannot be used</a> to identify (i.e., name) people in images and will refuse to do so.</li>
+<li><strong>Accuracy</strong>: Claude may hallucinate or make mistakes when interpreting low-quality, rotated, or very small images under 200 pixels.</li>
+<li><strong>Spatial reasoning</strong>: Claude’s spatial reasoning abilities are limited. It may struggle with tasks requiring precise localization or layouts, like reading an analog clock face or describing exact positions of chess pieces.</li>
+<li><strong>Counting</strong>: Claude can give approximate counts of objects in an image but may not always be precisely accurate, especially with large numbers of small objects.</li>
+<li><strong>AI generated images</strong>: Claude does not know if an image is AI-generated and may be incorrect if asked. Do not rely on it to detect fake or synthetic images.</li>
+<li><strong>Inappropriate content</strong>: Claude will not process inappropriate or explicit images that violate our <a href="https://www.anthropic.com/legal/aup" target="_blank" rel="noreferrer">Acceptable Use Policy</a>.</li>
+<li><strong>Healthcare applications</strong>: While Claude can analyze general medical images, it is not designed to interpret complex diagnostic scans such as CTs or MRIs. Claude’s outputs should not be considered a substitute for professional medical advice or diagnosis.</li>
+</ul>
+<p>Always carefully review and verify Claude’s image interpretations, especially for high-stakes use cases. Do not use Claude for tasks requiring perfect precision or sensitive image analysis without human oversight.</p>
+<hr/>
+<h2 >FAQ</h2>
+<p>Claude currently supports JPEG, PNG, GIF, and WebP image formats, specifically:</p><ul>
+<li>image/jpeg</li>
+<li>image/png</li>
+<li>image/gif</li>
+<li>image/webp</li>
+</ul><div><button ><p>Yes, there are limits:</p><ul>
+<li>API: Maximum 5MB per image</li>
+<li>claude.ai: Maximum 10MB per image</li>
+</ul><p>Images larger than these limits will be rejected and return an error when using our API.</p><div><button ><p>The image limits are:</p><ul>
+<li>Messages API: Up to 100 images per request</li>
+<li>claude.ai: Up to 5 images per turn</li>
+</ul><p>Requests exceeding these limits will be rejected and return an error.</p><div><button ><p>If Claude’s image interpretation seems incorrect:</p><ol>
+<li>Ensure the image is clear, high-quality, and correctly oriented.</li>
+<li>Try prompt engineering techniques to improve results.</li>
+<li>If the issue persists, flag the output in claude.ai (thumbs up/down) or contact our support team.</li>
+</ol><p>Your feedback helps us improve!</p><div><button ><p>No, Claude is an image understanding model only. It can interpret and analyze images, but it cannot generate, produce, edit, manipulate, or create images.</p>
+<hr/>
+<h2 >Dive deeper into vision</h2>
+<p>Ready to start building with images using Claude? Here are a few helpful resources:</p>
+<ul>
+
+<li><a href="/en/api/messages">API reference</a>: Visit our documentation for the Messages API, including example <a href="/en/api/messages-examples">API calls involving images</a>.</li>
+</ul>

@@ -1,0 +1,21 @@
+
+<div ><p>When interacting with Claude, think of it as a brilliant but very new employee (with amnesia) who needs explicit instructions. Like any new employee, Claude does not have context on your norms, styles, guidelines, or preferred ways of working.
+The more precisely you explain what you want, the better Claude’s response will be.</p>
+<div ><strong>The golden rule of clear prompting</strong><br/>Show your prompt to a colleague, ideally someone who has minimal context on the task, and ask them to follow the instructions. If they’re confused, Claude will likely be too.</div></div>
+<h2 >How to be clear, contextual, and specific</span></h2>
+<ul>
+<li><strong>Give Claude contextual information:</strong> Just like you might be able to better perform on a task if you knew more context, Claude will perform better if it has more contextual information. Some examples of contextual information:<!-- -->
+<ul>
+<li>What the task results will be used for</li>
+<li>What audience the output is meant for</li>
+<li>What workflow the task is a part of, and where this task belongs in that workflow</li>
+<li>The end goal of the task, or what a successful task completion looks like</li>
+</ul>
+</li>
+<li><strong>Be specific about what you want Claude to do:</strong> For example, if you want Claude to output only code and nothing else, say so.</li>
+<li><strong>Provide instructions as sequential steps:</strong> Use numbered lists or bullet points to better ensure that Claude carries out the task the exact way you want it to.</li>
+</ul>
+<h3 >Examples</span></h3>
+<div ><p>Notice that Claude outputs superfluous text and different formating with the vague prompt.</p><table><thead><tr><th>Role</th><th>Vague Prompt</th><th>Detailed Prompt</th></tr></thead><tbody><tr><td>User</td><td>Analyze this AcmeCloud outage report and summarize the key points.<br/><br/>{{REPORT}}</td><td>Analyze this AcmeCloud outage report. Skip the preamble. Keep your response terse and write only the bare bones necessary information. List only:<br/>1) Cause<br/>2) Duration<br/>3) Impacted services<br/>4) Number of affected users<br/>5) Estimated revenue loss. <br/><br/>Here’s the report: {{REPORT}}</td></tr><tr><td>Assistant (Claude’s response)</td><td>Here’s a summary of the key points from the AcmeCloud outage report:<br/><br/>On May 15th, a misconfigured load balancer update caused significant traffic routing issues, resulting in a service outage from 09:15 to 13:52 UTC. The 4-hour 37-minute disruption impacted our core file syncing service and admin dashboard, rendering them inaccessible. Additionally, the mobile app experienced partial functionality loss. Approximately 68% of our user base, totaling 1.3 million users, were affected. Based on our Service Level Agreements (SLAs) and average revenue per user, we estimate a financial impact of $420,000 in service credits and potential customer churn.</td><td>1) Cause: Misconfigured load balancer update<br/>2) Duration: 4h 37m (09:15-13:52 UTC, May 15)<br/>3) Impacted: Core sync, admin dashboard (down); mobile app (partial)<br/>4) Affected users: 1.3M (68% of base)<br/>5) Est. revenue loss: $420,000</td></tr></tbody></table></div></div></div>
+<hr/>
+<div 

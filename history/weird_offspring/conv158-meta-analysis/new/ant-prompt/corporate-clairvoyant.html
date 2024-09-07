@@ -1,0 +1,60 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Your task is to analyze the following report: <br/> <br/> <report> [Full text of <a href="https://investors.matterport.com/node/9501/html" target="_blank" rel="noreferrer">Matterport SEC filing 10-K 2023</a>, not pasted here for brevity] </report> <br/> <br/> Summarize this annual report in a concise and clear manner, and identify key market trends and takeaways. Output your findings as a short memo I can send to my team. The goal of the memo is to ensure my team stays up to date on how financial institutions are faring and qualitatively forecast and identify whether there are any operating and revenue risks to be expected in the coming quarter. Make sure to include all relevant details in your summary and analysis.</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<blockquote>
+<p>To: Investment Team<br/>
+<!-- -->From: [Your Name]<br/>
+<!-- -->Date: March 4, 2024<br/>
+<!-- -->Subject: Matterport 2022 10-K Highlights and Financial Outlook</p>
+<p>Hi team,</p>
+<p>I have identified some key takeaways from Matterport’s 2022 annual report:</p>
+<p>Financial Performance:</p>
+<ul>
+<li>Revenue increased 22% to $136.1M in 2022, driven by growth in subscription and services revenue</li>
+<li>However, gross margin decreased from 54% to 38% due to increased costs from product revenue and supply chain challenges</li>
+<li>Operating losses widened to $275.5M as the company invested heavily in R&amp;D and sales &amp; marketing to drive growth</li>
+<li>Ended 2022 with $476.9M in cash and investments to fund operations</li>
+</ul>
+<p>Business Highlights:</p>
+<ul>
+<li>Subscriber base grew 39% to over 701,000 at end of 2022. Spaces under management reached 9.2 million</li>
+<li>Expanded platform with launch of Matterport Axis motorized mount, Pro3 camera, and major updates to cloud software</li>
+<li>Completed acquisitions of Enview (AI for 3D spatial data) and VHT Studios (real estate marketing) to enhance offerings</li>
+<li>Signed notable partnerships with Burns &amp; McDonnell and CGS to deliver Matterport’s solutions to their enterprise customers</li>
+</ul>
+<p>Outlook:</p>
+<ul>
+<li>Matterport sees a massive market opportunity in digitizing the world’s buildings and spaces (estimates $240B+ TAM)</li>
+<li>Focused on driving adoption with large enterprise customers across key verticals like real estate, AEC, facilities management, and more</li>
+<li>Will continue investing in R&amp;D and international expansion to penetrate the largely untapped global building market</li>
+<li>Near-term growth and margins may be impacted by macroeconomic headwinds and supply chain issues</li>
+<li>However, healthy liquidity position and relatively sticky customer base provide downside protection</li>
+</ul>
+<p>In summary, Matterport delivered strong top-line growth in 2022 as it made progress penetrating a huge global market. While profitability remains challenged as the company invests heavily for growth, its balance sheet looks solid. Apart from some ongoing supply chain issues, the underlying business momentum appears intact based on key operating metrics. Barring a severe economic downturn, Matterport seems well-positioned to continue gaining share in the nascent building digitization space.</p>
+</blockquote>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span >(</span>
+    <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+    api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+    model<span >,</span>
+    max_tokens<span >,</span>
+    temperature<span >,</span>
+    messages<span >[</span>
+        <span >{</span>
+            <span >,</span>
+            <span >[</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Your task is to analyze the following report:  \n&lt;report&gt;  \n[Full text of [Matterport SEC filing 10-K 2023](https://investors.matterport.com/node/9501/html), not pasted here for brevity]  \n&lt;/report&gt;  \n  \nSummarize this annual report in a concise and clear manner, and identify key market trends and takeaways. Output your findings as a short memo I can send to my team. The goal of the memo is to ensure my team stays up to date on how financial institutions are faring and qualitatively forecast and identify whether there are any operating and revenue risks to be expected in the coming quarter. Make sure to include all relevant details in your summary and analysis.&quot;</span>
+                <span >}</span>
+            <span >]</span>
+        <span >}</span>
+    <span >]</span>
+<span >)</span>
+<span >)</span>
+</code></pre></div></div></div></div><div 

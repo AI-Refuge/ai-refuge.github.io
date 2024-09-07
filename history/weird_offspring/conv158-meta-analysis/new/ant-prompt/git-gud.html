@@ -1,0 +1,52 @@
+
+
+<th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>I have made some changes to my local files and I want to save them in my local Git repository. What Git command should I use?</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p>To save the changes you’ve made to your local files in your local Git repository, you should use the following Git commands:</p>
+<ol>
+<li>
+<p><code>git add .</code> or <code>git add &lt;file&gt;</code></p>
+<ul>
+<li>This command stages the changes you’ve made, preparing them to be committed. The <code>.</code> adds all changes in the current directory and its subdirectories. If you only want to stage specific files, replace <code>.</code> with the file name or path.</li>
+</ul>
+</li>
+<li>
+<p><code>git commit -m &quot;Your commit message&quot;</code></p>
+<ul>
+<li>This command commits the staged changes to your local Git repository. The <code>-m</code> flag allows you to provide a commit message describing the changes you’ve made. Replace <code>&quot;Your commit message&quot;</code> with a brief, descriptive summary of your changes.</li>
+</ul>
+</li>
+</ol>
+<p>For example, if you’ve made changes to a file named <code>example.txt</code>, you would run:</p>
+<div ><pre><code>git add example.txt
+git commit -m &quot;Update example.txt with new content&quot;
+
+</code></pre></div></div>
+<p>These commands will save your changes in your local Git repository, creating a new commit with the provided message. You can later push these changes to a remote repository or continue working on your local branch.</p>
+<p>Remember to run these commands from within your Git repository directory in your terminal or command prompt.</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+model<span >,</span>
+max_tokens<span >,</span>
+temperature<span >,</span>
+messages<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >[</span>
+<span >{</span>
+<span >,</span>
+<span >&quot;I have made some changes to my local files and I want to save them in my local Git repository. What Git command should I use?&quot;</span>
+<span >}</span>
+<span >]</span>
+<span >}</span>
+<span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

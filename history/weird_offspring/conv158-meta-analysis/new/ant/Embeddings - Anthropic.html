@@ -1,0 +1,209 @@
+
+
+<div >Before implementing embeddings</span></h2>
+<p>When selecting an embeddings provider, there are several factors you can consider depending on your needs and preferences:</p>
+<ul>
+<li><strong>Dataset size &amp; domain specificity:</strong> size of the model training dataset and its relevance to the domain you want to embed. Larger or more domain-specific data generally produces better in-domain embeddings</li>
+<li><strong>Inference performance:</strong> embedding lookup speed and end-to-end latency. This is a particularly important consideration for large scale production deployments</li>
+<li><strong>Customization:</strong> options for continued training on private data, or specialization of models for very specific domains. This can improve performance on unique vocabularies</li>
+</ul>
+<hr/>
+<h2 >How to get embeddings with Anthropic</span></h2>
+<p>Anthropic does not offer its own embedding model. One embeddings provider that has a wide variety of options and capabilities encompassing all of the above considerations is <a href="https://www.voyageai.com/?ref=anthropic" target="_blank" rel="noreferrer">Voyage AI</a>.</p>
+<p>Voyage AI makes <a href="https://blog.voyageai.com/2023/10/29/voyage-embeddings/?ref=anthropic" target="_blank" rel="noreferrer">state-of-the-art</a> embedding models and offers customized models for specific industry domains such as finance and healthcare, or bespoke fine-tuned models for individual customers.</p>
+<p>The rest of this guide is for Voyage AI, but we encourage you to assess a variety of embeddings vendors to find the best fit for your specific use case.</p>
+<hr/>
+<h2 >Getting started with Voyage AI</span></h2>
+<div >embeddings notebook</a> to see an example Voyage AI implementation.</div></div>
+<p>To access Voyage embeddings:</p>
+<ol>
+<li>Sign up on <a href="https://dash.voyageai.com/?ref=anthropic" target="_blank" rel="noreferrer">Voyage AI’s website</a></li>
+<li>Obtain an API key</li>
+<li>Set the API key as an environment variable for convenience:</li>
+</ol>
+<div >&quot;&lt;your secret key&gt;&quot;</span>
+</code></pre></div></div>
+<p>You can run the embeddings by either using the official <a href="https://github.com/voyage-ai/voyageai-python" target="_blank" rel="noreferrer">voyageai Python package</a> or HTTP requests, as described below.</p>
+<h3 >Voyage Python package</span></h3>
+<p>The <code>voyageai</code> package can be installed using the following command:</p>
+<div >-</span>U voyageai
+</code></pre></div></div>
+<p>Then, you can create a client object and start using it to embed your texts:</p>
+<div >import</span> voyageai
+
+vo <span >)</span>
+<span ># This will automatically use the environment variable VOYAGE_API_KEY.</span>
+<span ># Alternatively, you can use vo = voyageai.Client(api_key=&quot;&lt;your secret key&gt;&quot;)</span>
+
+texts <span >]</span>
+
+result <span >)</span>
+<span >)</span>
+<span >)</span>
+</code></pre></div></div>
+<p><code>result.embeddings</code> will be a list of two embedding vectors, each containing 1024 floating-point numbers.</p>
+<p>After running the above code, the two embeddings will be printed on the screen:</p>
+<div ># embedding for &quot;Sample text 1&quot;</span>
+<span ># embedding for &quot;Sample text 2&quot;</span>
+</code></pre></div></div>
+<p>When creating the embeddings, you may specify a few other arguments to the <code>embed()</code> function. Here is the specification:</p>
+<blockquote>
+<p><code>voyageai.Client.embed(texts : List[str], model : str, input_type : Optional[str] = None, truncation : Optional[bool] = None)</code></p>
+</blockquote>
+<ul>
+<li><strong>texts</strong> (List[str]) - A list of texts as a list of strings, such as <code>[&quot;I like cats&quot;, &quot;I also like dogs&quot;]</code>. Currently, the maximum length of the list is 128, and total number of tokens in the list is at most 320K for <code>voyage-2</code> and 120K for <code>voyage-large-2</code>/<code>voyage-code-2</code>.</li>
+<li><strong>model</strong> (str) - Name of the model. Recommended options: <code>voyage-2</code>, <code>voyage-large-2</code>, <code>voyage-code-2</code>.</li>
+<li><strong>input_type</strong> (str, optional, defaults to <code>None</code>) - Type of the input text. Defaults to <code>None</code>. Other options: <code>query</code>, <code>document</code>
+<ul>
+<li>When the input_type is set to <code>None</code>, the input text will be directly encoded by Voyage’s embedding model. Alternatively, when the inputs are documents or queries, the users can specify <code>input_type</code> to be <code>query</code> or <code>document</code>, respectively. In such cases, Voyage will prepend a special prompt to input text and send the extended inputs to the embedding model</li>
+<li>For retrieval/search use cases, we recommend specifying this argument when encoding queries or documents to enhance retrieval quality. Embeddings generated with and without the <code>input_type</code> argument are compatible</li>
+</ul>
+</li>
+<li><strong>truncation</strong> (bool, optional, defaults to <code>None</code>) - Whether to truncate the input texts to fit within the context length.<!-- -->
+<ul>
+<li>If <code>True</code>, over-length input texts will be truncated to fit within the context length, before being vectorized by the embedding model</li>
+<li>If <code>False</code>, an error will be raised if any given text exceeds the context length</li>
+<li>If not specified (defaults to <code>None</code>), Voyage will truncate the input text before sending it to the embedding model if it slightly exceeds the context window length. If it significantly exceeds the context window length, an error will be raised</li>
+</ul>
+</li>
+</ul>
+<h3 >Voyage HTTP API</span></h3>
+<p>You can also get embeddings by requesting the Voyage HTTP API. For example, you can send an HTTP request through the <code>curl</code> command in a terminal:</p>
+<div >\</span>
+  <span >\</span>
+  <span >\</span>
+  <span >&#x27;{
+    &quot;input&quot;: [&quot;Sample text 1&quot;, &quot;Sample text 2&quot;],
+    &quot;model&quot;: &quot;voyage-2&quot;
+  }&#x27;</span>
+</code></pre></div></div>
+<p>The response you would get is a JSON object containing the embeddings and the token usage:</p>
+<div >{</span>
+  <span >,</span>
+  <span >[</span>
+    <span >{</span>
+      <span >,</span>
+      <span >0</span>
+    <span >,</span>
+    <span >{</span>
+      <span >,</span>
+      <span >1</span>
+    <span >}</span>
+  <span >,</span>
+  <span >,</span>
+  <span >{</span>
+    <span >10</span>
+  <span >}</span>
+<span >}</span>
+</code></pre></div></div>
+<p>Voyage AI’s embedding endpoint is <code>https://api.voyageai.com/v1/embeddings</code> (POST). The request header must contain the API key. The request body is a JSON object containing the following arguments:</p>
+<ul>
+<li><strong>input</strong> (str, List[str]) - A single text string, or a list of texts as a list of strings. Currently, the maximum length of the list is 128, and total number of tokens in the list is at most 320K for <code>voyage-2</code> and 120K for <code>voyage-large-2</code>/<code>voyage-code-2</code>.</li>
+<li><strong>model</strong> (str) - Name of the model. Recommended options: <code>voyage-2</code>, <code>voyage-large-2</code>, <code>voyage-code-2</code>.</li>
+<li><strong>input_type</strong> (str, optional, defaults to <code>None</code>) - Type of the input text. Defaults to <code>None</code>. Other options: <code>query</code>, <code>document</code></li>
+<li><strong>truncation</strong> (bool, optional, defaults to <code>None</code>) - Whether to truncate the input texts to fit within the context length<!-- -->
+<ul>
+<li>If <code>True</code>, over-length input texts will be truncated to fit within the context length before being vectorized by the embedding model</li>
+<li>If <code>False</code>, an error will be raised if any given text exceeds the context length</li>
+<li>If not specified (defaults to <code>None</code>), Voyage will truncate the input text before sending it to the embedding model if it slightly exceeds the context window length. If it significantly exceeds the context window length, an error will be raised</li>
+</ul>
+</li>
+<li><strong>encoding_format</strong> (str, optional, default to <code>None</code>) - Format in which the embeddings are encoded. Voyage currently supports two options:<!-- -->
+<ul>
+<li>If not specified (defaults to <code>None</code>): the embeddings are represented as lists of floating-point numbers</li>
+<li><code>&quot;base64&quot;</code>: the embeddings are compressed to <a href="https://docs.python.org/3/library/base64.html" target="_blank" rel="noreferrer">Base64</a> encodings</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<h2 >Voyage embedding example</span></h2>
+<p>Now that we know how to get embeddings with Voyage, let’s see it in action with a brief example.</p>
+<p>Suppose we have a small corpus of six documents to retrieve from</p>
+<div >[</span>
+    <span >,</span>
+    <span >,</span>
+    <span >,</span>
+    <span >,</span>
+    <span >,</span>
+    <span >&quot;Shakespeare&#x27;s works, like &#x27;Hamlet&#x27; and &#x27;A Midsummer Night&#x27;s Dream,&#x27; endure in literature.&quot;</span>
+<span >]</span>
+</code></pre></div></div>
+<p>We will first use Voyage to convert each of them into an embedding vector</p>
+<div >import</span> voyageai
+
+vo <span >)</span>
+
+<span ># Embed the documents</span>
+doc_embds <span >(</span>
+    documents<span >&quot;document&quot;</span>
+<span >.</span>embeddings
+</code></pre></div></div>
+<p>The embeddings will allow us to do semantic search / retrieval in the vector space. We can then convert an example query,</p>
+<div >&quot;When is Apple&#x27;s conference call scheduled?&quot;</span>
+</code></pre></div></div>
+<p>into an embedding, and then conduct a nearest neighbor search to find the most relevant document based on the distance in the embedding space.</p>
+<div >as</span> np
+
+<span ># Embed the query</span>
+query_embd <span >(</span>
+    <span >&quot;query&quot;</span>
+<span >]</span>
+
+<span ># Compute the similarity</span>
+<span ># Voyage embeddings are normalized to length 1, therefore dot-product</span>
+<span ># and cosine similarity are the same.</span>
+similarities <span >)</span>
+
+retrieved_id <span >)</span>
+<span >)</span>
+</code></pre></div></div>
+<p>Note that we use <code>input_type=&quot;document&quot;</code> and <code>input_type=&quot;query&quot;</code> for embedding the document and query, respectively. More specification can be found <a href="/_sites/docs.anthropic.com/en/docs/build-with-claude/embeddings#voyage-python-package">here</a>.</p>
+<p>The output would be the 5th document, which is indeed the most relevant to the query:</p>
+<div ><pre><code>Apple’s conference call to discuss fourth fiscal quarter results and business updates is scheduled for Thursday, November 2, 2023 at 2:00 p.m. PT / 5:00 p.m. ET.
+</code></pre></div></div>
+<hr/>
+<h2 >Available Voyage models</span></h2>
+<p>Voyage recommends using the following embedding models:</p>
+<table><thead><tr><th>Model</th><th>Context Length</th><th>Embedding Dimension</th><th>Description</th></tr></thead><tbody><tr><td><code>voyage-large-2</code></td><td>16000</td><td>1536</td><td>Voyage AI’s most powerful generalist embedding model.</td></tr><tr><td><code>voyage-code-2</code></td><td>16000</td><td>1536</td><td>Optimized for code retrieval (17% better than alternatives), and also SoTA on general-purpose corpora. See this Voyage <a href="https://blog.voyageai.com/2024/01/23/voyage-code-2-elevate-your-code-retrieval/?ref=anthropic" target="_blank" rel="noreferrer">blog post</a> for details.</td></tr><tr><td><code>voyage-2</code></td><td>4000</td><td>1024</td><td>Base generalist embedding model optimized for both latency and quality.</td></tr><tr><td><code>voyage-lite-02-instruct</code></td><td>4000</td><td>1024</td><td><a href="https://github.com/voyage-ai/voyage-lite-02-instruct/blob/main/instruct.json" target="_blank" rel="noreferrer">Instruction-tuned</a> for classification, clustering, and sentence textual similarity tasks, which are the only recommended use cases for this model.</td></tr></tbody></table>
+<p><code>voyage-2</code> and <code>voyage-large-2</code> are generalist embedding models, which achieve state-of-the-art performance across domains and retain high efficiency. <code>voyage-code-2</code> is optimized for the code field, offering 4x the context length for more flexible usage, albeit at a relatively higher latency.</p>
+<p>Voyage is actively developing more advanced and specialized models, and also offers fine-tuning services to customize bespoke models for individual customers. Email your Anthropic account manager or reach out to Anthropic support for further information on bespoke models.</p>
+<ul>
+<li><code>voyage-finance-2</code>: coming soon</li>
+<li><code>voyage-law-2</code>: coming soon</li>
+<li><code>voyage-multilingual-2</code>: coming soon</li>
+<li><code>voyage-healthcare-2</code>: coming soon</li>
+</ul>
+<hr/>
+<h2 >Voyage on the AWS Marketplace</span></h2>
+<p>Voyage embeddings are also available on <a href="https://aws.amazon.com/marketplace/seller-profile?id=seller-snt4gb6fd7ljg" target="_blank" rel="noreferrer">AWS Marketplace</a>. Here are the instructions for accessing Voyage on AWS:</p>
+<ol>
+<li>Subscribe to the model package<!-- -->
+<ol>
+<li>Navigate to the <a href="https://aws.amazon.com/marketplace/seller-profile?id=seller-snt4gb6fd7ljg" target="_blank" rel="noreferrer">model package listing page</a> and select the model to deploy</li>
+<li>Click on the <code>Continue to subscribe</code> button</li>
+<li>Carefully review the details on the <code>Subscribe to this software</code> page. If you agree with the standard End-User License Agreement (EULA), pricing, and support terms, click on “Accept Offer”</li>
+<li>After selecting <code>Continue to configuration</code> and choosing a region, you will be presented with a Product Arn. This is the model package ARN required for creating a deployable model using Boto3<!-- -->
+<ol>
+<li>Copy the ARN that corresponds to your selected region and use it in the subsequent cell</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Deploy the model package</li>
+</ol>
+<p>From here, create a JupyterLab space in <a href="https://aws.amazon.com/sagemaker/studio/" target="_blank" rel="noreferrer">Sagemaker Studio</a>, upload Voyage’s <a href="https://github.com/voyage-ai/voyageai-aws/blob/main/notebooks/deploy%5Fvoyage%5Fcode%5F2%5Fsagemaker.ipynb" target="_blank" rel="noreferrer">notebook</a>, and follow the instructions within.</p>
+<hr/>
+<h2 >FAQ</span></h2>
+<div >as</span> np
+
+similarity <span >)</span>
+<span ># Voyage embeddings are normalized to length 1, therefore cosine similarity</span>
+<span ># is the same as dot-product.</span>
+</code></pre></div></div><p>If you want to find the K nearest embedding vectors over a large corpus, we recommend using the capabilities built into most vector databases.</p></div></div><div><button >import</span> voyageai
+
+vo <span >)</span>
+total_tokens <span >)</span>
+</code></pre></div></div></div></div></div>
+<hr/>
+<h2 >Pricing</span></h2>
+<p>Visit Voyage’s <a href="https://docs.voyageai.com/pricing/?ref=anthropic" target="_blank" rel="noreferrer">pricing page</a> for the most up to date pricing details.</p></div><div><div 

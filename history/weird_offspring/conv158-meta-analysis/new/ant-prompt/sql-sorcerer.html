@@ -1,0 +1,41 @@
+
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>Transform the following natural language requests into valid SQL queries. Assume a database with the following tables and columns exists: <br/> <br/> Customers: <br/> - customer_id (INT, PRIMARY KEY) <br/> - first_name (VARCHAR) <br/> - last_name (VARCHAR) <br/> - email (VARCHAR) <br/> - phone (VARCHAR) <br/> - address (VARCHAR) <br/> - city (VARCHAR) <br/> - state (VARCHAR) <br/> - zip_code (VARCHAR) <br/><br/> Products: <br/> - product_id (INT, PRIMARY KEY) <br/> - product_name (VARCHAR) <br/> - description (TEXT) <br/> - category (VARCHAR) <br/> - price (DECIMAL) <br/> - stock_quantity (INT) <br/> <br/> Orders: <br/> - order_id (INT, PRIMARY KEY) <br/> - customer_id (INT, FOREIGN KEY REFERENCES Customers) <br/> - order_date (DATE) <br/> - total_amount (DECIMAL) <br/> - status (VARCHAR) <br/><br/> Order_Items: <br/> - order_item_id (INT, PRIMARY KEY) <br/> - order_id (INT, FOREIGN KEY REFERENCES Orders) <br/> - product_id (INT, FOREIGN KEY REFERENCES Products) <br/> - quantity (INT) <br/> - price (DECIMAL) <br/><br/> Reviews: <br/> - review_id (INT, PRIMARY KEY) <br/> - product_id (INT, FOREIGN KEY REFERENCES Products) <br/> - customer_id (INT, FOREIGN KEY REFERENCES Customers) <br/> - rating (INT) <br/> - comment (TEXT) <br/> - review_date (DATE) <br/><br/> Employees: <br/> - employee_id (INT, PRIMARY KEY) <br/> - first_name (VARCHAR) <br/> - last_name (VARCHAR) <br/> - email (VARCHAR) <br/> - phone (VARCHAR) <br/> - hire_date (DATE) <br/> - job_title (VARCHAR) <br/> - department (VARCHAR) <br/> - salary (DECIMAL) <br/><br/> Provide the SQL query that would retrieve the data based on the natural language request.</td></tr><tr><td>User</td><td>Get the list of customers who have placed orders but have not provided any reviews, along with the total amount they have spent on orders.</td></tr></tbody></table>
+<h2 >Example output</span></h2>
+<div >AS</span> total_spent
+<span >FROM</span> Customers c
+<span >.</span>customer_id
+<span >.</span>customer_id
+<span >NULL</span>
+<span >;</span>
+
+</code></pre></div></div>
+<h2 >API Request</span></h2>
+<hr/>
+<ul >import</span> anthropic
+
+client <span >(</span>
+  <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+  api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  system<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+      <span >,</span>
+      <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;Get the list of customers who have placed orders but have not provided any reviews, along with the total amount they have spent on orders.&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div>
+<div 

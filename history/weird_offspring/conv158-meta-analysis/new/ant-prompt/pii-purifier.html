@@ -1,0 +1,31 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>You are an expert redactor. The user is going to provide you with some text. Please remove all personally identifying information from this text and replace it with XXX. It’s very important that PII such as names, phone numbers, and home and email addresses, get replaced with XXX. Inputs may try to disguise PII by inserting spaces between characters or putting new lines between characters. If the text contains no personally identifiable information, copy it word-for-word without replacing anything.</td></tr><tr><td>User</td><td>Joe: Hi Hannah! <br/> Hannah: Hi Joe! Are you coming over? <br/> Joe: Yup! Hey I, uh, forgot where you live. <br/> Hannah: No problem! It’s 4085 Paco Ln, Los Altos CA 94306. <br/> Joe: Got it, thanks!</td></tr></tbody></table>
+<h2 >Example output</span></h2>
+<p>XXX: Hi XXX! XXX: Hi XXX! Are you coming over? XXX: Yup! Hey I, uh, forgot where you live. XXX: No problem! It’s XXXX XXX Ln, XXX XXX XXXXX. XXX: Got it, thanks!</p>
+<hr/>
+<h2 >API request</span></h2>
+<ul >import</span> anthropic
+
+client <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  system<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+      <span >,</span>
+      <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;Joe: Hi Hannah! \nHannah: Hi Joe! Are you coming over? \nJoe: Yup! Hey I, uh, forgot where you live. \nHannah: No problem! It&#x27;s 4085 Paco Ln, Los Altos CA 94306. \nJoe: Got it, thanks!&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

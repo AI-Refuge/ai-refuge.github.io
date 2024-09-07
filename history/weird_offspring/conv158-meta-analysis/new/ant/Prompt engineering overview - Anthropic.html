@@ -1,0 +1,44 @@
+
+<div >Before prompt engineering</span></h2>
+<p>This guide assumes that you have:</p>
+<ol>
+<li>A clear definition of the success criteria for your use case</li>
+<li>Some ways to empirically test against those criteria</li>
+<li>A first draft prompt you want to improve</li>
+</ol>
+<p>If not, we highly suggest you spend time establishing that first. Check out <a href="/en/docs/build-with-claude/define-success">Define your success criteria</a> and <a href="/en/docs/build-with-claude/develop-tests">Create strong empirical evaluations</a> for tips and guidance.</p>
+<atarget="_blank" rel="noreferrer" href="https://console.anthropic.com/dashboard"><div ><p>Don’t have a first draft prompt? Try the prompt generator in the Anthropic Console!</p></div></div></div></a>
+<hr/>
+<h2 >When to prompt engineer</span></h2>
+<p>This guide focuses on success criteria that are controllable through prompt engineering.
+Not every success criteria or failing eval is best solved by prompt engineering. For example, latency and cost can be sometimes more easily improved by selecting a different model.</p>
+<div><button ><p>Prompt engineering is far faster than other methods of model behavior control, such as finetuning, and can often yield leaps in performance in far less time. Here are some reasons to consider prompt engineering over finetuning:<br/></p><ul>
+<li><strong>Resource efficiency</strong>: Fine-tuning requires high-end GPUs and large memory, while prompt engineering only needs text input, making it much more resource-friendly.</li>
+<li><strong>Cost-effectiveness</strong>: For cloud-based AI services, fine-tuning incurs significant costs. Prompt engineering uses the base model, which is typically cheaper.</li>
+<li><strong>Maintaining model updates</strong>: When providers update models, fine-tuned versions might need retraining. Prompts usually work across versions without changes.</li>
+<li><strong>Time-saving</strong>: Fine-tuning can take hours or even days. In contrast, prompt engineering provides nearly instantaneous results, allowing for quick problem-solving.</li>
+<li><strong>Minimal data needs</strong>: Fine-tuning needs substantial task-specific, labeled data, which can be scarce or expensive. Prompt engineering works with few-shot or even zero-shot learning.</li>
+<li><strong>Flexibility &amp; rapid iteration</strong>: Quickly try various approaches, tweak prompts, and see immediate results. This rapid experimentation is difficult with fine-tuning.</li>
+<li><strong>Domain adaptation</strong>: Easily adapt models to new domains by providing domain-specific context in prompts, without retraining.</li>
+<li><strong>Comprehension improvements</strong>: Prompt engineering is far more effective than finetuning at helping models better understand and utilize external content such as retrieved documents</li>
+<li><strong>Preserves general knowledge</strong>: Fine-tuning risks catastrophic forgetting, where the model loses general knowledge. Prompt engineering maintains the model’s broad capabilities.</li>
+<li><strong>Transparency</strong>: Prompts are human-readable, showing exactly what information the model receives. This transparency aids in understanding and debugging.</li>
+</ul></div></div>
+<hr/>
+<h2 >How to prompt engineer</span></h2>
+<p>The prompt engineering pages in this section have been organized from most broadly effective techniques to more specialized techniques. When troubleshooting performance, we suggest you try these techniques in order, although the actual impact of each technique will depend on our use case.</p>
+<ol>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/prompt-generator">Prompt generator</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/be-clear-and-direct">Be clear and direct</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/multishot-prompting">Use examples (multishot)</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/chain-of-thought">Let Claude think (chain of thought)</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/use-xml-tags">Use XML tags</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/system-prompts">Give Claude a role (system prompts)</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/prefill-claudes-response">Prefill Claude’s response</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/chain-complex-prompts">Chain complex prompts</a></li>
+<li><a href="/en/docs/build-with-claude/prompt-engineering/long-context-tips">Long context tips</a></li>
+</ol>
+<hr/>
+<h2 >Prompt engineering tutorial</span></h2>
+<p>If you’re an interactive learner, you can dive into our interactive tutorials instead!</p>
+<div 

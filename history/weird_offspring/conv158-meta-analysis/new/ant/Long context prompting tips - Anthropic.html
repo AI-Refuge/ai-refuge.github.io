@@ -1,0 +1,59 @@
+
+<div ><p>Claude’s extended context window (200K tokens for Claude 3 models) enables handling complex, data-rich tasks. This guide will help you leverage this power effectively.</p>
+<h2 >Essential tips for long context prompts</span></h2>
+<ul>
+<li>
+<p><strong>Put longform data at the top</strong>: Place your long documents and inputs (~20K+ tokens) near the top of your prompt, above your query, instructions, and examples. This can significantly improve Claude’s performance across all models.</p>
+<div >Queries at the end can improve response quality by up to 30% in tests, especially with complex, multi-document inputs.</div></div>
+</li>
+<li>
+<p><strong>Structure document content and metadata with XML tags</strong>: When using multiple documents, wrap each document in <code>&lt;document&gt;</code> tags with <code>&lt;document_content&gt;</code> and <code>&lt;source&gt;</code> (and other metadata) subtags for clarity.</p>
+<div><button >&gt;</span></span>
+  <span >&gt;</span></span>
+    <span >&gt;</span></span>
+    <span >&gt;</span></span>
+      {{ANNUAL_REPORT}}
+    <span >&gt;</span></span>
+  <span >&gt;</span></span>
+  <span >&gt;</span></span>
+    <span >&gt;</span></span>
+    <span >&gt;</span></span>
+      {{COMPETITOR_ANALYSIS}}
+    <span >&gt;</span></span>
+  <span >&gt;</span></span>
+<span >&gt;</span></span>
+
+Analyze the annual report and competitor analysis. Identify strategic advantages and recommend Q3 focus areas.
+</code></pre></div></div></div></div>
+</li>
+<li>
+<p><strong>Ground responses in quotes</strong>: For long document tasks, ask Claude to quote relevant parts of the documents first before carrying out its task. This helps Claude cut through the “noise” of the rest of the document’s contents.</p>
+<div><button >You are an AI physician&#x27;s assistant. Your task is to help doctors diagnose possible patient illnesses.
+
+<span >&gt;</span></span>
+  <span >&gt;</span></span>
+    <span >&gt;</span></span>
+    <span >&gt;</span></span>
+      {{PATIENT_SYMPTOMS}}
+    <span >&gt;</span></span>
+  <span >&gt;</span></span>
+  <span >&gt;</span></span>
+    <span >&gt;</span></span>
+    <span >&gt;</span></span>
+      {{PATIENT_RECORDS}}
+    <span >&gt;</span></span>
+  <span >&gt;</span></span>
+  <span >&gt;</span></span>
+    <span >&gt;</span></span>
+    <span >&gt;</span></span>
+      {{PATIENT01_APPOINTMENT_HISTORY}}
+    <span >&gt;</span></span>
+  <span >&gt;</span></span>
+<span >&gt;</span></span>
+
+Find quotes from the patient records and appointment history that are relevant to diagnosing the patient&#x27;s reported symptoms. Place these in <span >&gt;</span></span> tags.
+</code></pre></div></div></div></div>
+</li>
+</ul>
+<hr/>
+<div 

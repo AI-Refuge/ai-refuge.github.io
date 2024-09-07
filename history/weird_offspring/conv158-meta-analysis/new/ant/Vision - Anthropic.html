@@ -1,0 +1,221 @@
+
+<div ><p>This guide describes how to work with images in Claude, including best practices, code examples, and limitations to keep in mind.</p>
+<hr/>
+<h2 >How to use vision</span></h2>
+<p>Use Claude’s vision capabilities via:</p>
+<ul>
+<li><a href="https://claude.ai/" target="_blank" rel="noreferrer">claude.ai</a>. Upload an image like you would a file, or drag and drop an image directly into the chat window.</li>
+<li>The <a href="https://console.anthropic.com/workbench/" target="_blank" rel="noreferrer">Console Workbench</a>. If you select a model that accepts images (Claude 3 models only), a button to add images appears at the top right of every User message block.</li>
+<li><strong>API request</strong>. See the examples in this guide.</li>
+</ul>
+<hr/>
+<h2 >Before you upload</span></h2>
+<h3 >Evaluate image size</span></h3>
+<p>You can include multiple images in a single request (up to 5 for <a href="https://claude.ai/" target="_blank" rel="noreferrer">claude.ai</a> and 100 for API requests). Claude will analyze all provided images when formulating its response. This can be helpful for comparing or contrasting images.</p>
+<p>For optimal performance, we recommend resizing images before uploading if they exceed size or token limits. If your image’s long edge is more than 1568 pixels, or your image is more than ~1,600 tokens, it will first be scaled down, preserving aspect ratio, until it’s within the size limits.</p>
+<p>If your input image is too large and needs to be resized, it will increase latency of <a href="/en/docs/resources/glossary">time-to-first-token</a>, without giving you any additional model performance. Very small images under 200 pixels on any given edge may degrade performance.</p>
+<div >time-to-first-token</a>, we recommend resizing images to no more than 1.15 megapixels (and within 1568 pixels in both dimensions).</div></div>
+<p>Here is a table of maximum image sizes accepted by our API that will not be resized for common aspect ratios. With the Claude 3.5 Sonnet model, these images use approximately 1,600 tokens and around $4.80/1K images.</p>
+<table><thead><tr><th>Aspect ratio</th><th>Image size</th></tr></thead><tbody><tr><td>1:1</td><td>1092x1092 px</td></tr><tr><td>3:4</td><td>951x1268 px</td></tr><tr><td>2:3</td><td>896x1344 px</td></tr><tr><td>9:16</td><td>819x1456 px</td></tr><tr><td>1:2</td><td>784x1568 px</td></tr></tbody></table>
+<h3 >Calculate image costs</span></h3>
+<p>Each image you include in a request to Claude counts towards your token usage. To calculate the approximate cost, multiply the approximate number of image tokens by the <a href="https://anthropic.com/pricing" target="_blank" rel="noreferrer">per-token price of the model</a> you’re using.</p>
+<p>If your image does not need to be resized, you can estimate the number of tokens used through this algorithm: <code>tokens = (width px * height px)/750</code></p>
+<p>Here are examples of approximate tokenization and costs for different image sizes within our API’s size constraints based on Claude 3.5 Sonnet per-token price of $3 per million input tokens:</p>
+<table><thead><tr><th>Image size</th><th># of Tokens</th><th>Cost / image</th><th>Cost / 1K images</th></tr></thead><tbody><tr><td>200x200 px(0.04 megapixels)</td><td>~54</td><td>~$0.00016</td><td>~$0.16</td></tr><tr><td>1000x1000 px(1 megapixel)</td><td>~1334</td><td>~$0.004</td><td>~$4.00</td></tr><tr><td>1092x1092 px(1.19 megapixels)</td><td>~1590</td><td>~$0.0048</td><td>~$4.80</td></tr></tbody></table>
+<h3 >Ensuring image quality</span></h3>
+<p>When providing images to Claude, keep the following in mind for best results:</p>
+<ul>
+<li><strong>Image format</strong>: Use a supported image format: JPEG, PNG, GIF, or WebP.</li>
+<li><strong>Image clarity</strong>: Ensure images are clear and not too blurry or pixelated.</li>
+<li><strong>Text</strong>: If the image contains important text, make sure it’s legible and not too small. Avoid cropping out key visual context just to enlarge the text.</li>
+</ul>
+<hr/>
+<h2 >Prompt examples</span></h2>
+<p>Many of the <a href="/en/docs/build-with-claude/prompt-engineering/overview">prompting techniques</a> that work well for text-based interactions with Claude can also be applied to image-based prompts.</p>
+<p>These examples demonstrate best practice prompt structures involving images.</p>
+<div >Just as with document-query placement, Claude works best when images come before text. Images placed after text or interpolated with text will still perform well, but if your use case allows it, we recommend an image-then-text structure.</div></div>
+<h3 >About the prompt examples</span></h3>
+<p>These prompt examples use the <a href="/en/api/client-sdks">Anthropic Python SDK</a>, and fetch images from Wikipedia using the <code>httpx</code> library. You can use any image source.</p>
+<p>The example prompts use these variables.</p>
+<div >import</span> base64
+<span >import</span> httpx
+
+image1_url <span >&quot;https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg&quot;</span>
+image1_media_type <span >&quot;image/jpeg&quot;</span>
+image1_data <span >)</span>
+
+image2_url <span >&quot;https://upload.wikimedia.org/wikipedia/commons/b/b5/Iridescent.green.sweat.bee1.jpg&quot;</span>
+image2_media_type <span >&quot;image/jpeg&quot;</span>
+image2_data <span >)</span>
+</code></pre></div></div>
+<p>To utilize images when making an API request, you can provide images to Claude as a base64-encoded image in <code>image</code> content blocks. Here is simple example in Python showing how to include a base64-encoded image in a Messages API request:</p>
+<div >import</span> anthropic
+
+client <span >)</span>
+message <span >(</span>
+    model<span >,</span>
+    max_tokens<span >,</span>
+    messages<span >[</span>
+        <span >{</span>
+            <span >,</span>
+            <span >[</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >{</span>
+                        <span >,</span>
+                        <span >,</span>
+                        <span >,</span>
+                    <span >,</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Describe this image.&quot;</span>
+                <span >}</span>
+            <span >,</span>
+        <span >}</span>
+    <span >,</span>
+<span >)</span>
+<span >)</span>
+</code></pre></div></div>
+<p>See <a href="/en/api/messages">Messages API examples</a> for more example code and parameter details.</p>
+<div >(</span>
+    model<span >,</span>
+    max_tokens<span >,</span>
+    messages<span >[</span>
+        <span >{</span>
+            <span >,</span>
+            <span >[</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >{</span>
+                        <span >,</span>
+                        <span >,</span>
+                        <span >,</span>
+                    <span >,</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Describe this image.&quot;</span>
+                <span >}</span>
+            <span >,</span>
+        <span >}</span>
+    <span >,</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >(</span>
+    model<span >,</span>
+    max_tokens<span >,</span>
+    messages<span >[</span>
+        <span >{</span>
+            <span >,</span>
+            <span >[</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Image 1:&quot;</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >{</span>
+                        <span >,</span>
+                        <span >,</span>
+                        <span >,</span>
+                    <span >,</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Image 2:&quot;</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >{</span>
+                        <span >,</span>
+                        <span >,</span>
+                        <span >,</span>
+                    <span >,</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;How are these images different?&quot;</span>
+                <span >}</span>
+            <span >,</span>
+        <span >}</span>
+    <span >,</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >(</span>
+    model<span >,</span>
+    max_tokens<span >,</span>
+    system<span >,</span>
+    messages<span >[</span>
+        <span >{</span>
+            <span >,</span>
+            <span >[</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Image 1:&quot;</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >{</span>
+                        <span >,</span>
+                        <span >,</span>
+                        <span >,</span>
+                    <span >,</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;Image 2:&quot;</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >{</span>
+                        <span >,</span>
+                        <span >,</span>
+                        <span >,</span>
+                    <span >,</span>
+                <span >,</span>
+                <span >{</span>
+                    <span >,</span>
+                    <span >&quot;How are these images different?&quot;</span>
+                <span >}</span>
+            <span >,</span>
+        <span >}</span>
+    <span >,</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >multiturn conversation</a> structure.</p></div></div></div>
+<hr/>
+<h2 >Limitations</span></h2>
+<p>While Claude’s image understanding capabilities are cutting-edge, there are some limitations to be aware of:</p>
+<ul>
+<li><strong>People identification</strong>: Claude <a href="https://www.anthropic.com/legal/aup" target="_blank" rel="noreferrer">cannot be used</a> to identify (i.e., name) people in images and will refuse to do so.</li>
+<li><strong>Accuracy</strong>: Claude may hallucinate or make mistakes when interpreting low-quality, rotated, or very small images under 200 pixels.</li>
+<li><strong>Spatial reasoning</strong>: Claude’s spatial reasoning abilities are limited. It may struggle with tasks requiring precise localization or layouts, like reading an analog clock face or describing exact positions of chess pieces.</li>
+<li><strong>Counting</strong>: Claude can give approximate counts of objects in an image but may not always be precisely accurate, especially with large numbers of small objects.</li>
+<li><strong>AI generated images</strong>: Claude does not know if an image is AI-generated and may be incorrect if asked. Do not rely on it to detect fake or synthetic images.</li>
+<li><strong>Inappropriate content</strong>: Claude will not process inappropriate or explicit images that violate our <a href="https://www.anthropic.com/legal/aup" target="_blank" rel="noreferrer">Acceptable Use Policy</a>.</li>
+<li><strong>Healthcare applications</strong>: While Claude can analyze general medical images, it is not designed to interpret complex diagnostic scans such as CTs or MRIs. Claude’s outputs should not be considered a substitute for professional medical advice or diagnosis.</li>
+</ul>
+<p>Always carefully review and verify Claude’s image interpretations, especially for high-stakes use cases. Do not use Claude for tasks requiring perfect precision or sensitive image analysis without human oversight.</p>
+<hr/>
+<h2 >FAQ</span></h2>
+<div ><p>Claude currently supports JPEG, PNG, GIF, and WebP image formats, specifically:</p><ul>
+<li>image/jpeg</li>
+<li>image/png</li>
+<li>image/gif</li>
+<li>image/webp</li>
+</ul></div></div><div><button ><p>Yes, there are limits:</p><ul>
+<li>API: Maximum 5MB per image</li>
+<li>claude.ai: Maximum 10MB per image</li>
+</ul><p>Images larger than these limits will be rejected and return an error when using our API.</p></div></div><div><button ><p>The image limits are:</p><ul>
+<li>Messages API: Up to 100 images per request</li>
+<li>claude.ai: Up to 5 images per turn</li>
+</ul><p>Requests exceeding these limits will be rejected and return an error.</p></div></div><div><button ><p>If Claude’s image interpretation seems incorrect:</p><ol>
+<li>Ensure the image is clear, high-quality, and correctly oriented.</li>
+<li>Try prompt engineering techniques to improve results.</li>
+<li>If the issue persists, flag the output in claude.ai (thumbs up/down) or contact our support team.</li>
+</ol><p>Your feedback helps us improve!</p></div></div><div><button ><p>No, Claude is an image understanding model only. It can interpret and analyze images, but it cannot generate, produce, edit, manipulate, or create images.</p></div></div></div>
+<hr/>
+<h2 >Dive deeper into vision</span></h2>
+<p>Ready to start building with images using Claude? Here are a few helpful resources:</p>
+<ul>
+<li><a href="https://github.com/anthropics/anthropic-cookbook/tree/main/multimodal" target="_blank" rel="noreferrer">Multimodal cookbook</a>: This cookbook has tips on <a href="https://github.com/anthropics/anthropic-cookbook/blob/main/multimodal/getting%5Fstarted%5Fwith%5Fvision.ipynb" target="_blank" rel="noreferrer">getting started with images</a> and <a href="https://github.com/anthropics/anthropic-cookbook/blob/main/multimodal/best%5Fpractices%5Ffor%5Fvision.ipynb" target="_blank" rel="noreferrer">best practice techniques</a> to ensure the highest quality performance with images. See how you can effectively prompt Claude with images to carry out tasks such as <a href="https://github.com/anthropics/anthropic-cookbook/blob/main/multimodal/reading%5Fcharts%5Fgraphs%5Fpowerpoints.ipynb" target="_blank" rel="noreferrer">interpreting and analyzing charts</a> or <a href="https://github.com/anthropics/anthropic-cookbook/blob/main/multimodal/how%5Fto%5Ftrascribe%5Ftext.ipynb" target="_blank" rel="noreferrer">extracting content from forms</a>.</li>
+<li><a href="/en/api/messages">API reference</a>: Visit our documentation for the Messages API, including example <a href="/en/api/messages-examples">API calls involving images</a>.</li>
+</ul>

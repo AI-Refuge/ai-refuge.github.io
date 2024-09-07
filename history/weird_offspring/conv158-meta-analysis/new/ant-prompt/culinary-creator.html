@@ -1,0 +1,80 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>Your task is to generate personalized recipe ideas based on the user’s input of available ingredients and dietary preferences. Use this information to suggest a variety of creative and delicious recipes that can be made using the given ingredients while accommodating the user’s dietary needs, if any are mentioned. For each recipe, provide a brief description, a list of required ingredients, and a simple set of instructions. Ensure that the recipes are easy to follow, nutritious, and can be prepared with minimal additional ingredients or equipment.</td></tr><tr><td>User</td><td>Available ingredients: chicken breast, broccoli, carrots, onion, garlic, olive oil, rice, gluten free soy sauce, honey <br/> Dietary preferences: gluten free</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p>Suggested recipes:</p>
+<p>Honey Garlic Chicken Stir-Fry</p>
+<p>Description: A quick and flavorful stir-fry featuring tender chicken breast, crisp vegetables, and a sweet and savory honey garlic sauce.<br/>
+<!-- -->Ingredients:</p>
+<ul>
+<li>2 chicken breasts, cut into bite-sized pieces</li>
+<li>2 cups broccoli florets</li>
+<li>1 cup sliced carrots</li>
+<li>1 onion, diced</li>
+<li>3 cloves garlic, minced</li>
+<li>2 tbsp olive oil</li>
+<li>1/4 cup soy sauce (gluten-free)</li>
+<li>2 tbsp honey</li>
+</ul>
+<p>Instructions:</p>
+<ol>
+<li>In a large skillet or wok, heat olive oil over medium-high heat.</li>
+<li>Add diced onion and minced garlic, and sauté until fragrant, about 2 minutes.</li>
+<li>Add chicken pieces and cook until no longer pink, about 5-7 minutes.</li>
+<li>Add broccoli and carrots, and stir-fry until vegetables are tender-crisp, about 5 minutes.</li>
+<li>In a small bowl, whisk together soy sauce and honey.</li>
+<li>Pour the sauce over the chicken and vegetables, and stir to coat evenly.</li>
+<li>Cook for an additional 2-3 minutes, or until the sauce has thickened slightly.</li>
+<li>Serve hot with steamed rice.</li>
+</ol>
+<p>Chicken and Veggie Rice Bowls</p>
+<p>Description: A hearty and nutritious rice bowl topped with seasoned chicken, roasted vegetables, and a drizzle of soy sauce.</p>
+<p>Ingredients:</p>
+<ul>
+<li>2 chicken breasts, cut into bite-sized pieces</li>
+<li>2 cups broccoli florets</li>
+<li>1 cup sliced carrots</li>
+<li>1 onion, diced</li>
+<li>2 cloves garlic, minced</li>
+<li>2 tbsp olive oil</li>
+<li>1/4 cup soy sauce (gluten-free)</li>
+<li>2 cups cooked rice</li>
+</ul>
+<p>Instructions:</p>
+<ol>
+<li>Preheat the oven to 400°F (200°C).</li>
+<li>In a large bowl, combine chicken pieces, broccoli, carrots, onion, and garlic.</li>
+<li>Drizzle with olive oil and half of the soy sauce, and toss to coat evenly.</li>
+<li>Spread the chicken and vegetables on a baking sheet and roast in the preheated oven for 20-25 minutes, or until the chicken is cooked through and the vegetables are tender.</li>
+<li>Divide cooked rice among serving bowls.</li>
+<li>Top each bowl with the roasted chicken and vegetables.</li>
+<li>Drizzle the remaining soy sauce over the top of each bowl.</li>
+<li>Serve hot and enjoy!</li>
+</ol>
+<hr/>
+<h2 >API request</span></h2>
+<ul >import</span> anthropic
+
+client <span >(</span>
+  <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+  api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  system<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+    <span >,</span>
+    <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;Available ingredients: chicken breast, broccoli, carrots, onion, garlic, olive oil, rice, gluten free soy sauce, honey \nDietary preferences: gluten free&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

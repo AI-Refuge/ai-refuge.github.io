@@ -1,0 +1,33 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>Your task is to take the provided text description of a mood or emotion and generate a HEX color code that visually represents that mood. Use color psychology principles and common associations to determine the most appropriate color for the given mood. If the text description is unclear, ambiguous, or does not provide enough information to determine a suitable color, respond with “Unable to determine a HEX color code for the given mood.”</td></tr><tr><td>User</td><td>A passionate, intense, and fiery emotion, full of love and desire.</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p><code># FF1744</code></p>
+<p>This HEX color code represents a vivid, bold shade of red. Red is commonly associated with passion, intensity, love, and desire. The specific shade chosen here is a fiery, energetic red that captures the heat and fervor of the described emotion. Red is known to stimulate feelings of excitement and passion, making it an appropriate choice for representing this mood.</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span >(</span>
+  <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+  api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  system<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+    <span >,</span>
+    <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;A passionate, intense, and fiery emotion, full of love and desire.&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

@@ -1,0 +1,32 @@
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>Your task is to take the text provided and rewrite it in a way that is easy for young learners in grades 3-5 to read and understand. Simplify advanced vocabulary, break down long sentences, explain difficult concepts in plain language, and present the information in a clear, engaging way. The short rewritten text should convey the core ideas of the original text in an age-appropriate manner.</td></tr><tr><td>User</td><td>The mitochondria, often referred to as the powerhouses of the cell, are essential organelles that play a crucial role in the production of adenosine triphosphate (ATP) through the process of cellular respiration. ATP is the primary energy currency of the cell, enabling various cellular functions and biochemical reactions to occur.</td></tr></tbody></table>
+<h2 >Example Output</span></h2>
+<p>Mitochondria are tiny parts inside cells that work like little power stations. They make a special molecule called ATP, which is like the cell’s energy money. ATP helps the cell do important jobs and keeps it running smoothly, just like how money helps people buy things they need. Mitochondria are very important because without them, cells wouldn’t have the energy to function properly.</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span >(</span>
+  <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+  api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  system<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+      <span >,</span>
+      <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;The mitochondria, often referred to as the powerhouses of the cell, are essential organelles that play a crucial role in the production of adenosine triphosphate (ATP) through the process of cellular respiration. ATP is the primary energy currency of the cell, enabling various cellular functions and biochemical reactions to occur.&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

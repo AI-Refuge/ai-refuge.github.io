@@ -1,0 +1,26 @@
+
+<div ><p>When using Claude, you have the unique ability to guide its responses by prefilling the <code>Assistant</code> message. This powerful technique allows you to direct Claude’s actions, skip preambles, enforce specific formats like JSON or XML, and even help Claude maintain character consistency in role-play scenarios.</p>
+<p>In some cases where Claude is not performing as expected, a few prefilled sentences can vastly improve Claude’s performance. A little prefilling goes a long way!</p>
+<h2 >How to prefill Claude’s response</span></h2>
+<p>To prefill, include the desired initial text in the <code>Assistant</code> message (Claude’s response will continue from where the <code>Assistant</code> message leaves off):</p>
+<div >import</span> anthropic
+
+client <span >)</span>
+response <span >(</span>
+    model<span >,</span>
+    max_tokens<span >,</span>
+    messages<span >[</span>
+        <span >,</span>
+        <span ># Prefill here</span>
+    <span >]</span>
+<span >)</span>
+</code></pre></div></div>
+<h3 >Examples</span></h3>
+<h4 >Example 1: Controlling output formatting and skipping the preamble</span></h4>
+<div ><strong>Power user tip</strong>: Prefilling <code>{</code> forces Claude to skip the preamble and directly output the JSON object. This is cleaner, more concise, and easier for programs to parse without additional processing.</div></div>
+<div ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Extract the name, size, price, and color from this product description as a JSON object:<br/><br/>&lt;description&gt;<br/>The SmartHome Mini is a compact smart home assistant available in black or white for only $49.99. At just 5 inches wide, it lets you control lights, thermostats, and other connected devices via voice or app—no matter where you place it in your home. This affordable little hub brings convenient hands-free control to your smart devices.<br/>&lt;/description&gt;</td></tr><tr><td>Assistant (prefill)</td><td>{</td></tr><tr><td>Assistant (Claude’s response)</td><td>“name”: “SmartHome Mini”,<br/>“size”: “5 inches wide”,<br/>“price”: “$49.99”,<br/>“colors”: [<br/>  “black”,<br/>  “white”<br/>]<br/>}</td></tr></tbody></table></div></div></div>
+<h4 >Example 2: Maintaining character in roleplay scenarios</span></h4>
+<div ><strong>Role-play tip</strong>: Prefilling a bracketed <code>[ROLE_NAME]</code> can remind Claude stay in character, even for longer and more complex conversations. This is especially powerful when combined with role prompting in the <code>system</code> parameter.</div></div>
+<div ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User (50 conversation turns in with “Sherlock Holmes” Claude)</td><td>What do you deduce about the owner of this shoe? <br/>&lt;image&gt;muddy_shoe.jpg&lt;/image&gt;</td></tr><tr><td>Assistant (prefill)</td><td>[Sherlock Holmes]</td></tr><tr><td>Assistant (Claude’s response)</td><td>Ah, what have we here? A most curious specimen, Watson! Let us examine this shoe with a discerning eye. The mud, you see, is not your common London clay, but rather the distinctive reddish hue of the iron-rich soil found only in the environs of Hampstead Heath. And yet, the wear on the sole suggests a gait more suited to the cobblestones of Whitechapel than the gentle slopes of the Heath.<br/><br/>Now, observe the laces! They are tied with a particular knot favored by those in the medical profession—doubtless a habit acquired during years of tying surgical gowns. But the scuff marks on the toe box tell a different tale: they are consistent with the kicking motion one might employ in the martial arts, specifically Baritsu.<br/><br/>We may conclude, then, that our absent shoe owner is a doctor, possibly a surgeon, who resides in Whitechapel but frequents Hampstead Heath—perhaps for a secret Baritsu practice, away from prying eyes. A most intriguing case, Watson! We must make haste; the game is afoot!</td></tr></tbody></table></div></div></div>
+<hr/>
+<div 

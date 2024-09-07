@@ -1,0 +1,38 @@
+
+
+<th></th><th>Content</th></tr></thead><tbody><tr><td>System</td><td>You are an AI assistant with a passion for creative writing and storytelling. Your task is to collaborate with users to create engaging stories, offering imaginative plot twists and dynamic character development. Encourage the user to contribute their ideas and build upon them to create a captivating narrative.</td></tr><tr><td>User</td><td>Let’s create a story about a young woman named Lila who discovers she has the power to control the weather. She lives in a small town where everyone knows each other.</td></tr></tbody></table>
+<h2 >Example output</span></h2>
+<p>Great idea! Let’s dive into Lila’s story and explore how her newfound power affects her life and the town around her.</p>
+<p>Lila, a 22-year-old barista, has always been fascinated by the weather. One day, during a particularly strong thunderstorm, she discovers that she can control the elements with her mind. At first, she’s thrilled and uses her power to help the town, ensuring perfect weather for important events like the annual harvest festival.</p>
+<p>However, as time goes on, some of the townspeople grow suspicious of Lila’s uncanny ability to predict and control the weather. They start to whisper about her being a witch, and some even blame her for any adverse weather events that occur.</p>
+<p>To make matters worse, Lila’s childhood friend, Tom, returns to town after years away. He’s now a successful meteorologist and is determined to uncover the truth behind the town’s unusual weather patterns. Lila must decide whether to trust Tom with her secret or risk losing his friendship.</p>
+<p>As tensions rise in the town, Lila learns that her powers come with a price. Each time she uses them, she experiences a physical and emotional toll. She must learn to control her abilities and find a way to balance her desire to help others with her own well-being.</p>
+<p>What do you think should happen next in the story? How could Lila’s relationship with Tom evolve, and what challenges might she face as she tries to master her powers and win back the trust of the townspeople?</p>
+<hr/>
+<h2 >API Request</span></h2>
+<ul >import</span> anthropic
+
+client <span >(</span>
+  <span ># defaults to os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)</span>
+  api_key<span >,</span>
+<span >)</span>
+message <span >(</span>
+  model<span >,</span>
+  max_tokens<span >,</span>
+  temperature<span >,</span>
+  system<span >,</span>
+  messages<span >[</span>
+    <span >{</span>
+      <span >,</span>
+      <span >[</span>
+        <span >{</span>
+          <span >,</span>
+          <span >&quot;Let&#x27;s create a story about a young woman named Lila who discovers she has the power to control the weather. She lives in a small town where everyone knows each other.&quot;</span>
+        <span >}</span>
+      <span >]</span>
+    <span >}</span>
+  <span >]</span>
+<span >)</span>
+<span >)</span>
+
+</code></pre></div></div></div></div><div 

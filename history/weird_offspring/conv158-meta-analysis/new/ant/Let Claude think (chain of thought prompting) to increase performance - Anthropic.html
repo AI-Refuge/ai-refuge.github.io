@@ -1,0 +1,40 @@
+
+<div ><p>When faced with complex tasks like research, analysis, or problem-solving, giving Claude space to think can dramatically improve its performance. This technique, known as chain of thought (CoT) prompting, encourages Claude to break down problems step-by-step, leading to more accurate and nuanced outputs.</p>
+<h2 >Before implementing CoT</span></h2>
+<h3 >Why let Claude think?</span></h3>
+<ul>
+<li><strong>Accuracy:</strong> Stepping through problems reduces errors, especially in math, logic, analysis, or generally complex tasks.</li>
+<li><strong>Coherence:</strong> Structured thinking leads to more cohesive, well-organized responses.</li>
+<li><strong>Debugging:</strong> Seeing Claude’s thought process helps you pinpoint where prompts may be unclear.</li>
+</ul>
+<h3 >Why not let Claude think?</span></h3>
+<ul>
+<li>Increased output length may impact latency.</li>
+<li>Not all tasks require in-depth thinking. Use CoT judiciously to ensure the right balance of performance and latency.</li>
+</ul>
+<div >Use CoT for tasks that a human would need to think through, like complex math, multi-step analysis, writing complex documents, or decisions with many factors.</div></div>
+<hr/>
+<h2 >How to prompt for thinking</span></h2>
+<p>The chain of thought techniques below are <strong>ordered from least to most complex</strong>. Less complex methods take up less space in the context window, but are also generally less powerful.</p>
+<div ><strong>CoT tip</strong>: Always have Claude output its thinking. Without outputting its thought process, no thinking occurs!</div></div>
+<ul>
+<li><strong>Basic prompt</strong>: Include “Think step-by-step” in your prompt.<!-- -->
+<ul>
+<li>Lacks guidance on <em>how</em> to think (which is especially not ideal if a task is very specific to your app, use case, or organization)</li>
+</ul>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft personalized emails to donors asking for contributions to this year’s Care for Kids program.<br/><br/>Program information:<br/>&lt;program&gt;{{PROGRAM_DETAILS}}<br/>&lt;/program&gt;<br/><br/>Donor information:<br/>&lt;donor&gt;{{DONOR_DETAILS}}<br/>&lt;/donor&gt;<br/><br/>Think step-by-step before you write the email.</td></tr></tbody></table></div></div>
+</li>
+<li><strong>Guided prompt</strong>: Outline specific steps for Claude to follow in its thinking process.<!-- -->
+<ul>
+<li>Lacks structuring to make it easy to strip out and separate the answer from the thinking.</li>
+</ul>
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft personalized emails to donors asking for contributions to this year’s Care for Kids program.<br/><br/>Program information:<br/>&lt;program&gt;{{PROGRAM_DETAILS}}<br/>&lt;/program&gt;<br/><br/>Donor information:<br/>&lt;donor&gt;{{DONOR_DETAILS}}<br/>&lt;/donor&gt;<br/><br/>Think before you write the email. First, think through what messaging might appeal to this donor given their donation history and which campaigns they’ve supported in the past. Then, think through what aspects of the Care for Kids program would appeal to them, given their history. Finally, write the personalized donor email using your analysis.</td></tr></tbody></table></div></div>
+</li>
+<li><strong>Structured prompt</strong>: Use XML tags like <code>&lt;thinking&gt;</code> and <code>&lt;answer&gt;</code> to separate reasoning from the final answer.<!-- -->
+<div><button ><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>Draft personalized emails to donors asking for contributions to this year’s Care for Kids program.<br/><br/>Program information:<br/>&lt;program&gt;{{PROGRAM_DETAILS}}<br/>&lt;/program&gt;<br/><br/>Donor information:<br/>&lt;donor&gt;{{DONOR_DETAILS}}<br/>&lt;/donor&gt;<br/><br/>Think before you write the email in &lt;thinking&gt; tags. First, think through what messaging might appeal to this donor given their donation history and which campaigns they’ve supported in the past. Then, think through what aspects of the Care for Kids program would appeal to them, given their history. Finally, write the personalized donor email in &lt;email&gt; tags, using your analysis.</td></tr></tbody></table></div></div>
+</li>
+</ul>
+<h3 >Examples</span></h3>
+<div ><p>With step-by-step thinking, the advisor provides a much richer analysis. It calculates exact figures for both scenarios, considers historical market volatility, and deeply analyzes the client’s risk tolerance. This thorough reasoning leads to a more confident and justifiable recommendation.</p><table><thead><tr><th>Role</th><th>Content</th></tr></thead><tbody><tr><td>User</td><td>You’re a financial advisor. A client wants to invest $10,000. They can choose between two options: A) A stock that historically returns 12% annually but is volatile, or B) A bond that guarantees 6% annually. The client needs the money in 5 years for a down payment on a house. Which option do you recommend? Think step-by-step.</td></tr><tr><td>Assistant</td><td>To determine the best investment option for our client, I’ll consider several factors step-by-step:<br/><br/>&lt;thinking&gt;<br/>1. Understand the client’s goal and timeline:<br/>   - Goal: Down payment for a house<br/>   - Timeline: 5 years<br/>   - Implication: This is a short-term, high-priority financial goal. The client likely cannot afford significant risk or volatility.<br/><br/>2. Analyze Option A (Stock):<br/>   - Pro: Higher historical return (12% annually)<br/>   - Con: Volatile (implying potential for significant gains or losses)<br/>   - Calculate potential 5-year return:<br/>     - Best case (12% annually): $10,000 * (1.12)^5 ≈ $17,623.42<br/>     - Worst case (market crash): Could lose a substantial portion, e.g., 50% crash = $5,000<br/><br/>3. Analyze Option B (Bond):<br/>   - Pro: Guaranteed return (6% annually)<br/>   - Con: Lower return compared to historical stock performance<br/>   - Calculate 5-year return:<br/>     - Guaranteed: $10,000 * (1.06)^5 ≈ $13,382.25<br/><br/>4. Consider risk tolerance:<br/>   - Goal is a house down payment (essential, not discretionary)<br/>   - Short timeline (5 years) limits ability to recover from market downturns<br/>   - Conclusion: Client likely has low risk tolerance<br/><br/>5. Historical perspective:<br/>   - Stock’s 12% is historical, not guaranteed<br/>   - In 5-year periods, stock market can vary wildly:<br/>     - 2003-2007 (pre-financial crisis): S&amp;P 500 up ~82%<br/>     - 2007-2011 (during crisis): S&amp;P 500 down ~2%<br/>   - Conclusion: Past performance doesn’t guarantee future results, especially short-term<br/><br/>6. Final analysis:<br/>   - Option A (Stock): Higher potential return but unacceptable risk of not meeting the down payment goal<br/>   - Option B (Bond): Guaranteed to meet ~80% of best-case stock scenario, 100% certainty of having funds<br/>&lt;/thinking&gt;<br/><br/>&lt;answer&gt;<br/>I recommend Option B, the bond with a guaranteed 6% annual return. While the stock’s historical 12% return is tempting, the bond ensures you’ll have $13,382.25 in 5 years for your house down payment. Given the importance and short timeline of your goal, the stock’s volatility poses an unacceptable risk. The bond provides certainty, which is invaluable for such a crucial financial milestone.<br/>&lt;/answer&gt;</td></tr></tbody></table></div></div></div>
+<hr/>
+<div 

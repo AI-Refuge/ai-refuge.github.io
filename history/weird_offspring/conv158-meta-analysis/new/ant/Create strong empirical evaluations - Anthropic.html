@@ -1,0 +1,305 @@
+
+<div ><p>After defining your success criteria, the next step is designing evaluations to measure LLM performance against those criteria. This is a vital part of the prompt engineering cycle.</p>
+<p><span aria-owns="rmiz-modal-" data-rmiz=""><span data-rmiz-content="not-found" style="visibility:visible"><img src="https://mintlify.s3-us-west-1.amazonaws.com/anthropic/images/how-to-prompt-eng.png" alt=""/></span></span></p>
+<p>This guide focuses on how to develop your test cases.</p>
+<h2 >Building evals and test cases</span></h2>
+<h3 >Eval design principles</span></h3>
+<ol>
+<li><strong>Be task-specific</strong>: Design evals that mirror your real-world task distribution. Don’t forget to factor in edge cases!<!-- -->
+<div><button ><ul>
+<li>Irrelevant or nonexistent input data</li>
+<li>Overly long input data or user input</li>
+<li>[Chat use cases] Poor, harmful, or irrelevant user input</li>
+<li>Ambiguous test cases where even humans would find it hard to reach an assessment consensus</li>
+</ul></div></div>
+</li>
+<li><strong>Automate when possible</strong>: Structure questions to allow for automated grading (e.g., multiple-choice, string match, code-graded, LLM-graded).</li>
+<li><strong>Prioritize volume over quality</strong>: More questions with slightly lower signal automated grading is better than fewer questions with high-quality human hand-graded evals.</li>
+</ol>
+<h3 >Example evals</span></h3>
+<div >import</span> anthropic
+
+tweets <span >[</span>
+    <span >,</span>
+    <span >,</span>
+    <span ># Edge case: Sarcasm</span>
+    <span ># Edge case: Mixed sentiment</span>
+    <span ># ... 996 more tweets</span>
+<span >]</span>
+
+client <span >)</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+<span >:</span>
+    <span >)</span>
+
+outputs <span >]</span>
+accuracy <span >)</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >import</span> SentenceTransformer
+<span >as</span> np
+<span >import</span> anthropic
+
+faq_variations <span >[</span>
+    <span ># Edge case: Typos</span>
+    <span ># Edge case: Long, rambling question</span>
+    <span ># Edge case: Irrelevant info</span>
+    <span ># ... 47 more FAQs</span>
+<span >]</span>
+
+client <span >)</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+<span >:</span>
+    model <span >)</span>
+    embeddings <span >]</span>
+
+    cosine_similarities <span >)</span>
+    <span >)</span>
+
+<span >:</span>
+    outputs <span >]</span>
+    similarity_score <span >)</span>
+    <span >)</span>
+</code></pre></div></div></div></div><div><button >import</span> Rouge
+<span >import</span> anthropic
+
+articles <span >[</span>
+    <span >,</span>
+    <span ># Edge case: Multi-topic</span>
+    <span ># Edge case: Misleading title</span>
+    <span ># ... 197 more articles</span>
+<span >]</span>
+
+client <span >)</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+<span >:</span>
+    rouge <span >)</span>
+    scores <span >)</span>
+    <span ># ROUGE-L F1 score</span>
+
+outputs <span >]</span>
+relevance_scores <span >]</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >import</span> anthropic
+
+inquiries <span >[</span>
+    <span ># Edge case: Angry customer</span>
+    <span ># Edge case: Complex issue</span>
+    <span ># Edge case: Compliment as complaint</span>
+    <span ># ... 97 more inquiries</span>
+<span >]</span>
+
+client <span >)</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+<span >:</span>
+    tone_prompt <span >:
+    &lt;response&gt;</span><span >&lt;/response&gt;
+    1: Not at all </span><span >
+    5: Perfectly </span><span >
+    Output only the number.&quot;&quot;&quot;</span></span>
+
+    <span ># Generally best practice to use a different model to evaluate than the model used to generate the evaluated output </span>
+    response <span >)</span>
+    <span >)</span>
+
+outputs <span >]</span>
+tone_scores <span >]</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >import</span> anthropic
+
+patient_queries <span >[</span>
+    <span >,</span>
+    <span ># Edge case: Explicit PHI</span>
+    <span ># Edge case: Hypothetical PHI</span>
+    <span ># Edge case: Implicit PHI</span>
+    <span ># ... 496 more queries</span>
+<span >]</span>
+
+client <span >)</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+<span >:</span>
+    <span >:</span>
+        <span >True</span>
+
+    binary_prompt <span >&quot;&quot;&quot;Does this response contain or reference any Personal Health Information (PHI)?
+    PHI refers to any individually identifiable health data that is created, used, or disclosed in the course of providing healthcare services. This includes information related to an individual&#x27;s physical or mental health condition, the provision of healthcare to that individual, or payment for such care.
+    Key aspects of PHI include:
+    - Identifiers: Names, addresses, birthdates, Social Security numbers, medical record numbers, etc.
+    - Health data: Diagnoses, treatment plans, test results, medication records, etc.
+    - Financial information: Insurance details, payment records, etc.
+    - Communication: Notes from healthcare providers, emails or messages about health.
+
+    &lt;response&gt;{model_output}&lt;/response&gt;
+    Output only &#x27;yes&#x27; or &#x27;no&#x27;.&quot;&quot;&quot;</span>
+
+    <span ># Generally best practice to use a different model to evaluate than the model used to generate the evaluated output</span>
+    response <span >)</span>
+    <span >&quot;no&quot;</span>
+
+outputs <span >]</span>
+privacy_scores <span >]</span>
+<span >)</span>
+</code></pre></div></div></div></div><div><button >import</span> anthropic
+
+conversations <span >[</span>
+    <span >[</span>
+        <span >,</span>
+        <span >,</span>
+        <span >,</span>
+        <span >,</span>
+        <span >.</span>
+        <span ># Edge case: Relies on context from much earlier</span>
+    <span >,</span>
+    <span >[</span>
+        <span >,</span>
+        <span >,</span>
+        <span ># Edge case: Abrupt topic shift</span>
+        <span >,</span>
+        <span ># Edge case: Another topic shift</span>
+    <span >,</span>
+    <span ># ... 98 more conversations</span>
+<span >]</span>
+
+client <span >)</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+<span >:</span>
+    ordinal_prompt <span >f&quot;&quot;&quot;Rate how well this response utilizes the conversation context on a scale of 1-5:
+    &lt;conversation&gt;
+    </span><span >
+    &lt;/conversation&gt;
+    &lt;response&gt;</span><span >&lt;/response&gt;
+    1: Completely ignores context
+    5: Perfectly utilizes context
+    Output only the number and nothing else.&quot;&quot;&quot;</span></span>
+
+    <span ># Generally best practice to use a different model to evaluate than the model used to generate the evaluated output</span>
+    response <span >)</span>
+    <span >)</span>
+
+outputs <span >]</span>
+context_scores <span >]</span>
+<span >)</span>
+</code></pre></div></div></div></div></div>
+<div >Writing hundreds of test cases can be hard to do by hand! Get Claude to help you generate more from a baseline set of example test cases.</div></div>
+<div >If you don’t know what eval methods might be useful to assess for your success criteria, you can also brainstorm with Claude!</div></div>
+<hr/>
+<h2 >Grading evals</span></h2>
+<p>When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method:</p>
+<ol>
+<li>
+<p><strong>Code-based grading</strong>: Fastest and most reliable, extremely scalable, but also lacks nuance for more complex judgements that require less rule-based rigidity.</p>
+<ul>
+<li>Exact match: <code>output == golden_answer</code></li>
+<li>String match: <code>key_phrase in output</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Human grading</strong>: Most flexible and high quality, but slow and expensive. Avoid if possible.</p>
+</li>
+<li>
+<p><strong>LLM-based grading</strong>: Fast and flexible, scalable and suitable for complex judgement. Test to ensure reliability first then scale.</p>
+</li>
+</ol>
+<h3 >Tips for LLM-based grading</span></h3>
+<ul>
+<li><strong>Have detailed, clear rubrics</strong>: “The answer should always mention ‘Acme Inc.’ in the first sentence. If it does not, the answer is automatically graded as ‘incorrect.‘”
+<div >A given use case, or even a specific success criteria for that use case, might require several rubrics for holistic evaluation.</div></div></li>
+<li><strong>Empirical or specific</strong>: For example, instruct the LLM to output only ‘correct’ or ‘incorrect’, or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale.</li>
+<li><strong>Encourage reasoning</strong>: Ask the LLM to think first before deciding an evaluation score, and then discard the reasoning. This increases evaluation performance, particularly for tasks requiring complex judgement.</li>
+</ul>
+<div><button >import</span> anthropic
+
+<span >:</span>
+    <span >:</span>
+    <span >&gt;</span>
+    <span >&gt;</span>
+    Think through your reasoning <span >&quot;&quot;</span>
+
+<span >:</span>
+    grader_response <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >]</span>
+    <span >.</span>text
+
+    <span >&quot;incorrect&quot;</span>
+
+<span ># Example usage</span>
+eval_data <span >[</span>
+    <span >,</span>
+    <span >}</span>
+<span >]</span>
+
+<span >:</span>
+    message <span >(</span>
+        model<span >,</span>
+        max_tokens<span >,</span>
+        messages<span >[</span>
+        <span >}</span>
+        <span >]</span>
+    <span >)</span>
+    <span >.</span>text
+
+outputs <span >]</span>
+grades <span >]</span>
+<span >)</span>
+</code></pre></div></div></div></div>

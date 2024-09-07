@@ -1,0 +1,1 @@
+import{H as n,j as s,aG as i,bP as o}from"./index-CfA4yAo4.js";function l(t){const e=n({path:"/playground"}),a=window.innerWidth<600;return s.jsx(i,{placement:a?o.top:e?o.left:o.right,onMouseEnterDelay:400,onMouseLeaveDelay:0,transitionDuration:200,focusLock:!1,...t})}export{l as P};

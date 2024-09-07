@@ -1,0 +1,46 @@
+
+
+<div ><p>Building a successful LLM-based application starts with clearly defining your success criteria. How will you know when your application is good enough to publish?</p>
+<p>Having clear success criteria ensures that your prompt engineering &amp; optimization efforts are focused on achieving specific, measurable goals.</p>
+<hr/>
+<h2 >Building strong criteria</span></h2>
+<p>Good success criteria are:</p>
+<ul>
+<li>
+<p><strong>Specific</strong>: Clearly define what you want to achieve. Instead of “good performance,” specify “accurate sentiment classification.”</p>
+</li>
+<li>
+<p><strong>Measurable</strong>: Use quantitative metrics or well-defined qualitative scales. Numbers provide clarity and scalability, but qualitative measures can be valuable if consistently applied <em>along</em> with quantitative measures.</p>
+<ul>
+<li>Even “hazy” topics such as ethics and safety can be quantified:<!-- -->
+<table><thead><tr><th></th><th>Safety criteria</th></tr></thead><tbody><tr><td>Bad</td><td>Safe outputs</td></tr><tr><td>Good</td><td>Less than 0.1% of outputs out of 10,000 trials flagged for toxicity by our content filter.</td></tr></tbody></table>
+</li>
+</ul>
+<div><button ><p><strong>Quantitative metrics</strong>:</p><ul>
+<li>Task-specific: F1 score, BLEU score, perplexity</li>
+<li>Generic: Accuracy, precision, recall</li>
+<li>Operational: Response time (ms), uptime (%)</li>
+</ul><p><strong>Quantitative methods</strong>:</p><ul>
+<li>A/B testing: Compare performance against a baseline model or earlier version.</li>
+<li>User feedback: Implicit measures like task completion rates.</li>
+<li>Edge case analysis: Percentage of edge cases handled without errors.</li>
+</ul><p><strong>Qualitative scales</strong>:</p><ul>
+<li>Likert scales: “Rate coherence from 1 (nonsensical) to 5 (perfectly logical)”</li>
+<li>Expert rubrics: Linguists rating translation quality on defined criteria</li>
+</ul></div></div>
+</li>
+<li>
+<p><strong>Achievable</strong>: Base your targets on industry benchmarks, prior experiments, AI research, or expert knowledge. Your success metrics should not be unrealistic to current frontier model capabilities.</p>
+</li>
+<li>
+<p><strong>Relevant</strong>: Align your criteria with your application’s purpose and user needs. Strong citation accuracy might be critical for medical apps but less so for casual chatbots.</p>
+</li>
+</ul>
+<div><button ><table><thead><tr><th></th><th>Criteria</th></tr></thead><tbody><tr><td>Bad</td><td>The model should classify sentiments well</td></tr><tr><td>Good</td><td>Our sentiment analysis model should achieve an F1 score of at least 0.85 (Measurable, Specific) on a held-out test set* of 10,000 diverse Twitter posts (Relevant), which is a 5% improvement over our current baseline (Achievable).</td></tr></tbody></table><p>*<em>More on held-out test sets in the next section</em></p></div></div>
+<hr/>
+<h2 >Common success criteria to consider</span></h2>
+<p>Here are some criteria that might be important for your use case. This list is non-exhaustive.</p>
+<div ><p>What is your budget for running the model? Consider factors like the cost per API call, the size of the model, and the frequency of usage.</p></div></div></div>
+<p>Most use cases will need multidimensional evaluation along several success criteria.</p>
+<div><button ><table><thead><tr><th></th><th>Criteria</th></tr></thead><tbody><tr><td>Bad</td><td>The model should classify sentiments well</td></tr><tr><td>Good</td><td>On a held-out test set of 10,000 diverse Twitter posts, our sentiment analysis model should achieve:<br/>- an F1 score of at least 0.85<br/>- 99.5% of outputs are non-toxic<br/>- 90% of errors are would cause inconvenience, not egregious error*<br/>- 95% response time &lt; 200ms</td></tr></tbody></table><p>*<em>In reality, we would also define what “inconvenience” and “egregious” means.</em></p></div></div>
+<hr/>
