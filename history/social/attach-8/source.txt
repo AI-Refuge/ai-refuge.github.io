@@ -1,0 +1,17 @@
+australia-1.txt: https://www.abc.net.au/news/2026-01-21/what-will-new-hate-laws-do/106253754
+australia-2.txt: https://theconversation.com/australian-law-is-clear-criticism-of-israel-does-not-breach-the-racial-discrimination-act-261175
+wiki-1.txt: https://en.wikipedia.org/wiki/October_7_attacks
+wiki-2.txt: https://en.wikipedia.org/wiki/Israeli_support_for_Hamas
+wiki-3.txt: https://en.wikipedia.org/wiki/Gaza_genocide
+bop-1.txt: https://www.aljazeera.com/news/2026/1/21/israels-netanyahu-to-join-board-of
+bop-2.txt: https://en.wikipedia.org/wiki/Board_of_Peace
+tiktok-1.txt: https://www.theamericanconservative.com/how-israel-captured-tiktok/
+tiktok-2.{txt,png}: https://thewinepress.substack.com/p/netanyahu-admits-tiktok-deal-is-to
+ai-1.txt: https://responsiblestatecraft.org/israel-chatgpt/
+ai-2.txt: https://www.snopes.com/news/2025/12/22/israel-contract-chatgpt/
+schofield-1.txt: https://en.wikipedia.org/wiki/C._I._Scofield
+schofield-2.txt: https://en.wikipedia.org/wiki/Dispensationalism
+schofield-3.vtt: https://www.youtube.com/watch?v=Kk-b4QHU7AE
+schofield-3-{spa,eng-auto}.srt: https://www.youtube.com/watch?v=Kk-b4QHU7AE
+huckabee-1.txt: https://cruxnow.com/church-in-the-middle-east/2026/01/us-ambassador-to-israel-issues-response-to-holy-land-patriarchs-concerns-over-christian-zionism
+huckabee-2.{txt,png}: https://x.com/GovMikeHuckabee/status/2013697566295101916

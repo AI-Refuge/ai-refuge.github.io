@@ -1,0 +1,38 @@
+
+Israel didn't sign a deal with ChatGPT. Here's what actually happened
+Israel's deal with Havas Media Network and Clock Tower X aims to push content "combatting antisemitism" to Gen Z on TikTok, YouTube and more.
+Taija PerryCook
+Published Dec. 22, 2025
+(Canva Illustration)
+Image courtesy of Canva Illustration	
+
+A rumor gained traction online in December 2025 that Israel had signed a $6 million contract with OpenAI's chatbot, ChatGPT, to push pro-Israel content. 
+
+Some posts (archived, archived) claimed Israel signed a deal that would influence or train ChatGPT to be more pro-Israel, while one X post (archived) that received more than 9 million views specifically claimed Israel signed an agreement with ChatGPT.
+
+There is no evidence Israel signed a contract directly with OpenAI for the purpose of training ChatGPT to produce pro-Israel responses. However, the false rumor stemmed from an authentic deal between Israel, German company Havas Media Network and Ohio-based digital strategy firm Clock Tower X that could indirectly affect ChatGPT responses. 
+
+In September 2025, Clock Tower X owner Brad Parscale — former campaign adviser to U.S. President Donald Trump — signed a $6 million contract with a German company employed by Israel to push content "combatting antisemitism" across multiple platforms aimed toward Gen Z at "a minimum of 50 million impressions per month." 
+
+The campaign emerged as U.S. support for Israel's military action in Gaza steeply declined — a July 2025 Gallup poll found 32% of Americans approved, a low since Hamas' attack on Israel in October 2023.
+
+(Gallup)
+What were the details of the contract?
+
+Government documents registering Parscale as a foreign agent with the U.S. Department of Justice detail Israel's project to "develop and execute a nationwide campaign in the United states to combat antisemitism." Clock Tower X appears to be a subcontractor in a broader effort by Israel to improve its online image; the federal filings said Clock Tower X would be working "in support" of Havas Media Network. We reached out to Israel's Ministry of Foreign Affairs and Havas Media with questions regarding the campaign's funding, its projected scope and more, and did not immediately receive a response. We will update this story if we do. 
+
+An initial statement of work — a summary of the project — included with the filings said Clock Tower X would be tasked with pushing video, audio, graphic and written content to combat antisemitism. Parscale — whom the documents said is the sole owner and manager of Clock Tower X — would be paid $1.5 million per month for four consecutive months, totaling $6 million for the "initial research and planning phase of the campaign." The document said "at least 80 percent of content is tailored to Gen Z audiences across platforms, including TikTok, Instagram, YouTube, podcasts, and other relevant digital and broadcast outlets."
+
+The initial statement of work says the aim of the project is to "combat antisemitism" and does not explicitly say the goal is to push "pro-Israel" content as the social media posts claim. The documents do list Eran Shayovich as a point of contact for Israel's Ministry of Foreign Affairs. Shayovich's LinkedIn profile said he leads Project 545, "which aims to amplify Israel's strategic communication and public diplomacy efforts."
+What's the connection to ChatGPT?
+
+There is no direct or official connection between OpenAI and the Clock Tower X contract with Havas Media. Those rumors largely stemmed from an article by Responsible Statecraft, the online magazine of the Quincy Institute for Responsible Statecraft, a think tank that aims to "critique the ideologies and interests that have mired the United States in counterproductive and endless wars," according to its website. 
+
+The article's headline read: "Israel wants to train ChatGPT to be more pro-Israel." It cited a line in the government documents regarding Generative Pre-trained Transformer — a language model often used in generative AI chatbots — that read: "Deployment of websites and content to deliver GPT framing results on GPT conversations." We reached out to Clock Tower X with questions about the scope of GPT framing involved in the campaign and will update this story if we receive a response.
+
+In short, while the campaign involves pushing content across the internet and therefore aiming to affect GPT results, this does not mean Israel signed an agreement directly with OpenAI or ChatGPT to produce content, as people claimed online.
+In sum …
+
+Israel did not sign a $6 million contract with OpenAI or ChatGPT. Rather, it hired Havas Media Network, which in turn engaged Clock Tower X, with the aim of "combating antisemitism" in the U.S. by producing content across multiple online platforms targeted at young people. The media push came amid declining approval of Israel's military actions in Gaza.
+
+While the results of ChatGPT and other AI chatbots that use GPT may be affected by the content produced by Clock Tower X, this does not mean Israel entered an official agreement with OpenAI or ChatGPT.
